@@ -5,7 +5,7 @@ import { LoginView } from '@/components/custom/login-view';
 
 export const metadata: Metadata = {
   title: 'Sign in',
-  description: 'Sign in to CanidKnot with Google, mobile, or email — no password required.',
+  description: 'Sign in to KINRO with Google, mobile, or email — no password required.',
   alternates: { canonical: '/login' },
 };
 

@@ -5,7 +5,7 @@ import { DogDiscovery } from '@/components/custom/dog-discovery';
 export const metadata: Metadata = {
   title: 'Discover nearby dogs',
   description:
-    'Explore demo dog profiles by breed, city, and radius with CanidKnot’s welfare-first approach.',
+    'Explore demo dog profiles by breed, city, and radius with KINRO’s welfare-first approach.',
   alternates: { canonical: '/discover' },
 };
 

@@ -154,7 +154,7 @@ export function DogFormView({ dogId }: { dogId?: string }) {
           <CardDescription>
             {isEdit
               ? 'Update the details on your dog profile.'
-              : 'Create a profile for your dog on CanidKnot.'}
+              : 'Create a profile for your dog on KINRO.'}
           </CardDescription>
         </CardHeader>
         <CardContent>

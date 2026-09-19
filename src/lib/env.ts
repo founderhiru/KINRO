@@ -35,7 +35,7 @@ export const env = createEnv({
     // sandbox mode (no verified sending domain yet) Resend only delivers to
     // the account owner's own verified address — see .env.example.
     RESEND_API_KEY: z.string().min(1),
-    EMAIL_FROM: z.string().min(1).default('CanidKnot <onboarding@resend.dev>'),
+    EMAIL_FROM: z.string().min(1).default('KINRO <onboarding@resend.dev>'),
     // SMS ("Continue with Mobile" OTP). No vendor is wired in yet — see
     // @/lib/sms. Optional/unset today; "console" (or unset) logs codes to
     // the server console in development and is refused outright in

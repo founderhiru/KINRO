@@ -82,26 +82,7 @@ const welfareSignals = [
   'Clear expectations before contact',
 ];
 
-function KnotMark({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 96 96" fill="none" aria-hidden="true">
-      <path
-        d="M31.5 25.5c-7.3-7.3-19.2-7.3-26.5 0s-7.3 19.2 0 26.5l37 37c7.3 7.3 19.2 7.3 26.5 0s7.3-19.2 0-26.5l-37-37Z"
-        stroke="currentColor"
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M64.5 25.5c7.3-7.3 19.2-7.3 26.5 0s7.3 19.2 0 26.5l-37 37c-7.3 7.3-19.2 7.3-26.5 0s-7.3-19.2 0-26.5l37-37Z"
-        stroke="currentColor"
-        strokeWidth="7"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export default function CanidKnotHome() {
+export default function KinroHome() {
   return (
     <main className="overflow-hidden">
       <section className="relative isolate border-b border-border bg-gradient-to-br from-brand-100/70 via-background to-background">
@@ -122,7 +103,7 @@ export default function CanidKnotHome() {
               Verified, health-first breeding connections for India’s responsible dog owners.
             </p>
             <p className="mt-3 max-w-xl leading-7 text-muted-foreground">
-              CanidKnot helps you find compatible breeding partners nearby, with animal welfare and
+              KINRO helps you find compatible breeding partners nearby, with animal welfare and
               trust at the center.
             </p>
             <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -172,8 +153,14 @@ export default function CanidKnotHome() {
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">Sample verified profile</p>
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-brand">
-                  <KnotMark className="size-7" />
+                <div className="flex size-12 items-center justify-center rounded-full bg-card shadow-brand">
+                  {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
+                  <img
+                    src="/kinro/symbol.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="size-7 object-contain"
+                  />
                 </div>
               </div>
               <CardContent className="p-6">
@@ -249,9 +236,9 @@ export default function CanidKnotHome() {
                 <span className="text-brand-700">More care.</span>
               </h2>
               <p className="mt-6 text-body-lg text-muted-foreground">
-                Informal listings make responsible breeding harder than it needs to be. CanidKnot
-                brings the important details into the open, so every introduction can start with
-                better information.
+                Informal listings make responsible breeding harder than it needs to be. KINRO brings
+                the important details into the open, so every introduction can start with better
+                information.
               </p>
             </div>
             <div className="divide-y divide-border border-y border-border">
@@ -316,7 +303,7 @@ export default function CanidKnotHome() {
                   variant="outline"
                   className="border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground"
                 >
-                  The CanidKnot standard
+                  The KINRO standard
                 </Badge>
                 <h2 className="mt-5 font-display text-h2">
                   Better matches begin with better stewardship.
@@ -357,7 +344,7 @@ export default function CanidKnotHome() {
             title="Contact channel coming soon"
             className="h-12 rounded-full px-6"
           >
-            Talk to CanidKnot <span className="text-xs font-normal">(coming soon)</span>
+            Talk to KINRO <span className="text-xs font-normal">(coming soon)</span>
           </Button>
         </div>
       </section>
@@ -365,7 +352,8 @@ export default function CanidKnotHome() {
       <section className="border-t border-border bg-gradient-to-t from-brand-100/60 to-background">
         <div className="container-page flex flex-col gap-8 py-16 md:flex-row md:items-end md:justify-between md:py-24">
           <div className="max-w-2xl">
-            <KnotMark className="mb-6 size-12 text-brand-600" />
+            {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
+            <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="mb-6 h-12 w-auto" />
             <h2 className="font-display text-h2">
               Responsible connections,
               <br />
@@ -374,10 +362,10 @@ export default function CanidKnotHome() {
           </div>
           <div className="max-w-xs md:text-right">
             <p className="text-muted-foreground">
-              CanidKnot is taking shape with owners, vets, and welfare-minded partners.
+              KINRO is taking shape with owners, vets, and welfare-minded partners.
             </p>
             <p className="mt-4 text-sm text-muted-foreground">
-              Contact CanidKnot — details coming soon.
+              Contact KINRO — details coming soon.
             </p>
           </div>
         </div>

@@ -6,7 +6,7 @@
 // Provider: Resend. In sandbox mode (no verified sending domain yet — see
 // .env.example), Resend only delivers to the account's own verified email
 // address; every other recipient is silently accepted but not delivered.
-// That is expected until CanidKnot has a verified domain — swap EMAIL_FROM
+// That is expected until KINRO has a verified domain — swap EMAIL_FROM
 // to a verified address at that point, no code change required here.
 import 'server-only';
 import { Resend } from 'resend';

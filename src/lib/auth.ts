@@ -120,8 +120,8 @@ export const auth = betterAuth({
       sendMagicLink: async ({ email, url }) => {
         await sendAuthEmail(
           email,
-          'Your CanidKnot sign-in link',
-          `Sign in to CanidKnot by opening this link: ${url}\n\nIt expires in 10 minutes. If you didn't request this, you can ignore this email.`,
+          'Your KINRO sign-in link',
+          `Sign in to KINRO by opening this link: ${url}\n\nIt expires in 10 minutes. If you didn't request this, you can ignore this email.`,
         );
       },
     }),

@@ -1,4 +1,4 @@
-# Render Blueprint for CanidKnot.
+# Render Blueprint for KINRO.
 #
 # Deploys a Next.js web service against a Render-managed Postgres instance.
 # Apply once via the Render dashboard ("New +" → "Blueprint", point at this
@@ -58,7 +58,7 @@ services:
       - key: RESEND_API_KEY
         sync: false
       - key: EMAIL_FROM
-        sync: false # e.g. "CanidKnot <onboarding@resend.dev>" until a verified domain exists
+        sync: false # e.g. "KINRO <onboarding@resend.dev>" until a verified domain exists
       # SMS_PROVIDER intentionally omitted — no vendor chosen yet (see
       # src/lib/sms.ts). Phone sign-in refuses to run in production without
       # it; add it here once a vendor is selected.
