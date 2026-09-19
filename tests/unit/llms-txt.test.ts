@@ -91,7 +91,7 @@ describe('/llms.txt route', () => {
     });
 
     it('starts with the site name heading and description blockquote', () => {
-      expect(body.startsWith('# CanidKnot\n\n> Verified, health-first breeding connections')).toBe(
+      expect(body.startsWith('# KINRO\n\n> Verified, health-first breeding connections')).toBe(
         true,
       );
     });

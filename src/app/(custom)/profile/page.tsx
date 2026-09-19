@@ -4,7 +4,7 @@ import { OwnerProfileView } from '@/components/custom/owner-profile-view';
 
 export const metadata: Metadata = {
   title: 'Your profile',
-  description: 'View and edit your CanidKnot owner profile.',
+  description: 'View and edit your KINRO owner profile.',
   alternates: { canonical: '/profile' },
 };
 

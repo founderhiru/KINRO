@@ -4,7 +4,7 @@ import { MyDogsView } from '@/components/custom/my-dogs-view';
 
 export const metadata: Metadata = {
   title: 'Your dogs',
-  description: 'View and manage your own dog profiles on CanidKnot.',
+  description: 'View and manage your own dog profiles on KINRO.',
   alternates: { canonical: '/dogs' },
 };
 

@@ -41,8 +41,5 @@ function resolveProvider(): SmsProvider {
 
 export async function sendOtpSms(phoneNumber: string, code: string): Promise<void> {
   const provider = resolveProvider();
-  await provider.send(
-    phoneNumber,
-    `${code} is your CanidKnot verification code. It expires shortly.`,
-  );
+  await provider.send(phoneNumber, `${code} is your KINRO verification code. It expires shortly.`);
 }

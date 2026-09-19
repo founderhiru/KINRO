@@ -4,7 +4,7 @@ import { DogFormView } from '@/components/custom/dog-form-view';
 
 export const metadata: Metadata = {
   title: 'Add a dog',
-  description: 'Create a new dog profile on CanidKnot.',
+  description: 'Create a new dog profile on KINRO.',
   alternates: { canonical: '/dogs/new' },
 };
 

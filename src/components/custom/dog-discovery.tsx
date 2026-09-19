@@ -345,7 +345,7 @@ export function DogDiscovery() {
       <section className="relative border-b border-border bg-gradient-to-br from-brand-100/60 via-background to-background">
         <div className="container-page relative py-14 md:py-20 lg:py-24">
           <div className="max-w-3xl animate-in fade-in slide-in-from-bottom-3 duration-700">
-            <p className="text-eyebrow">The CanidKnot network</p>
+            <p className="text-eyebrow">The KINRO network</p>
             <h1 className="mt-4 max-w-3xl font-display text-h1 text-foreground md:text-display">
               Find a thoughtful match, close to home.
             </h1>

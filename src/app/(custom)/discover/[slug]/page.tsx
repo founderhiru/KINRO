@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   return {
     title: 'Dog profile',
-    description: 'View this demo dog profile on the CanidKnot discovery network.',
+    description: 'View this demo dog profile on the KINRO discovery network.',
     alternates: { canonical: `/discover/${slug}` },
   };
 }

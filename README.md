@@ -1,4 +1,4 @@
-# CanidKnot
+# KINRO
 
 Verified, health-first breeding connections for India's responsible dog owners.
 
@@ -200,7 +200,7 @@ versions that direct framework pins cannot reach on their own.
 
 ## Known Placeholders
 
-CanidKnot does not yet have a business email or domain. The three homepage
+KINRO does not yet have a business email or domain. The three homepage
 contact CTAs (`src/app/(setup)/page.tsx`) are disabled "(coming soon)"
 buttons, and the "Join the network" mailto entry has been removed from
 `src/lib/nav.ts`, rather than pointing at an invented or borrowed address.

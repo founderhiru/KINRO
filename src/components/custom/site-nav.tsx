@@ -148,8 +148,10 @@ export function SiteNav() {
         aria-label="Primary"
         className="mx-auto flex h-14 max-w-screen-xl items-center gap-2 px-4"
       >
-        <Link href="/" className="mr-2 shrink-0 truncate text-base font-semibold tracking-tight">
-          {siteName}
+        <Link href="/" className="mr-2 flex shrink-0 items-center gap-2">
+          {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
+          <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-7 w-auto" />
+          <span className="truncate text-base font-semibold tracking-tight">{siteName}</span>
         </Link>
 
         {/* Desktop (md+): inline slots — direct links + `menu` dropdowns */}
@@ -375,6 +377,8 @@ export function SiteFooter() {
         aria-label="Footer"
         className="mx-auto flex max-w-screen-xl flex-wrap items-center gap-1 px-4 py-6 text-sm"
       >
+        {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
+        <img src="/kinro/symbol.png" alt="KINRO" className="mr-2 h-5 w-auto opacity-80" />
         {footer.map((item) => (
           <Button key={item.href} asChild variant="link" size="sm">
             <Link href={item.href}>{item.label}</Link>
