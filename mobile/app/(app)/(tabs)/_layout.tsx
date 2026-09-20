@@ -4,9 +4,11 @@ import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/theme/tokens";
 
-const TAB_BAR_CONTENT_HEIGHT = 54;
+// 5 tabs with icon + label need a little more room than the old 4-tab bar
+// (54), otherwise labels clip when there is no bottom safe-area inset.
+const TAB_BAR_CONTENT_HEIGHT = 62;
 
-type TabRouteName = "my-dog" | "discover" | "matches" | "profile";
+type TabRouteName = "home" | "discover" | "my-dog" | "matches" | "profile";
 
 // Ionicons outline/filled pairs — outline for inactive, filled for
 // active, matching react-navigation's own (focused, color, size) signature.
@@ -19,12 +21,14 @@ function iconNamesFor(routeName: TabRouteName): {
   filled: string;
 } {
   switch (routeName) {
-    case "my-dog":
+    case "home":
       return { outline: "home-outline", filled: "home" };
     case "discover":
       return { outline: "compass-outline", filled: "compass" };
+    case "my-dog":
+      return { outline: "paw-outline", filled: "paw" };
     case "matches":
-      return { outline: "heart-outline", filled: "heart" };
+      return { outline: "chatbubble-outline", filled: "chatbubble" };
     case "profile":
       return { outline: "person-outline", filled: "person" };
   }
@@ -50,27 +54,27 @@ function makeTabBarIcon(routeName: TabRouteName) {
 }
 
 /**
- * The approved 4-tab architecture: Home | Discover | Matches | Profile.
- * "Home" is the `my-dog` route repurposed into a dashboard (owner
- * greeting + My Dogs rail) — the route/folder name stays `my-dog` so
- * every existing router.push target elsewhere in the app keeps working;
- * only this tab's title and its screen's content changed. Home is the
- * default landing tab (initialRouteName) for both guests and signed-in
- * owners; Discover remains reachable as its own tab.
- * Messages is intentionally NOT a 5th tab — it's pushed from Matches in
- * later phases.
+ * Five tabs: Home | Discover | My Dogs | Messages | Profile.
+ *
+ * Route folders (kept stable so existing router.push targets keep working):
+ *   - `home`    — the dashboard (greeting, My Dogs rail, prompts).
+ *   - `my-dog`  — the owner's dog list plus Add Dog / Dog Profile / Edit /
+ *                 Health screens (its stack).
+ *   - `matches` — shown as "Messages": incoming interest requests and the
+ *                 conversations opened by mutual interest.
+ * Home is the default landing tab for guests and signed-in owners alike.
  */
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
 
   return (
     <Tabs
-      initialRouteName="my-dog"
+      initialRouteName="home"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontSize: 12, fontWeight: "600" },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
         // Explicit background/border/height, computed from the actual
         // safe-area inset rather than left to the platform default: on
         // iOS + New Architecture (see app.json's newArchEnabled) the
@@ -88,16 +92,20 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="my-dog"
-        options={{ title: "Home", tabBarIcon: makeTabBarIcon("my-dog") }}
+        name="home"
+        options={{ title: "Home", tabBarIcon: makeTabBarIcon("home") }}
       />
       <Tabs.Screen
         name="discover"
         options={{ title: "Discover", tabBarIcon: makeTabBarIcon("discover") }}
       />
       <Tabs.Screen
+        name="my-dog"
+        options={{ title: "My Dogs", tabBarIcon: makeTabBarIcon("my-dog") }}
+      />
+      <Tabs.Screen
         name="matches"
-        options={{ title: "Matches", tabBarIcon: makeTabBarIcon("matches") }}
+        options={{ title: "Messages", tabBarIcon: makeTabBarIcon("matches") }}
       />
       <Tabs.Screen
         name="profile"

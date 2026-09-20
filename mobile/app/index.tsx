@@ -1,28 +1,22 @@
 import { getSetCookie, storageAdapter } from "@better-auth/expo/client";
-import { Redirect, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { HeroImage } from "@/components/HeroImage";
+import { SplashView } from "@/components/SplashView";
 import { SESSION_COOKIE_STORAGE_KEY, useSession } from "@/lib/auth-client";
-import { resolveInitialRoute, type SessionStatus } from "@/lib/session-guard";
-import { colors, spacing, typography } from "@/theme/tokens";
+import {
+  ROUTES,
+  resolveInitialRoute,
+  type SessionStatus,
+} from "@/lib/session-guard";
 
 /**
- * Full-bleed splash matching the brand reference (large dog-photography
- * moment first). Currently an illustrated dog scene rather than a real
- * photo — see assets/images/README.md for the swap-in path.
+ * The KINRO launch screen (photo, logo, headline). While the session is
+ * still resolving it shows a spinner; once we know the visitor is signed
+ * out, the same screen offers the round arrow that continues to Welcome.
  */
 function LoadingSplash() {
-  return (
-    <HeroImage source={require("../assets/images/splash-hero.jpg")}>
-      <View style={styles.copy}>
-        <Text style={styles.wordmark}>Kinro</Text>
-        <Text style={styles.tagline}>Dogs bring people closer</Text>
-        <ActivityIndicator style={styles.spinner} color={colors.textOnDark} />
-      </View>
-    </HeroImage>
-  );
+  return <SplashView />;
 }
 
 /**
@@ -44,6 +38,12 @@ function SessionRedirect() {
 
   if (!target) {
     return <LoadingSplash />;
+  }
+
+  // Signed-out visitors see the splash and tap the arrow to continue to
+  // Welcome (Splash -> Welcome). Signed-in users skip straight to Home.
+  if (target === ROUTES.welcome) {
+    return <SplashView onContinue={() => router.replace(ROUTES.welcome)} />;
   }
 
   return <Redirect href={target} />;
@@ -101,23 +101,3 @@ export default function Index() {
 
   return <SessionRedirect />;
 }
-
-const styles = StyleSheet.create({
-  copy: {
-    alignItems: "center",
-    paddingBottom: spacing.xxl,
-    paddingHorizontal: spacing.screenPadding,
-  },
-  wordmark: {
-    ...typography.display,
-    color: colors.textOnDark,
-  },
-  tagline: {
-    ...typography.body,
-    color: colors.textOnDarkMuted,
-    marginTop: spacing.xs,
-  },
-  spinner: {
-    marginTop: spacing.lg,
-  },
-});

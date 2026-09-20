@@ -1,4 +1,6 @@
 // Bundled locally (no remote URLs) — see assets/images/README.md.
+import { type SamplePhotoKey, samplePhotoKeyForSlug } from "./sample-photos";
+
 // Six visually-distinct illustrated dogs (different coat colors and ear
 // styles) — genuinely recognizable as dogs, not abstract gradients.
 // Still illustration rather than real photography (no image-generation
@@ -13,6 +15,16 @@
 // accepts (e.g. it allows arrays, which `defaultSource` rejects) —
 // annotating it precisely here would fight the library's own types for
 // no real benefit.
+// Photographs supplied with the KINRO asset pack. Used ONLY for the seeded
+// sample profiles (see sample-photos.ts). Placeholder-grade resolution —
+// see assets/images/README.md.
+const SAMPLE_PHOTOS: Record<SamplePhotoKey, number> = {
+  "golden-retriever": require("../../assets/images/photos/dog-golden-retriever.jpg"),
+  labrador: require("../../assets/images/photos/dog-labrador.jpg"),
+  "german-shepherd": require("../../assets/images/photos/dog-german-shepherd.jpg"),
+  beagle: require("../../assets/images/photos/dog-beagle.jpg"),
+};
+
 const DEMO_PHOTOS = [
   require("../../assets/images/demo-dogs/demo-dog-1.jpg"),
   require("../../assets/images/demo-dogs/demo-dog-2.jpg"),
@@ -32,6 +44,10 @@ const DEMO_PHOTOS = [
  * photo" true without needing to store a photo assignment anywhere.
  */
 export function getDemoPhotoForKey(key: string) {
+  const sampleKey = samplePhotoKeyForSlug(key);
+  if (sampleKey) {
+    return SAMPLE_PHOTOS[sampleKey];
+  }
   let hash = 0;
   for (let i = 0; i < key.length; i++) {
     // Classic string hash (djb2-ish); >>> 0 keeps it an unsigned 32-bit

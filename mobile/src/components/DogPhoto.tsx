@@ -98,7 +98,7 @@ export function DogPhoto({
         // showFallback branch, since source and defaultSource are then
         // the same image.
         defaultSource={fallbackSource}
-        style={StyleSheet.absoluteFill}
+        style={styles.image}
         resizeMode="cover"
         onLoadEnd={() => setStatus("loaded")}
         onError={() => setStatus("error")}
@@ -119,6 +119,10 @@ export function DogPhoto({
 }
 
 const styles = StyleSheet.create({
+  // Explicit 100% size (not just absoluteFill) so the photo fills its frame
+  // on every platform, including react-native-web previews, instead of
+  // showing at its natural size in the top-left corner.
+  image: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
   labelChip: {
     position: "absolute",
     bottom: 8,

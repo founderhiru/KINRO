@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { colors } from "@/theme/tokens";
 
-export default function MatchesLayout() {
+export default function HomeLayout() {
   return (
     <Stack
       screenOptions={{
@@ -10,10 +10,9 @@ export default function MatchesLayout() {
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Messages" }} />
       <Stack.Screen
-        name="[conversationId]/conversation"
-        options={{ headerShown: false }}
+        name="index"
+        options={{ title: "Home", headerShown: false }}
       />
     </Stack>
   );

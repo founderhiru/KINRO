@@ -22,6 +22,7 @@ export const colors = {
   accentDark: "#234F3B",
   accentTint: "#E3EFE8", // green-tinted background for chips/badges
   accentText: "#FFFFFF",
+  promoWarm: "#F8E9C8", // warm cream-yellow for promotional cards (Home community card)
 
   success: "#2F6B4F",
   successTint: "#E3EFE8",

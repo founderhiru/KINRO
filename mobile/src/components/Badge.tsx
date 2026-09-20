@@ -24,14 +24,23 @@ export function Badge({
   );
 }
 
-/** Dog is verified by Kinro — used on My Dog cards and Dog Detail. */
+/**
+ * Intentionally renders nothing for now. KINRO has no verification process
+ * yet, so `isVerified` (which is still stored) must not be shown to people
+ * as if someone had checked the dog. Call sites are left in place so the
+ * badge can return, with a real meaning, once a verification workflow exists.
+ */
 export function VerifiedBadge() {
-  return <Badge label="✓ Verified" tone="success" />;
+  return null;
 }
 
-/** Dog has at least one health record on file — a signal, not the full passport. */
+/**
+ * The owner has added at least one health record. This says records exist,
+ * not that anyone (KINRO, a vet or a lab) has checked them — so the wording
+ * and tone are deliberately neutral.
+ */
 export function HealthBadge({ hasRecords }: { hasRecords: boolean }) {
-  return hasRecords ? <Badge label="Health" tone="success" /> : null;
+  return hasRecords ? <Badge label="Health records" tone="neutral" /> : null;
 }
 
 const styles = StyleSheet.create({
