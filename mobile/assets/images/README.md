@@ -33,3 +33,30 @@ each file, only that all six exist.
 Only use images you have the rights to (owned, commissioned, or under a
 license that permits commercial app use) — do not substitute images
 sourced without a clear license.
+
+## KINRO photo pack (`photos/`) — placeholder-grade
+
+Added from `KINRO_JPEG_Asset_Pack.zip`. **These are crops from design
+boards, not production exports** (the pack's own README says so), so they
+are small and will look soft on a full-screen phone display. Replace each
+with an optimized original at the same filename when available.
+
+| File | Source in pack | Size now | Used by | Wanted for production |
+|---|---|---|---|---|
+| `splash-dog.jpg` | `marketing/hero_dog.jpg` | 194×299 | Splash (`src/components/SplashView.tsx`) | ~1170×2532 portrait |
+| `dog-golden-retriever.jpg` | `dog_photos/` | 152×144 | Onboarding 1, Home community card, sample profiles Rio + Nila | ≥ 800×600 |
+| `dog-labrador.jpg` | `dog_photos/` | 152×144 | Sample profiles Bodhi + Saffron | ≥ 800×600 |
+| `dog-german-shepherd.jpg` | `dog_photos/` | 153×144 | Sample profile Atlas | ≥ 800×600 |
+| `dog-beagle.jpg` | `dog_photos/` | 152×144 | Sample profile Pepper | ≥ 800×600 |
+
+Not used, on purpose: `marketing/splash_dog.jpg` and `marketing/hero_group.jpg`
+have KINRO text and taglines baked into the picture, so they would print
+duplicate text over the app's own headline. The pack has no dog-and-owner
+photo or puppy photo, so Welcome still uses the illustrated `welcome-hero.jpg`.
+
+The photos are only ever shown for the **seeded sample profiles**
+(`src/lib/sample-photos.ts`, keyed by exact slug). A real owner's dog with no
+photo still gets an illustrated fallback — never a stock photo that could be
+mistaken for their dog.
+
+`splash-hero.jpg` (illustration) is no longer used by the app.

@@ -5,9 +5,12 @@
 export type SessionStatus = "loading" | "authenticated" | "unauthenticated";
 
 export const ROUTES = {
-  home: "/(app)/(tabs)/my-dog",
+  home: "/(app)/(tabs)/home",
   discover: "/(app)/(tabs)/discover",
+  myDogs: "/(app)/(tabs)/my-dog",
   welcome: "/welcome",
+  onboarding: "/onboarding",
+  signIn: "/(auth)/mobile-number",
 } as const;
 
 /**

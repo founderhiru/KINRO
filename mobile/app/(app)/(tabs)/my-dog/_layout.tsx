@@ -10,7 +10,10 @@ export default function MyDogLayout() {
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Home" }} />
+      <Stack.Screen
+        name="index"
+        options={{ title: "My Dogs", headerShown: false }}
+      />
       <Stack.Screen name="add" options={{ title: "Add Dog" }} />
       {/* Dog Profile draws its own transparent back/edit controls over the
           hero photo (see reference design), so the native header is hidden

@@ -13,4 +13,16 @@ describe("resolveInitialRoute", () => {
   it("routes to Welcome when unauthenticated", () => {
     expect(resolveInitialRoute("unauthenticated")).toBe(ROUTES.welcome);
   });
+
+  it("keeps Home and My Dogs as two different tabs", () => {
+    expect(ROUTES.home).toBe("/(app)/(tabs)/home");
+    expect(ROUTES.myDogs).toBe("/(app)/(tabs)/my-dog");
+    expect(ROUTES.home).not.toBe(ROUTES.myDogs);
+  });
+
+  it("points the intro flow at the right screens", () => {
+    expect(ROUTES.welcome).toBe("/welcome");
+    expect(ROUTES.onboarding).toBe("/onboarding");
+    expect(ROUTES.signIn).toBe("/(auth)/mobile-number");
+  });
 });
