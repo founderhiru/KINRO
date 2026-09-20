@@ -91,9 +91,9 @@ describe('/llms.txt route', () => {
     });
 
     it('starts with the site name heading and description blockquote', () => {
-      expect(body.startsWith('# KINRO\n\n> Verified, health-first breeding connections')).toBe(
-        true,
-      );
+      expect(
+        body.startsWith('# KINRO\n\n> A mobile-first platform for responsible dog owners'),
+      ).toBe(true);
     });
 
     it('renders the intro paragraph after the blockquote', () => {
