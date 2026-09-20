@@ -28,20 +28,17 @@ export interface NavItem {
 //   { label: 'Docs',    href: '/docs',    group: 'primary', menu: 'Resources' },
 //   { label: 'Sign in', href: '/login',   group: 'secondary' },
 export const navItems: NavItem[] = [
-  { label: 'Features', href: '/#features', group: 'primary', order: 1 },
+  { label: 'Why KINRO', href: '/#features', group: 'primary', order: 1 },
   { label: 'How it works', href: '/#how-it-works', group: 'primary', order: 2 },
   { label: 'Discover', href: '/discover', group: 'primary', order: 3 },
-  // 'Join the network' (mailto) removed temporarily: no real contact address
-  // exists yet. Re-add once a real email/signup flow is wired up.
-  // Phase 3 — only rendered once a session exists (see requiresAuth handling
-  // in site-nav.tsx). Sit in 'secondary' alongside the sign-in/out control.
+  { label: 'Download', href: '/download', group: 'primary', order: 4 },
+  // 'Sign in' is rendered by SiteNav's AccountControl (it is an action, not a
+  // nav entry). Only rendered once a session exists (see requiresAuth handling
+  // in site-nav.tsx); these sit in 'secondary' next to the sign-in/out control.
   { label: 'Your dogs', href: '/dogs', group: 'secondary', requiresAuth: true, order: 1 },
   { label: 'Your profile', href: '/profile', group: 'secondary', requiresAuth: true, order: 2 },
-  { label: 'Welfare-first', href: '/#welfare', group: 'footer', order: 1 },
-  {
-    label: 'Veterinary partners',
-    href: '/#partners',
-    group: 'footer',
-    order: 2,
-  },
+  { label: 'Download the app', href: '/download', group: 'footer', order: 1 },
+  { label: 'Browse dogs', href: '/discover', group: 'footer', order: 2 },
+  { label: 'Trust and transparency', href: '/#trust', group: 'footer', order: 3 },
+  { label: 'Coming next', href: '/#coming-next', group: 'footer', order: 4 },
 ];

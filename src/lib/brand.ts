@@ -3,7 +3,7 @@
 
 export const siteName = 'KINRO';
 export const siteDescription =
-  'Verified, health-first breeding connections for India’s responsible dog owners.';
+  'A mobile-first platform for responsible dog owners in India: better information, healthier decisions, and trusted connections.';
 
 // PWA + social-share colors. HEX only (the oklch() tokens in globals.css aren't
 // readable here) — set to match your brand seed.
@@ -17,6 +17,6 @@ export const brandVisual = {
     background: '#262A28',
     foreground: '#FBF8F3',
     /** Second line under the site name; '' hides it. */
-    tagline: 'Verified, health-first breeding connections for India’s responsible dog owners.',
+    tagline: 'Better information. Healthier generations. Stronger connections.',
   },
 } as const;
