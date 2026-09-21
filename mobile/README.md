@@ -60,12 +60,62 @@ mobile-side change is needed when that happens.
 ## Scripts
 
 - `npm start` / `npm run ios` / `npm run android` — Expo dev server
+- `npm run start:dev` / `npm run ios:open` — dev-build Metro server and a
+  Simulator-app-independent launcher (see *Running on Xcode 27* above)
 - `npm run lint` — Biome (this project's own `biome.json`, independent of
   the root web app's)
 - `npm run typecheck` — `tsc --noEmit`
 - `npm test` — Vitest, logic-only unit tests (`tests/unit/`) — auth/RN/Expo
   modules are mocked the same way the web app's own tests mock better-auth,
   so these run without a simulator or device.
+
+## Running on Xcode 27 (Device Hub)
+
+Xcode 27 removed `Simulator.app`; its replacement is **Device Hub**
+(`DeviceHub.app`, bundle id `com.apple.dt.Devices`). Expo CLI 0.22.28 — the
+version Expo SDK 52 pins — only knows about `Simulator.app`, so on Xcode 27
+`expo start` (press `i`) and `expo run:ios` stop with
+`Can't determine id of Simulator app`.
+
+**What we do about it.** Expo fixed this upstream for SDK 56+
+([expo/expo#46757](https://github.com/expo/expo/pull/46757),
+[#46809](https://github.com/expo/expo/pull/46809)) but is not backporting to
+SDK 52. `patches/@expo+cli+0.22.28.patch` is a small backport of that change,
+applied automatically by `patch-package` on every `npm install`
+(`postinstall`). It does three things and leaves Xcode 26 behaviour unchanged:
+
+- `SimulatorAppPrerequisite`: accepts Simulator *or* Device Hub.
+- `ensureSimulatorAppRunning`: counts either process; if `open -a Simulator`
+  fails, opens `devices://device/open?id=<udid>` (or `open -a DeviceHub`).
+- `AppleDeviceManager.activateWindowAsync`: raises whichever app exists.
+
+**Daily workflow**
+
+```bash
+npm install            # applies the patch; you should see "@expo/cli@0.22.28 ✔"
+npm run start:dev      # Metro for the dev build   (expo start --dev-client --localhost)
+# press i in that terminal, or, in a second terminal:
+npm run ios:open       # opens the dev build in the booted simulator via simctl
+```
+
+`npm run ios:open` never needs the Simulator app at all, so it keeps working
+whichever way Apple changes the simulator UI. Use it whenever the CLI's own
+`i` shortcut misbehaves.
+
+**Use an iOS 26.x simulator, not iOS 27.** Apps built with the iOS 27 SDK must
+adopt the UIKit scene lifecycle, and Expo has no supported way to do that on
+SDK 52 (tracked in [expo/expo#46664](https://github.com/expo/expo/issues/46664)).
+Pick an iOS 26.x device (for example *iPhone 17 Pro, iOS 26.5*) in Device Hub.
+
+**Never run `npx expo@latest ...` in this project.** It downloads a CLI for a
+newer SDK and Metro then fails with
+`Failed to replace react-native/Libraries/Utilities/HMRClient.js`. Always use
+the project's own CLI (`npx expo ...` or the npm scripts above).
+
+**Removing the patch.** When the project moves to Expo SDK 56 or newer, delete
+`patches/@expo+cli+0.22.28.patch` (and `patch-package` plus the `postinstall`
+script if no other patches remain). `patch-package` will warn if `@expo/cli`
+changes version while the patch is still present.
 
 ## Known limitations (M1)
 
