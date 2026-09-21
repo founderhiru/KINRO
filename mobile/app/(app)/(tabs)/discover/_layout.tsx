@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { HeaderBackButton } from "@/components/HeaderBackButton";
 import { colors } from "@/theme/tokens";
 
 export default function DiscoverLayout() {
@@ -14,7 +15,10 @@ export default function DiscoverLayout() {
         name="index"
         options={{ title: "Discover", headerShown: false }}
       />
-      <Stack.Screen name="[id]" options={{ title: "" }} />
+      <Stack.Screen
+        name="[id]"
+        options={{ title: "", headerLeft: () => <HeaderBackButton /> }}
+      />
     </Stack>
   );
 }

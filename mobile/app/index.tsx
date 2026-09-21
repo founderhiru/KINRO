@@ -37,7 +37,10 @@ function SessionRedirect() {
   const target = resolveInitialRoute(status);
 
   if (!target) {
-    return <LoadingSplash />;
+    // Rendered as <SplashView /> directly (not via LoadingSplash) so React keeps
+    // the same instance when the signed-out state arrives and the logo
+    // animation is not restarted by a remount.
+    return <SplashView />;
   }
 
   // Signed-out visitors see the splash and tap the arrow to continue to

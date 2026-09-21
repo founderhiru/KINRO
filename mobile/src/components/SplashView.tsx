@@ -9,8 +9,9 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AnimatedLogo } from "@/components/AnimatedLogo";
 import { IntroDots } from "@/components/IntroDots";
-import { ScrimGradient } from "@/components/ScrimGradient";
+import { BottomFade, ScrimGradient } from "@/components/ScrimGradient";
 import { colors, elevation, spacing } from "@/theme/tokens";
 
 /**
@@ -26,10 +27,22 @@ export const INTRO_DOT_COUNT = 1;
  * bottom. While the session is still resolving `onContinue` is undefined and
  * a small spinner takes the arrow's place.
  */
+/**
+ * The photo takes the top part of the screen (in proportion to the screen's own
+ * height, so it scales on every iPhone) and dissolves into the brand green
+ * beneath it, where the headline sits. This keeps the dog at a comfortable size
+ * instead of magnifying a small photo to fill the whole display.
+ */
+export const SPLASH_PHOTO_HEIGHT_RATIO = 0.8;
+/** Where the fade into the brand green starts, as a share of the photo's height. */
+const PHOTO_FADE_START = 0.55;
+const BRAND_GREEN_RGB = "35,79,59"; // colors.accentDark (#234F3B)
+
 export function SplashView({ onContinue }: { onContinue?: () => void }) {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const headlineSize = Math.max(26, Math.min(36, Math.round(width * 0.085)));
+  const photoHeight = Math.round(height * SPLASH_PHOTO_HEIGHT_RATIO);
 
   return (
     <View style={styles.fill}>
@@ -38,9 +51,14 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
           platform, including react-native-web previews. */}
       <Image
         source={require("../../assets/images/photos/splash-dog.jpg")}
-        style={styles.photo}
+        style={[styles.photo, { height: photoHeight }]}
         resizeMode="cover"
         accessibilityIgnoresInvertColors
+      />
+      <BottomFade
+        top={Math.round(photoHeight * PHOTO_FADE_START)}
+        height={photoHeight - Math.round(photoHeight * PHOTO_FADE_START)}
+        rgb={BRAND_GREEN_RGB}
       />
       <ScrimGradient />
       <View
@@ -54,12 +72,8 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
       >
         <View style={styles.brand}>
           <View style={styles.logoTile}>
-            <Image
-              source={require("../../assets/images/kinro-symbol.png")}
-              style={styles.logo}
-              resizeMode="contain"
-              accessibilityLabel="KINRO logo"
-            />
+            {/* Plays once when the splash opens, and again on tap. */}
+            <AnimatedLogo width={LOGO_WIDTH} playOnMount />
           </View>
           <Text style={styles.wordmark} accessibilityRole="header">
             KINRO
@@ -112,6 +126,7 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
 }
 
 const ARROW_SIZE = 60;
+const LOGO_WIDTH = 38;
 
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: colors.accentDark },
@@ -120,7 +135,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: "100%",
-    height: "100%",
   },
   content: {
     flex: 1,
@@ -136,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  logo: { width: 38, height: 36 },
+
   wordmark: {
     marginTop: spacing.sm,
     fontSize: 34,

@@ -18,6 +18,7 @@ import { Card } from "@/components/Card";
 import { DogPhoto } from "@/components/DogPhoto";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorText } from "@/components/ErrorText";
+import { GuestHome } from "@/components/GuestHome";
 import { Screen } from "@/components/Screen";
 import { DogCardSkeleton } from "@/components/Skeleton";
 import { useSession } from "@/lib/auth-client";
@@ -33,7 +34,7 @@ import { colors, elevation, radius, spacing, typography } from "@/theme/tokens";
  * profile-completion nudge and a community card. Everything shown here comes
  * from the signed-in user's real account (name from the session, dogs from
  * the API) — there is no sample or placeholder data on this screen. Guests
- * see a sign-in prompt instead.
+ * see the public <GuestHome /> instead (the app is guest-first).
  */
 export default function HomeScreen() {
   const { data: session, isPending: isSessionPending } = useSession();
@@ -77,24 +78,11 @@ export default function HomeScreen() {
   const firstName = session?.user.name?.split(" ")[0];
   const greeting = greetingForNow();
 
-  // Guest-first: Home's dog content is fundamentally an owner concept, so
-  // a guest sees a sign-in prompt instead of a fetch that would just 401.
+  // Guest-first: a signed-out visitor gets the public Home (dog listings,
+  // community card, an "Add your dog" prompt that asks them to sign in).
+  // The owner dashboard below only ever renders for a signed-in user.
   if (!isSessionPending && !isAuthenticated) {
-    return (
-      <Screen edges={["top"]}>
-        <EmptyState
-          title="Sign in to see your dogs"
-          message="Create a free account to add your dog and start building their profile."
-          actionLabel="Sign In"
-          onAction={() => setPromptVisible(true)}
-        />
-        <AuthPromptSheet
-          visible={promptVisible}
-          onClose={() => setPromptVisible(false)}
-          message="Sign in to add and manage your dogs."
-        />
-      </Screen>
-    );
+    return <GuestHome />;
   }
 
   if (dogs === null && !error) {

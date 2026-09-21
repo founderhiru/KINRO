@@ -62,3 +62,49 @@ export function ScrimGradient() {
 const styles = StyleSheet.create({
   band: { position: "absolute", left: 0, right: 0 },
 });
+
+/**
+ * A vertical fade from transparent to a solid brand colour, drawn as thin
+ * whole-pixel strips (again: no gradient dependency). Placed over the bottom of
+ * a photo it lets the picture dissolve into a solid background with no visible
+ * edge. `top` and `height` are in points from the top of the parent.
+ */
+export function BottomFade({
+  top,
+  height,
+  rgb,
+  steps = 48,
+}: {
+  top: number;
+  height: number;
+  /** "r,g,b" of the colour the photo should fade into. */
+  rgb: string;
+  steps?: number;
+}) {
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {Array.from({ length: steps }).map((_, i) => {
+        const y0 = Math.round(top + (height * i) / steps);
+        const y1 = Math.round(top + (height * (i + 1)) / steps);
+        const t = (i + 1) / steps;
+        const alpha = t * t * (3 - 2 * t); // smoothstep: gentle start, full at the end
+        return (
+          <View
+            key={`fade-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length, never reordered.
+              i
+            }`}
+            style={[
+              styles.band,
+              {
+                top: y0,
+                height: Math.max(1, y1 - y0),
+                backgroundColor: `rgba(${rgb},${alpha.toFixed(3)})`,
+              },
+            ]}
+          />
+        );
+      })}
+    </View>
+  );
+}
