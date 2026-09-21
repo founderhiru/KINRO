@@ -7,11 +7,14 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "start:dev": "expo start --dev-client --localhost",
+    "ios:open": "bash scripts/open-in-simulator.sh",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",
     "expo-doctor": "expo-doctor",
-    "test": "vitest run"
+    "test": "vitest run",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@better-auth/expo": "^1.7.3",
@@ -41,6 +44,7 @@
     "@biomejs/biome": "^2.3.1",
     "@types/react": "~18.3.12",
     "babel-preset-expo": "~12.0.0",
+    "patch-package": "^8.0.1",
     "typescript": "^5.6.3",
     "vitest": "^2.1.5"
   }
