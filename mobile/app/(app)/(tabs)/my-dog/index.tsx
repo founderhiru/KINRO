@@ -46,7 +46,7 @@ export default function MyDogsScreen() {
 
   if (!isSessionPending && !isAuthenticated) {
     return (
-      <Screen>
+      <Screen edges={["top"]}>
         <EmptyState
           title="Sign in to see your dogs"
           message="Create a free account to add your dog and start building their profile."
@@ -63,7 +63,7 @@ export default function MyDogsScreen() {
   }
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <View style={styles.header}>
         <Text style={typography.title}>My Dogs</Text>
         {dogs && dogs.length > 0 ? (

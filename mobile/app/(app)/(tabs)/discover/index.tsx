@@ -102,7 +102,7 @@ export default function DiscoverScreen() {
   }
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">
           Discover Dogs

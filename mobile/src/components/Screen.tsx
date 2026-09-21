@@ -6,6 +6,11 @@ import { colors, spacing } from "@/theme/tokens";
 interface ScreenProps {
   /** For full-bleed screens (Splash/Welcome hero) that manage their own edge-to-edge layout. */
   noPadding?: boolean;
+  /**
+   * Which screen edges get safe-area padding. Screens inside the bottom tab
+   * bar pass ["top"]: the tab bar already sits above the home indicator, so a
+   * bottom inset here would only waste a strip of space above it.
+   */
   edges?: readonly Edge[];
 }
 

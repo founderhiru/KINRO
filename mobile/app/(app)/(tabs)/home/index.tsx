@@ -81,7 +81,7 @@ export default function HomeScreen() {
   // a guest sees a sign-in prompt instead of a fetch that would just 401.
   if (!isSessionPending && !isAuthenticated) {
     return (
-      <Screen>
+      <Screen edges={["top"]}>
         <EmptyState
           title="Sign in to see your dogs"
           message="Create a free account to add your dog and start building their profile."
@@ -99,7 +99,7 @@ export default function HomeScreen() {
 
   if (dogs === null && !error) {
     return (
-      <Screen>
+      <Screen edges={["top"]}>
         <View style={styles.skeletonHeader}>
           <View style={styles.skeletonGreeting} />
         </View>
@@ -111,7 +111,7 @@ export default function HomeScreen() {
 
   if (error) {
     return (
-      <Screen>
+      <Screen edges={["top"]}>
         <View style={styles.centered}>
           <ErrorText>{error}</ErrorText>
           <View style={styles.retryButton}>
@@ -128,7 +128,7 @@ export default function HomeScreen() {
     !!primaryDog && primaryDog.healthRecords.length === 0;
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
