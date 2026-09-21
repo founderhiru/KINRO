@@ -78,7 +78,9 @@ export default function ProfileScreen() {
   }
 
   return (
-    <Screen>
+    // Tab-root screen: the tab bar already sits above the home indicator, so
+    // no bottom safe-area padding here (it only hid the bottom of the list).
+    <Screen edges={["top"]}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scroll}
@@ -175,11 +177,11 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   scrollView: { flex: 1 },
-  scroll: { paddingVertical: spacing.lg, paddingBottom: spacing.xxl },
+  scroll: { paddingVertical: spacing.md, paddingBottom: spacing.xl },
   header: { alignItems: "center" },
   name: { marginTop: spacing.md },
   locationRow: { marginTop: 2 },
-  aboutCard: { marginTop: spacing.xl },
+  aboutCard: { marginTop: spacing.lg },
   contactCard: { marginTop: spacing.md },
   contactRow: { flexDirection: "row", justifyContent: "space-between" },
   myDogsButton: { marginTop: spacing.md },
@@ -187,5 +189,5 @@ const styles = StyleSheet.create({
   pricingButton: { marginTop: spacing.md },
   skeletonWrap: { marginTop: spacing.xs },
   skeletonGap: { marginTop: spacing.xs },
-  logoutButton: { marginTop: spacing.xxl },
+  logoutButton: { marginTop: spacing.xl },
 });

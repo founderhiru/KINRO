@@ -100,7 +100,13 @@ npm run ios:dev      # starts Metro if needed, then opens the app in the booted 
 `npm run ios:dev` keeps Metro attached in that terminal (reload the app with
 Cmd+R in the simulator, stop everything with Ctrl+C). If you prefer to run Metro
 yourself: `npm run start:dev` in one terminal, then `npm run ios:open` in another.
-Pressing `i` in the Metro terminal also works now, thanks to the patch.
+Before launching, `ios:dev` builds the app's JavaScript and prints Metro's real
+error if that fails, so you never have to guess from a blank or red screen. The
+first build after a fresh start can take a minute or two.
+
+Avoid pressing `i` in the Metro terminal straight after starting Metro: the app
+gives up quickly when Metro is not ready yet and shows a white or red screen.
+`npm run ios:dev` waits for Metro and the first build, then launches.
 
 **Red screen "No script URL provided ... unsanitizedScriptURLString = (null)".**
 This is a plain React Native debug build (no `expo-dev-client`): at launch it
@@ -113,6 +119,12 @@ stop that one first (`lsof -i :8081`).
 `ios:open` / `ios:dev` only use `simctl` and Device Hub's `devices://` link and
 never need the Simulator app, so they keep working however Apple changes the
 simulator UI. They refuse to launch the app when Metro is down and say why.
+
+**Scrolling in Device Hub.** In Xcode 27's Device Hub, clicks are sent to the app
+as pointer touches, so click-and-drag does not scroll. Scroll with a two-finger
+swipe on the trackpad (or a mouse wheel) while the pointer is over the device
+(see Apple's Xcode 27 release notes: "Common Mac mouse and trackpad gestures
+such as scrolling ... now work with standard UIKit components").
 
 **Use an iOS 26.x simulator, not iOS 27.** Apps built with the iOS 27 SDK must
 adopt the UIKit scene lifecycle, and Expo has no supported way to do that on

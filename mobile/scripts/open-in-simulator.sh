@@ -7,10 +7,14 @@
 #   npm run ios:open                  # open the app; Metro must already be running
 #   npm run ios:dev -- <UDID>         # a specific simulator (xcrun simctl list devices)
 #
-# WHY METRO MUST BE RUNNING: this is a plain React Native debug build (no
-# expo-dev-client). At launch it asks Metro on localhost:8081 for the JavaScript
-# bundle. If Metro is not reachable the app shows the red screen
+# WHY METRO MUST BE RUNNING (AND READY): this is a plain React Native debug
+# build (no expo-dev-client). At launch it asks Metro on localhost:8081 for the
+# JavaScript bundle, and it gives up quickly if Metro does not answer. If Metro is
+# down or still busy starting, the app shows a white screen or the red screen
 # "No script URL provided ... unsanitizedScriptURLString = (null)".
+# So this script (1) makes sure Metro answers, (2) builds the app's JavaScript
+# BEFORE launching, printing Metro's real error if the build fails, and only then
+# (3) launches the app.
 set -euo pipefail
 
 BUNDLE_ID="${KINRO_BUNDLE_ID:-com.canidknot.app}"   # app.json -> expo.ios.bundleIdentifier
@@ -30,9 +34,36 @@ metro_running() {
   curl -fsS --max-time 2 "${METRO_URL}/status" 2>/dev/null | grep -q "packager-status:running"
 }
 
+# Builds the exact iOS bundle the app will request. The first build after a fresh
+# start (or `-c`) can take a minute or two; doing it here means the app finds a
+# warm Metro instead of sitting on a blank screen, and a broken build is reported
+# here, in plain text, instead of as a red screen in the simulator.
+prebuild_bundle() {
+  local url="${METRO_URL}/.expo/.virtual-metro-entry.bundle?platform=ios&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.bytecode=1&transform.routerRoot=app&unstable_transformProfile=hermes-stable"
+  local out code
+  out="$(mktemp)"
+  echo "Preparing the app's JavaScript (first time: 1-2 minutes; a white screen before this finishes is normal) ..."
+  code="$(curl -s -o "$out" -w '%{http_code}' --max-time 900 "$url" || true)"
+  if [[ "$code" != "200" ]]; then
+    echo "Metro could not build the app (HTTP ${code:-none}). Metro's own message:" >&2
+    head -c 3000 "$out" >&2 || true
+    echo >&2
+    rm -f "$out"
+    exit 1
+  fi
+  rm -f "$out"
+  echo "JavaScript is ready."
+}
+
 METRO_PID=""
+# `npx` starts Metro through a couple of child processes, so stop the whole tree.
+kill_tree() {
+  local pid="$1" child
+  for child in $(pgrep -P "$pid" 2>/dev/null || true); do kill_tree "$child"; done
+  kill "$pid" 2>/dev/null || true
+}
 cleanup() {
-  if [[ -n "$METRO_PID" ]]; then kill "$METRO_PID" 2>/dev/null || true; fi
+  if [[ -n "$METRO_PID" ]]; then kill_tree "$METRO_PID"; fi
 }
 trap cleanup EXIT INT TERM
 
@@ -66,6 +97,7 @@ if ! metro_running; then
   fi
 fi
 echo "Metro is running at ${METRO_URL}."
+prebuild_bundle
 
 if [[ -z "$UDID" ]]; then
   UDID="$(xcrun simctl list devices booted | grep -Eo '[0-9A-Fa-f]{8}(-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}' | head -n 1 || true)"
