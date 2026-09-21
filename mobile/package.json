@@ -10,6 +10,7 @@
     "start:dev": "expo start --dev-client --localhost",
     "ios:dev": "bash scripts/open-in-simulator.sh --start-metro",
     "ios:open": "bash scripts/open-in-simulator.sh",
+    "ios:signout": "xcrun simctl terminate booted com.canidknot.app; xcrun simctl keychain booted reset && echo \"Simulator login cleared. Now run: npm run ios:open\"",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",

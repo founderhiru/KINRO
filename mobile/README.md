@@ -120,6 +120,12 @@ stop that one first (`lsof -i :8081`).
 never need the Simulator app, so they keep working however Apple changes the
 simulator UI. They refuse to launch the app when Metro is down and say why.
 
+**Testing as a guest.** The simulator remembers your login, so the app opens straight
+into Home. To test the signed-out flow (Splash, Welcome, Skip, guest Home) run
+`npm run ios:signout` (clears the simulator's saved login), then
+`npm run ios:open`. You can also use the **Log out** button at the top right of
+the Profile tab.
+
 **Scrolling in Device Hub.** In Xcode 27's Device Hub, clicks are sent to the app
 as pointer touches, so click-and-drag does not scroll. Scroll with a two-finger
 swipe on the trackpad (or a mouse wheel) while the pointer is over the device

@@ -1,6 +1,13 @@
-import { router, useFocusEffect } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { AuthPromptSheet } from "@/components/AuthPromptSheet";
 import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
@@ -14,7 +21,7 @@ import { authClient, useSession } from "@/lib/auth-client";
 import type { OwnerProfileItem } from "@/lib/contracts";
 import { getOwnerProfile } from "@/lib/owner-profile-api";
 import { useRequireAuth } from "@/lib/use-require-auth";
-import { spacing, typography } from "@/theme/tokens";
+import { colors, spacing, typography } from "@/theme/tokens";
 
 export default function ProfileScreen() {
   const { data: session, isPending: isSessionPending } = useSession();
@@ -43,6 +50,17 @@ export default function ProfileScreen() {
     }, [load]),
   );
 
+  function confirmLogout() {
+    Alert.alert("Log out?", "You will need to sign in again.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Log out",
+        style: "destructive",
+        onPress: handleLogout,
+      },
+    ]);
+  }
+
   async function handleLogout() {
     setLoggingOut(true);
     try {
@@ -57,11 +75,36 @@ export default function ProfileScreen() {
   const name = session?.user.name ?? null;
   const contact = session?.user.email ?? session?.user.phoneNumber ?? "";
 
+  // Always-visible Log out in the header so it never depends on scrolling. It is
+  // rendered in BOTH states so the option is cleared for guests (a header option
+  // set by a screen otherwise lingers after the screen's content changes).
+  const headerOptions = (
+    <Stack.Screen
+      options={{
+        headerRight: isAuthenticated
+          ? () => (
+              <Pressable
+                onPress={confirmLogout}
+                disabled={loggingOut}
+                accessibilityRole="button"
+                accessibilityLabel="Log out"
+                hitSlop={8}
+                style={styles.headerLogout}
+              >
+                <Text style={styles.headerLogoutText}>Log out</Text>
+              </Pressable>
+            )
+          : undefined,
+      }}
+    />
+  );
+
   // Guest-first: no session content to show at all, so a guest sees a
   // sign-in prompt for the whole tab rather than an empty account shell.
   if (!isSessionPending && !isAuthenticated) {
     return (
       <Screen>
+        {headerOptions}
         <EmptyState
           title="You're browsing as a guest"
           message="Sign in to set up your profile and manage your account."
@@ -81,6 +124,7 @@ export default function ProfileScreen() {
     // Tab-root screen: the tab bar already sits above the home indicator, so
     // no bottom safe-area padding here (it only hid the bottom of the list).
     <Screen edges={["top"]}>
+      {headerOptions}
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scroll}
@@ -156,16 +200,7 @@ export default function ProfileScreen() {
         <View style={styles.logoutButton}>
           <Button
             label="Log out"
-            onPress={() =>
-              Alert.alert("Log out?", "You will need to sign in again.", [
-                { text: "Cancel", style: "cancel" },
-                {
-                  text: "Log out",
-                  style: "destructive",
-                  onPress: handleLogout,
-                },
-              ])
-            }
+            onPress={confirmLogout}
             variant="secondary"
             loading={loggingOut}
           />
@@ -190,4 +225,15 @@ const styles = StyleSheet.create({
   skeletonWrap: { marginTop: spacing.xs },
   skeletonGap: { marginTop: spacing.xs },
   logoutButton: { marginTop: spacing.xl },
+  headerLogout: {
+    minHeight: 44,
+    minWidth: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerLogoutText: {
+    ...typography.caption,
+    color: colors.accent,
+    fontWeight: "700",
+  },
 });
