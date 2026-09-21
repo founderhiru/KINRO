@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { HeaderBackButton } from "@/components/HeaderBackButton";
 import { colors } from "@/theme/tokens";
 
 export default function ProfileLayout() {
@@ -12,7 +13,13 @@ export default function ProfileLayout() {
     >
       <Stack.Screen name="index" options={{ title: "Profile" }} />
       <Stack.Screen name="edit" options={{ title: "Edit Profile" }} />
-      <Stack.Screen name="notifications" options={{ title: "Notifications" }} />
+      <Stack.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          headerLeft: () => <HeaderBackButton />,
+        }}
+      />
       <Stack.Screen name="pricing" options={{ title: "Connection Service" }} />
     </Stack>
   );
