@@ -8,6 +8,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "start:dev": "expo start --dev-client --localhost",
+    "ios:dev": "bash scripts/open-in-simulator.sh --start-metro",
     "ios:open": "bash scripts/open-in-simulator.sh",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

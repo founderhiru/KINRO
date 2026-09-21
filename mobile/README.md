@@ -60,8 +60,9 @@ mobile-side change is needed when that happens.
 ## Scripts
 
 - `npm start` / `npm run ios` / `npm run android` — Expo dev server
-- `npm run start:dev` / `npm run ios:open` — dev-build Metro server and a
-  Simulator-app-independent launcher (see *Running on Xcode 27* above)
+- `npm run ios:dev` — start Metro if needed and open the app in the booted
+  simulator; `npm run start:dev` / `npm run ios:open` are its two halves
+  (see *Running on Xcode 27* above)
 - `npm run lint` — Biome (this project's own `biome.json`, independent of
   the root web app's)
 - `npm run typecheck` — `tsc --noEmit`
@@ -92,15 +93,26 @@ applied automatically by `patch-package` on every `npm install`
 **Daily workflow**
 
 ```bash
-npm install            # applies the patch; you should see "@expo/cli@0.22.28 ✔"
-npm run start:dev      # Metro for the dev build   (expo start --dev-client --localhost)
-# press i in that terminal, or, in a second terminal:
-npm run ios:open       # opens the dev build in the booted simulator via simctl
+npm install          # applies the patch; you should see "@expo/cli@0.22.28 ✔"
+npm run ios:dev      # starts Metro if needed, then opens the app in the booted simulator
 ```
 
-`npm run ios:open` never needs the Simulator app at all, so it keeps working
-whichever way Apple changes the simulator UI. Use it whenever the CLI's own
-`i` shortcut misbehaves.
+`npm run ios:dev` keeps Metro attached in that terminal (reload the app with
+Cmd+R in the simulator, stop everything with Ctrl+C). If you prefer to run Metro
+yourself: `npm run start:dev` in one terminal, then `npm run ios:open` in another.
+Pressing `i` in the Metro terminal also works now, thanks to the patch.
+
+**Red screen "No script URL provided ... unsanitizedScriptURLString = (null)".**
+This is a plain React Native debug build (no `expo-dev-client`): at launch it
+asks Metro on `localhost:8081` for the JavaScript. The message means **Metro was
+not running (or not on port 8081) when the app started**, not that the app is
+broken. Start Metro (`npm run start:dev`) and press Cmd+R in the simulator, or
+just use `npm run ios:dev`. If port 8081 is taken by another project's Metro,
+stop that one first (`lsof -i :8081`).
+
+`ios:open` / `ios:dev` only use `simctl` and Device Hub's `devices://` link and
+never need the Simulator app, so they keep working however Apple changes the
+simulator UI. They refuse to launch the app when Metro is down and say why.
 
 **Use an iOS 26.x simulator, not iOS 27.** Apps built with the iOS 27 SDK must
 adopt the UIKit scene lifecycle, and Expo has no supported way to do that on
