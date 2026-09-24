@@ -208,7 +208,7 @@ export default function HomeScreen() {
                       dog.photos.find((p) => p.position === 0)?.url ??
                       dog.photos[0]?.url
                     }
-                    demoKey={dog.slug}
+                    breed={dog.breed}
                     style={styles.miniPhoto}
                   />
                   {index === 0 && (dogs?.length ?? 0) > 1 ? (

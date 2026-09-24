@@ -17,10 +17,16 @@ export const ROUTES = {
  * Decides where the root screen (app/index.tsx) should redirect to, given
  * the current session status. Returns null while the status is still
  * loading, meaning "stay on the splash screen — don't redirect yet".
+ *
+ * Everyone lands on Home after the launch splash: Home is guest-first (a
+ * signed-out visitor sees the guest Home with its Sign in call to action),
+ * so the Welcome/onboarding intro is no longer part of the automatic launch
+ * flow. Those screens are kept (ROUTES.welcome / ROUTES.onboarding) for
+ * later use.
  */
 export function resolveInitialRoute(status: SessionStatus): string | null {
   if (status === "loading") {
     return null;
   }
-  return status === "authenticated" ? ROUTES.home : ROUTES.welcome;
+  return ROUTES.home;
 }

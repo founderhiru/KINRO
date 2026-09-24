@@ -4,16 +4,35 @@ import { AnimatedLogo } from "@/components/AnimatedLogo";
 import { colors, spacing } from "@/theme/tokens";
 
 const LOGO_WIDTH = 96;
-const LOGO_ENTRANCE_MS = 420;
-const TAGLINE_DELAY_MS = 300;
-const TAGLINE_FADE_MS = 350;
-const HOLD_MS = 550;
-const FADE_OUT_MS = 220;
-/** Total on-screen time before handing off — within the ~1-2s the brief asks for. */
-const TOTAL_MS =
-  LOGO_ENTRANCE_MS + TAGLINE_DELAY_MS + TAGLINE_FADE_MS + HOLD_MS;
-/** Reduce-Motion: skip the choreography, still give the brand its moment, hand off sooner. */
-const REDUCED_MOTION_MS = 700;
+
+/**
+ * "launch": the full moment on a cold start (~1.6s, with the tagline).
+ * "resume": a quick ~800ms replay when the app returns from the background
+ * (logo only, same motion, shorter hold) — see ResumeSplashOverlay.
+ */
+const TIMINGS = {
+  launch: {
+    logoEntranceMs: 420,
+    taglineDelayMs: 300,
+    taglineFadeMs: 350,
+    holdMs: 550,
+    fadeOutMs: 220,
+    showTagline: true,
+    /** Reduce-Motion: skip the choreography, still give the brand its moment, hand off sooner. */
+    reducedMotionMs: 700,
+  },
+  resume: {
+    logoEntranceMs: 260,
+    taglineDelayMs: 0,
+    taglineFadeMs: 0,
+    holdMs: 340,
+    fadeOutMs: 200,
+    showTagline: false,
+    reducedMotionMs: 400,
+  },
+} as const;
+
+export type AppLaunchSplashVariant = keyof typeof TIMINGS;
 
 /**
  * The short, automatic branded moment between the native iOS launch screen
@@ -23,10 +42,23 @@ const REDUCED_MOTION_MS = 700;
  * `onFinish` fires on its own — no tap, ~1.5s total. Background matches the
  * native launch screen's white exactly so there's no color flash on handoff
  * from it, and this view fades itself out so the handoff to whatever's
- * underneath (already resolving in parallel — see app/index.tsx) is smooth
+ * underneath (already resolving in parallel — see app/_layout.tsx) is smooth
  * rather than a hard cut.
  */
-export function AppLaunchSplash({ onFinish }: { onFinish: () => void }) {
+export function AppLaunchSplash({
+  onFinish,
+  variant = "launch",
+}: {
+  onFinish: () => void;
+  variant?: AppLaunchSplashVariant;
+}) {
+  const timing = TIMINGS[variant];
+  /** Total on-screen time before handing off (the fade-out follows it). */
+  const totalMs =
+    timing.logoEntranceMs +
+    timing.taglineDelayMs +
+    timing.taglineFadeMs +
+    timing.holdMs;
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.86)).current;
   const taglineOpacity = useRef(new Animated.Value(0)).current;
@@ -44,14 +76,14 @@ export function AppLaunchSplash({ onFinish }: { onFinish: () => void }) {
           logoOpacity.setValue(1);
           logoScale.setValue(1);
           taglineOpacity.setValue(1);
-          timers.push(setTimeout(finish, REDUCED_MOTION_MS));
+          timers.push(setTimeout(finish, timing.reducedMotionMs));
           return;
         }
 
         Animated.parallel([
           Animated.timing(logoOpacity, {
             toValue: 1,
-            duration: LOGO_ENTRANCE_MS,
+            duration: timing.logoEntranceMs,
             useNativeDriver: true,
           }),
           Animated.spring(logoScale, {
@@ -62,26 +94,28 @@ export function AppLaunchSplash({ onFinish }: { onFinish: () => void }) {
           }),
         ]).start();
 
-        timers.push(
-          setTimeout(() => {
-            Animated.timing(taglineOpacity, {
-              toValue: 1,
-              duration: TAGLINE_FADE_MS,
-              useNativeDriver: true,
-            }).start();
-          }, TAGLINE_DELAY_MS),
-        );
+        if (timing.showTagline) {
+          timers.push(
+            setTimeout(() => {
+              Animated.timing(taglineOpacity, {
+                toValue: 1,
+                duration: timing.taglineFadeMs,
+                useNativeDriver: true,
+              }).start();
+            }, timing.taglineDelayMs),
+          );
+        }
 
-        timers.push(setTimeout(finish, TOTAL_MS));
+        timers.push(setTimeout(finish, totalMs));
       })
       .catch(() => {
-        timers.push(setTimeout(finish, REDUCED_MOTION_MS));
+        timers.push(setTimeout(finish, timing.reducedMotionMs));
       });
 
     function finish() {
       Animated.timing(containerOpacity, {
         toValue: 0,
-        duration: FADE_OUT_MS,
+        duration: timing.fadeOutMs,
         useNativeDriver: true,
       }).start(({ finished }) => {
         if (finished) onFinish();
@@ -104,13 +138,17 @@ export function AppLaunchSplash({ onFinish }: { onFinish: () => void }) {
       >
         <AnimatedLogo
           width={LOGO_WIDTH}
-          playOnMount
-          delayMs={LOGO_ENTRANCE_MS}
+          // The ~800ms breath fits the launch hold; on resume it would be
+          // cut off by the fade-out, so the quick replay is fade + scale only.
+          playOnMount={variant === "launch"}
+          delayMs={timing.logoEntranceMs}
         />
       </Animated.View>
-      <Animated.Text style={[styles.tagline, { opacity: taglineOpacity }]}>
-        Better information. Healthier generations. Stronger connections.
-      </Animated.Text>
+      {timing.showTagline ? (
+        <Animated.Text style={[styles.tagline, { opacity: taglineOpacity }]}>
+          Better information. Healthier generations. Stronger connections.
+        </Animated.Text>
+      ) : null}
     </Animated.View>
   );
 }

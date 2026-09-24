@@ -1,21 +1,15 @@
 import { getSetCookie, storageAdapter } from "@better-auth/expo/client";
-import { Redirect, router, useLocalSearchParams } from "expo-router";
+import { Redirect, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { AppLaunchSplash } from "@/components/AppLaunchSplash";
 import { SplashView } from "@/components/SplashView";
 import { SESSION_COOKIE_STORAGE_KEY, useSession } from "@/lib/auth-client";
-import {
-  ROUTES,
-  resolveInitialRoute,
-  type SessionStatus,
-} from "@/lib/session-guard";
+import { resolveInitialRoute, type SessionStatus } from "@/lib/session-guard";
 
 /**
- * The KINRO launch screen (photo, logo, headline). While the session is
- * still resolving it shows a spinner; once we know the visitor is signed
- * out, the same screen offers the round arrow that continues to Welcome.
+ * The KINRO photo screen (photo, logo, headline, spinner), shown only while
+ * the session is still resolving; normally the launch splash in
+ * app/_layout.tsx covers it and it's never seen.
  */
 function LoadingSplash() {
   return <SplashView />;
@@ -39,18 +33,12 @@ function SessionRedirect() {
   const target = resolveInitialRoute(status);
 
   if (!target) {
-    // Rendered as <SplashView /> directly (not via LoadingSplash) so React keeps
-    // the same instance when the signed-out state arrives and the logo
-    // animation is not restarted by a remount.
     return <SplashView />;
   }
 
-  // Signed-out visitors see the splash and tap the arrow to continue to
-  // Welcome (Splash -> Welcome). Signed-in users skip straight to Home.
-  if (target === ROUTES.welcome) {
-    return <SplashView onContinue={() => router.replace(ROUTES.welcome)} />;
-  }
-
+  // Signed-in and signed-out alike go straight to Home (see
+  // resolveInitialRoute). The animated launch splash lives in app/_layout.tsx,
+  // above the navigator, so this redirect happens underneath it.
   return <Redirect href={target} />;
 }
 
@@ -81,7 +69,6 @@ function SessionRedirect() {
 export default function Index() {
   const { cookie } = useLocalSearchParams<{ cookie?: string }>();
   const [ready, setReady] = useState(!cookie);
-  const [showBrandSplash, setShowBrandSplash] = useState(true);
 
   useEffect(() => {
     if (!cookie) return;
@@ -101,24 +88,5 @@ export default function Index() {
     };
   }, [cookie]);
 
-  // The animated brand splash sits on top of whatever's actually resolving
-  // underneath (cookie merge, then session lookup) so that work starts
-  // immediately rather than waiting for the animation — only the VISUAL
-  // reveal is delayed by ~1.5s, never the launch itself (see
-  // AppLaunchSplash's own comment).
-  return (
-    <View style={styles.fill}>
-      {!ready ? <LoadingSplash /> : <SessionRedirect />}
-      {showBrandSplash ? (
-        <View style={styles.overlay}>
-          <AppLaunchSplash onFinish={() => setShowBrandSplash(false)} />
-        </View>
-      ) : null}
-    </View>
-  );
+  return !ready ? <LoadingSplash /> : <SessionRedirect />;
 }
-
-const styles = StyleSheet.create({
-  fill: { flex: 1 },
-  overlay: StyleSheet.absoluteFillObject,
-});

@@ -1,36 +1,58 @@
-// Mobile — breed reference thumbnails for the Select Breed sheet ONLY.
+// Mobile — the one place dog imagery is chosen when a dog has no photo of
+// its own. Used by DogPhoto (Discover, My Dogs, Dog Detail, Home) and by the
+// Select Breed sheet's reference thumbnails.
 //
-// This is deliberately separate from demo-photos.ts / DogPhoto.tsx, which
-// exist specifically to NEVER show a stock photo that could pass as a real
-// owner's actual dog (see demo-photos.ts's own comment). A small thumbnail
-// next to "Golden Retriever" in a breed picker is unambiguous reference
-// imagery, not a claim about anyone's dog, so it's fine to map real photos
-// there — but that mapping must never be reused on an actual dog card.
+// Priority, applied by DogPhoto: 1) the dog's own uploaded photo, 2) the
+// licensed sample photo for its breed (below), 3) NEUTRAL_DOG_IMAGE. A breed
+// without a sample never borrows another breed's photo, and never falls back
+// to an illustration.
 //
-// Only four breeds have a real (if placeholder-grade — see
-// assets/images/README.md) photo in this repo today. Every other breed,
-// Mixed Breed and Other / Unknown included, falls back to the same generic
-// illustrated cover so the picker never shows an incorrect breed's photo.
-const BREED_PHOTOS: Readonly<Record<string, number>> = {
-  "labrador retriever": require("../../assets/images/photos/dog-labrador.jpg"),
-  "golden retriever": require("../../assets/images/photos/dog-golden-retriever.jpg"),
-  "german shepherd": require("../../assets/images/photos/dog-german-shepherd.jpg"),
-  beagle: require("../../assets/images/photos/dog-beagle.jpg"),
+// One licensed real photograph per breed, from assets/breed-photos/ (sources,
+// authors and licences in assets/breed-photos/ATTRIBUTIONS.md). Which breed
+// name maps to which key (including aliases like "Indie" or "Labrador") is in
+// breed-photo-keys.ts. require() paths must stay static literals for Metro.
+import { type BreedPhotoKey, breedPhotoKeyFor } from "@/lib/breed-photo-keys";
+
+const BREED_PHOTOS: Readonly<Record<BreedPhotoKey, number>> = {
+  "labrador retriever": require("../../assets/breed-photos/labrador-retriever.jpg"),
+  "golden retriever": require("../../assets/breed-photos/golden-retriever.jpg"),
+  "german shepherd": require("../../assets/breed-photos/german-shepherd.jpg"),
+  "shih tzu": require("../../assets/breed-photos/shih-tzu.jpg"),
+  pomeranian: require("../../assets/breed-photos/pomeranian.jpg"),
+  beagle: require("../../assets/breed-photos/beagle.jpg"),
+  rottweiler: require("../../assets/breed-photos/rottweiler.jpg"),
+  "french bulldog": require("../../assets/breed-photos/french-bulldog.jpg"),
+  dachshund: require("../../assets/breed-photos/dachshund.jpg"),
+  "cocker spaniel": require("../../assets/breed-photos/cocker-spaniel.jpg"),
+  doberman: require("../../assets/breed-photos/doberman.jpg"),
+  boxer: require("../../assets/breed-photos/boxer.jpg"),
+  "great dane": require("../../assets/breed-photos/great-dane.jpg"),
+  pug: require("../../assets/breed-photos/pug.jpg"),
+  "siberian husky": require("../../assets/breed-photos/siberian-husky.jpg"),
+  chihuahua: require("../../assets/breed-photos/chihuahua.jpg"),
+  "lhasa apso": require("../../assets/breed-photos/lhasa-apso.jpg"),
+  "pembroke welsh corgi": require("../../assets/breed-photos/pembroke-welsh-corgi.jpg"),
+  "saint bernard": require("../../assets/breed-photos/saint-bernard.jpg"),
+  "cane corso": require("../../assets/breed-photos/cane-corso.jpg"),
+  "indian pariah / indian native dog": require("../../assets/breed-photos/indian-pariah.jpg"),
+  rajapalayam: require("../../assets/breed-photos/rajapalayam.jpg"),
+  "mudhol hound": require("../../assets/breed-photos/mudhol-hound.jpg"),
+  chippiparai: require("../../assets/breed-photos/chippiparai.jpg"),
+  kombai: require("../../assets/breed-photos/kombai.jpg"),
 };
 
-const FALLBACK_BREED_IMAGE = require("../../assets/images/dog-cover-placeholder.jpg");
+/** Plain warm surface with a small paw mark — no dog illustration. */
+export const NEUTRAL_DOG_IMAGE = require("../../assets/images/dog-photo-fallback.jpg");
 
-/** Breeds with a real reference photo available today — used by tests without needing to resolve the require()d assets. */
-export const BREEDS_WITH_REAL_PHOTOS: readonly string[] = [
-  "Labrador Retriever",
-  "Golden Retriever",
-  "German Shepherd",
-  "Beagle",
-];
+/** The licensed sample photo for a breed, or null when there isn't one. */
+export function getBreedSamplePhoto(
+  breed: string | null | undefined,
+): number | null {
+  const key = breedPhotoKeyFor(breed);
+  return key ? BREED_PHOTOS[key] : null;
+}
 
+/** Select Breed sheet thumbnail: the breed's sample photo, else the neutral image. */
 export function getBreedReferenceImage(breed: string): number {
-  return (
-    BREED_PHOTOS[breed.trim().toLocaleLowerCase("en-IN")] ??
-    FALLBACK_BREED_IMAGE
-  );
+  return getBreedSamplePhoto(breed) ?? NEUTRAL_DOG_IMAGE;
 }

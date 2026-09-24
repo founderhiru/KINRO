@@ -80,7 +80,8 @@ export default function PublicDogDetailScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <DogPhoto
           uri={dog.coverPhotoUrl}
-          demoKey={dog.slug}
+          breed={dog.breed}
+          sampleLabel="Sample photo"
           style={styles.hero}
         />
 

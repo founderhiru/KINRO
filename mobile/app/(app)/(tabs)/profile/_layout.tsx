@@ -21,6 +21,13 @@ export default function ProfileLayout() {
         }}
       />
       <Stack.Screen name="pricing" options={{ title: "Connection Service" }} />
+      <Stack.Screen
+        name="support"
+        options={{
+          title: "Help & Support",
+          headerLeft: () => <HeaderBackButton />,
+        }}
+      />
     </Stack>
   );
 }

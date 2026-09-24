@@ -146,7 +146,8 @@ export function GuestHome() {
               >
                 <DogPhoto
                   uri={dog.coverPhotoUrl}
-                  demoKey={dog.slug}
+                  breed={dog.breed}
+                  sampleLabel="Sample photo"
                   style={styles.miniPhoto}
                 />
                 <View style={styles.miniInfo}>

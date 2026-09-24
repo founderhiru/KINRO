@@ -8,16 +8,8 @@ import {
   type ViewStyle,
 } from "react-native";
 import { Skeleton } from "@/components/Skeleton";
-import { getDemoPhotoForKey } from "@/lib/demo-photos";
+import { getBreedSamplePhoto, NEUTRAL_DOG_IMAGE } from "@/lib/breed-images";
 import { colors } from "@/theme/tokens";
-
-// Final fallback cover — used only when there's no real photo AND no
-// demoKey to deterministically pick a demo photo from (e.g. a brand-new
-// "Add Dog" preview slot before the dog even has a slug yet). A
-// recognizable illustrated dog, same as the demo-dogs set (see
-// assets/images/README.md) — resolved via require() so Metro bundles it
-// locally and nothing here depends on network access.
-const GENERIC_PLACEHOLDER = require("../../assets/images/dog-cover-placeholder.jpg");
 
 /**
  * A photo url is only ever worth attempting to load if it's an absolute
@@ -40,19 +32,15 @@ function isLoadableUri(uri: string): boolean {
  * used anywhere a dog's cover photo appears (Discover cards, My Dog
  * cards, Dog Detail hero, owner profile previews). Photo priority:
  *
- *   1. A real uploaded photo (`uri`), if present and safely loadable.
- *   2. A bundled, recognizable illustrated demo dog, deterministically
- *      chosen from `demoKey` (pass the dog's `slug` — stable for that
- *      dog's whole lifetime, present on both OwnedDogProfileItem and the
- *      public DogProfileItem) — the same dog always shows the same demo
- *      photo, every time, with no storage needed for that assignment.
- *   3. A single generic illustrated placeholder, only when neither of
- *      the above applies at all (no uri AND no demoKey).
+ *   1. The dog's own uploaded photo (`uri`), if present and safely loadable.
+ *   2. The licensed real sample photo for the dog's `breed`, if the breed
+ *      pack has one (see src/lib/breed-images.ts).
+ *   3. A neutral, non-illustrated placeholder (NEUTRAL_DOG_IMAGE).
  *
  * This ordering (and rendering the fallback synchronously whenever
  * `uri` is absent or fails validation, rather than waiting on a load
  * attempt) is what makes tiers 2/3 render immediately for guests
- * browsing demo dogs — no login, no R2, no network round trip, and no
+ * browsing — no login, no R2, no network round trip, and no
  * dependence on a remote image ever actually erroring out.
  *
  * Handles the loading/error cases throughout: a pulsing skeleton while a
@@ -66,29 +54,41 @@ function isLoadableUri(uri: string): boolean {
  */
 export function DogPhoto({
   uri,
-  demoKey,
+  breed,
   style,
   emptyLabel,
+  sampleLabel,
 }: {
   uri: string | null | undefined;
-  /** Stable per-dog key (pass the dog's `slug`) used to deterministically pick a bundled demo photo when there's no real uri. Omit only when no such key exists yet. */
-  demoKey?: string;
+  /** The dog's breed, used to pick its breed sample photo when there's no real uri. */
+  breed?: string | null;
   style?: StyleProp<ViewStyle>;
   /** Small caption chip shown over the fallback image, e.g. "No photo yet". Omit for a bare fallback (used in dense card grids, and always omitted for public Discover cards). */
   emptyLabel?: string;
+  /** Caption shown ONLY while the breed sample photo is displayed (not over an uploaded photo or the neutral image), e.g. "Sample photo" on public cards. Takes precedence over `emptyLabel`. */
+  sampleLabel?: string;
 }) {
   const canAttemptLoad = !!uri && isLoadableUri(uri);
   const [status, setStatus] = useState<"loading" | "loaded" | "error">(
     canAttemptLoad ? "loading" : "error",
   );
 
+  // Narrow thumbnails (Discover's list rows) get a smaller caption chip so
+  // it fits instead of truncating; wider cards keep the standard chip.
+  const [width, setWidth] = useState(0);
+  const compactLabel = width > 0 && width < COMPACT_LABEL_MAX_WIDTH;
+
   const showFallback = !canAttemptLoad || status === "error";
-  const fallbackSource = demoKey
-    ? getDemoPhotoForKey(demoKey)
-    : GENERIC_PLACEHOLDER;
+  const samplePhoto = getBreedSamplePhoto(breed);
+  const fallbackSource = samplePhoto ?? NEUTRAL_DOG_IMAGE;
+  const label = !showFallback
+    ? null
+    : samplePhoto && sampleLabel
+      ? sampleLabel
+      : (emptyLabel ?? null);
 
   return (
-    <View style={style}>
+    <View style={style} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       <Image
         source={showFallback ? fallbackSource : { uri: uri as string }}
         // iOS shows this immediately while the real photo above is still
@@ -109,24 +109,50 @@ export function DogPhoto({
         // (number-only) height prop.
         <Skeleton height={1} borderRadius={0} style={StyleSheet.absoluteFill} />
       ) : null}
-      {showFallback && emptyLabel ? (
-        <View style={styles.labelChip}>
-          <Text style={styles.labelChipText}>{emptyLabel}</Text>
+      {label ? (
+        <View
+          style={[styles.labelRow, compactLabel && styles.labelRowCompact]}
+          pointerEvents="none"
+        >
+          <View
+            style={[styles.labelChip, compactLabel && styles.labelChipCompact]}
+          >
+            <Text
+              style={[
+                styles.labelChipText,
+                compactLabel && styles.labelChipTextCompact,
+              ]}
+              numberOfLines={1}
+              adjustsFontSizeToFit={compactLabel}
+              minimumFontScale={0.8}
+            >
+              {label}
+            </Text>
+          </View>
         </View>
       ) : null}
     </View>
   );
 }
 
+const COMPACT_LABEL_MAX_WIDTH = 140;
+
 const styles = StyleSheet.create({
   // Explicit 100% size (not just absoluteFill) so the photo fills its frame
   // on every platform, including react-native-web previews, instead of
   // showing at its natural size in the top-left corner.
   image: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
-  labelChip: {
+  // Full-width row that centers the chip: an absolutely positioned chip
+  // centered with alignSelf alone gets measured too narrow and truncates.
+  labelRow: {
     position: "absolute",
+    left: 4,
+    right: 4,
     bottom: 8,
-    alignSelf: "center",
+    alignItems: "center",
+  },
+  labelRowCompact: { left: 2, right: 2, bottom: 5 },
+  labelChip: {
     backgroundColor: "rgba(20,15,10,0.55)",
     borderRadius: 999,
     paddingHorizontal: 10,
@@ -137,4 +163,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
+  labelChipCompact: { paddingHorizontal: 5, paddingVertical: 2 },
+  labelChipTextCompact: { fontSize: 10 },
 });

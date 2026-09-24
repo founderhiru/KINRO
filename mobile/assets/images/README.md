@@ -8,6 +8,15 @@ available in this project's environment, so hand-drawn illustration is
 the honest option that's actually achievable here — a real photo still
 needs to come from you (owned, commissioned, or properly licensed).
 
+> **Update:** dog imagery no longer uses the illustrations below. When a dog
+> has no uploaded photo, `DogPhoto` shows the licensed real photo for its
+> breed from `assets/breed-photos/` (see `src/lib/breed-images.ts`), or
+> `dog-photo-fallback.jpg` (a plain warm surface with a small paw mark)
+> when the breed has no sample. `dog-cover-placeholder.jpg` and
+> `demo-dogs/*.jpg` are kept on disk but are no longer referenced by the
+> app; `welcome-hero.jpg` is only used by the Welcome screen, which is no
+> longer part of the launch flow.
+
 | File / folder | Used by | Notes |
 |---|---|---|
 | `splash-hero.jpg` | `app/index.tsx` (`LoadingSplash`, via `HeroImage`) | Full-bleed portrait; a single dog illustration on a dark-to-warm vertical gradient so light text reads at the bottom |

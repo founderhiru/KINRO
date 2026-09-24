@@ -37,7 +37,7 @@ export function DogCard({
     >
       <DogPhoto
         uri={cover?.url}
-        demoKey={dog.slug}
+        breed={dog.breed}
         style={styles.photo}
         emptyLabel="No photo yet"
       />

@@ -10,8 +10,8 @@ describe("resolveInitialRoute", () => {
     expect(resolveInitialRoute("authenticated")).toBe(ROUTES.home);
   });
 
-  it("routes to Welcome when unauthenticated", () => {
-    expect(resolveInitialRoute("unauthenticated")).toBe(ROUTES.welcome);
+  it("routes signed-out visitors straight to (guest) Home, not Welcome", () => {
+    expect(resolveInitialRoute("unauthenticated")).toBe(ROUTES.home);
   });
 
   it("keeps Home and My Dogs as two different tabs", () => {

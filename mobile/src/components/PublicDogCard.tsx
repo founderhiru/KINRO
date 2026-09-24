@@ -46,7 +46,8 @@ export function PublicDogCard({
     >
       <DogPhoto
         uri={dog.coverPhotoUrl}
-        demoKey={dog.slug}
+        breed={dog.breed}
+        sampleLabel="Sample photo"
         style={styles.photo}
       />
       <View style={styles.info}>
