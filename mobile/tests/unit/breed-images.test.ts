@@ -23,6 +23,8 @@ const entries = [
 const EXPECTED_FALLBACK = [
   "Mixed Breed",
   "Other / Unknown",
+  "Mudhol Hound",
+  "Chippiparai",
   "Rampur Greyhound",
   "Kanni",
   "Bakharwal Dog",

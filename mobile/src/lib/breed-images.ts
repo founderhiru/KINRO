@@ -36,8 +36,6 @@ const BREED_PHOTOS: Readonly<Record<BreedPhotoKey, number>> = {
   "cane corso": require("../../assets/breed-photos/cane-corso.jpg"),
   "indian pariah / indian native dog": require("../../assets/breed-photos/indian-pariah.jpg"),
   rajapalayam: require("../../assets/breed-photos/rajapalayam.jpg"),
-  "mudhol hound": require("../../assets/breed-photos/mudhol-hound.jpg"),
-  chippiparai: require("../../assets/breed-photos/chippiparai.jpg"),
   kombai: require("../../assets/breed-photos/kombai.jpg"),
 };
 

@@ -72,19 +72,19 @@ function SupportRow({
   );
 }
 
-/** The "Support" card shown on Profile, for signed-in users and guests alike. */
+/**
+ * The "Support" card shown on Profile, for signed-in users and guests alike.
+ * A single entry point: Contact KINRO and Send Feedback both live on the
+ * Help & Support screen, so neither is duplicated here.
+ */
 export function SupportCard() {
   return (
     <Card style={styles.supportCard}>
       <SectionHeader title="Support" />
       <SupportRow
         label="Help & Support"
+        description="Contact KINRO or send feedback."
         onPress={() => router.push("/(app)/(tabs)/profile/support")}
-      />
-      <View style={styles.divider} />
-      <SupportRow
-        label="Send Feedback"
-        onPress={() => openSupportEmail("feedback")}
       />
     </Card>
   );

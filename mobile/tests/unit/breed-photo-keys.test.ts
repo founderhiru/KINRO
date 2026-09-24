@@ -28,6 +28,8 @@ describe("breedPhotoKeyFor", () => {
     for (const breed of [
       "Mixed Breed",
       "Other / Unknown",
+      "Mudhol Hound",
+      "Chippiparai",
       "Rampur Greyhound",
       "Kanni",
       "Bakharwal Dog",

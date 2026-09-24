@@ -1,6 +1,6 @@
 # KINRO breed sample photos: attributions
 
-All photographs come from Wikimedia Commons. Each was checked individually: only CC0 / public domain, CC BY and CC BY-SA licences were accepted (no NC, ND, GFDL-only or unclear licences), and every image is a real photograph (no illustrations, AI-generated images or watermarks).
+All photographs come from Wikimedia Commons. Each was checked individually and visually (the dog is the clear subject; no people or human body parts anywhere in the frame; no watermark): only CC0 / public domain, CC BY and CC BY-SA licences were accepted (no NC, ND, GFDL-only or unclear licences), and every image is a real photograph (no illustrations, AI-generated images or watermarks).
 
 Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, never presented as a specific owner's dog.
 
@@ -32,20 +32,20 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 - **Date downloaded:** 2026-09-24
 - **Original size:** 5184x3456 → **delivered:** 1200x800
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
-- **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy; Background includes a US flag
+- **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy; Background includes a US flag (no people)
 
 ## German Shepherd
 
 - **File:** `german-shepherd.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** 9296Baliuag and Pulilan Bulacan Effects of Typhoon Vamco 02.jpg
-- **Author:** Judgefloro
-- **Source URL:** https://commons.wikimedia.org/wiki/File:9296Baliuag_and_Pulilan_Bulacan_Effects_of_Typhoon_Vamco_02.jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/2/23/9296Baliuag_and_Pulilan_Bulacan_Effects_of_Typhoon_Vamco_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **Original title:** Pastor Alemán hembra, diez años de edad.jpg
+- **Author:** MDNAciccone
+- **Source URL:** https://commons.wikimedia.org/wiki/File:Pastor_Alem%C3%A1n_hembra,_diez_a%C3%B1os_de_edad.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/1/16/Pastor_Alem%C3%A1n_hembra%2C_diez_a%C3%B1os_de_edad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
 - **License:** CC0
 - **License URL:** https://creativecommons.org/publicdomain/zero/1.0/
 - **Date downloaded:** 2026-09-24
-- **Original size:** 4608x3456 → **delivered:** 1200x900
+- **Original size:** 4365x4912 → **delivered:** 1067x1200
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy
 
@@ -68,16 +68,16 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 
 - **File:** `pomeranian.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** AKC Pomeranian Dog Show 2011.jpg
-- **Author:** SheltieBoy
-- **Source URL:** https://commons.wikimedia.org/wiki/File:AKC_Pomeranian_Dog_Show_2011.jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/a/ad/AKC_Pomeranian_Dog_Show_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-- **License:** CC BY 2.0
-- **License URL:** https://creativecommons.org/licenses/by/2.0
+- **Original title:** Dogs diningrm photoshoot 048.jpg
+- **Author:** Picchu1
+- **Source URL:** https://commons.wikimedia.org/wiki/File:Dogs_diningrm_photoshoot_048.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/b/ba/Dogs_diningrm_photoshoot_048.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **License:** Public domain
+- **License URL:** https://commons.wikimedia.org/wiki/Commons:Public_domain
 - **Date downloaded:** 2026-09-24
-- **Original size:** 2048x1663 → **delivered:** 1200x974
+- **Original size:** 4592x3056 → **delivered:** 1200x799
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
-- **Attribution requirements / notes:** Attribution required (author, title, source, license); Dog-show photo; a handler's hand is visible
+- **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy
 
 ## Beagle
 
@@ -98,14 +98,14 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 
 - **File:** `rottweiler.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** At the park (3455676463).jpg
-- **Author:** izzyplante
-- **Source URL:** https://commons.wikimedia.org/wiki/File:At_the_park_(3455676463).jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/b/b0/At_the_park_%283455676463%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **Original title:** Rottweiler portrait.jpg
+- **Author:** Pedro Simões
+- **Source URL:** https://commons.wikimedia.org/wiki/File:Rottweiler_portrait.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/8/86/Rottweiler_portrait.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
 - **License:** CC BY 2.0
 - **License URL:** https://creativecommons.org/licenses/by/2.0
 - **Date downloaded:** 2026-09-24
-- **Original size:** 2157x2462 → **delivered:** 1051x1200
+- **Original size:** 3216x2136 → **delivered:** 1200x797
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** Attribution required (author, title, source, license)
 
@@ -113,14 +113,14 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 
 - **File:** `french-bulldog.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** Portrait of a noseless pet dog, an unhealthy breed. (43853963872).jpg
-- **Author:** Ralf Steinberger from Milan, Berlin + Munich, Italy + Germany
-- **Source URL:** https://commons.wikimedia.org/wiki/File:Portrait_of_a_noseless_pet_dog,_an_unhealthy_breed._(43853963872).jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/7/72/Portrait_of_a_noseless_pet_dog%2C_an_unhealthy_breed._%2843853963872%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **Original title:** Panting Frenchie.jpg
+- **Author:** Artur Malinowski
+- **Source URL:** https://commons.wikimedia.org/wiki/File:Panting_Frenchie.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/9/9f/Panting_Frenchie.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
 - **License:** CC BY 2.0
 - **License URL:** https://creativecommons.org/licenses/by/2.0
 - **Date downloaded:** 2026-09-24
-- **Original size:** 6000x4000 → **delivered:** 1200x800
+- **Original size:** 1024x1024 → **delivered:** 1024x1024
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** Attribution required (author, title, source, license)
 
@@ -165,8 +165,8 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 - **License:** CC BY 2.5
 - **License URL:** https://creativecommons.org/licenses/by/2.5
 - **Date downloaded:** 2026-09-24
-- **Original size:** 1065x1503 → **delivered:** 850x1200
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
+- **Original size:** 1065x1503 → **delivered:** 1065x1065
+- **Modification:** Cropped to a close-up of the head and chest; resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** Attribution required (author, title, source, license)
 
 ## Boxer
@@ -188,14 +188,14 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 
 - **File:** `great-dane.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** Mt. Comfort Airport (2755918195).jpg
-- **Author:** Serge Melki from Indianapolis, USA
-- **Source URL:** https://commons.wikimedia.org/wiki/File:Mt._Comfort_Airport_(2755918195).jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/3/33/Mt._Comfort_Airport_%282755918195%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **Original title:** Mantle black GD portrait.jpg
+- **Author:** Andy Blackledge
+- **Source URL:** https://commons.wikimedia.org/wiki/File:Mantle_black_GD_portrait.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/f/fc/Mantle_black_GD_portrait.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
 - **License:** CC BY 2.0
 - **License URL:** https://creativecommons.org/licenses/by/2.0
 - **Date downloaded:** 2026-09-24
-- **Original size:** 2297x1241 → **delivered:** 1200x649
+- **Original size:** 2848x4288 → **delivered:** 797x1200
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** Attribution required (author, title, source, license)
 
@@ -293,30 +293,30 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 
 - **File:** `cane-corso.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** Кане корсо.JPG
-- **Author:** Canecorso23
-- **Source URL:** https://commons.wikimedia.org/wiki/File:%D0%9A%D0%B0%D0%BD%D0%B5_%D0%BA%D0%BE%D1%80%D1%81%D0%BE.JPG
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/1/1f/%D0%9A%D0%B0%D0%BD%D0%B5_%D0%BA%D0%BE%D1%80%D1%81%D0%BE.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-- **License:** CC BY-SA 4.0
-- **License URL:** https://creativecommons.org/licenses/by-sa/4.0
+- **Original title:** Cane corso-RZ.jpg
+- **Author:** Pleple2000
+- **Source URL:** https://commons.wikimedia.org/wiki/File:Cane_corso-RZ.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/e/e4/Cane_corso-RZ.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **License:** CC BY-SA 3.0
+- **License URL:** https://creativecommons.org/licenses/by-sa/3.0/
 - **Date downloaded:** 2026-09-24
-- **Original size:** 6016x4000 → **delivered:** 1200x798
+- **Original size:** 2400x2250 → **delivered:** 1200x1125
 - **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
-- **Attribution requirements / notes:** ShareAlike: this file (and any adaptation of it) must stay under CC BY-SA 4.0 with attribution
+- **Attribution requirements / notes:** ShareAlike: this file (and any adaptation of it) must stay under CC BY-SA 3.0 with attribution
 
 ## Indian Pariah / Indian Native Dog
 
 - **File:** `indian-pariah.jpg`
 - **Source:** Wikimedia Commons
-- **Original title:** The Indian Pariah Dog.jpg
-- **Author:** Ryan.virgo at English Wikipedia
-- **Source URL:** https://commons.wikimedia.org/wiki/File:The_Indian_Pariah_Dog.jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/0/01/The_Indian_Pariah_Dog.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-- **License:** Public domain
-- **License URL:** https://commons.wikimedia.org/wiki/Commons:Public_domain
+- **Original title:** An Indian Pariah Dog.jpg
+- **Author:** Amogh Tripathi
+- **Source URL:** https://commons.wikimedia.org/wiki/File:An_Indian_Pariah_Dog.jpg
+- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/a/ae/An_Indian_Pariah_Dog.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
+- **License:** CC0
+- **License URL:** https://creativecommons.org/publicdomain/zero/1.0/
 - **Date downloaded:** 2026-09-24
-- **Original size:** 1714x1206 → **delivered:** 1200x845
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
+- **Original size:** 3000x4000 → **delivered:** 1200x1200
+- **Modification:** Cropped to a close-up of the head and chest; resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy
 
 ## Rajapalayam
@@ -330,39 +330,9 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 - **License:** CC0
 - **License URL:** https://creativecommons.org/publicdomain/zero/1.0/
 - **Date downloaded:** 2026-09-24
-- **Original size:** 3024x4032 → **delivered:** 900x1200
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
+- **Original size:** 3024x4032 → **delivered:** 1200x1200
+- **Modification:** Cropped to a close-up of the head and chest; resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
 - **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy
-
-## Mudhol Hound
-
-- **File:** `mudhol-hound.jpg`
-- **Source:** Wikimedia Commons
-- **Original title:** Mudhol hound dog.png
-- **Author:** Dananjaii
-- **Source URL:** https://commons.wikimedia.org/wiki/File:Mudhol_hound_dog.png
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/0/04/Mudhol_hound_dog.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-- **License:** CC BY-SA 4.0
-- **License URL:** https://creativecommons.org/licenses/by-sa/4.0
-- **Date downloaded:** 2026-09-24
-- **Original size:** 720x696 → **delivered:** 720x696
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
-- **Attribution requirements / notes:** ShareAlike: this file (and any adaptation of it) must stay under CC BY-SA 4.0 with attribution; Low resolution original (720x696); best available licensed Mudhol photo
-
-## Chippiparai
-
-- **File:** `chippiparai.jpg`
-- **Source:** Wikimedia Commons
-- **Original title:** Chippiparai dog at the streets of Tirupudaimarudur JEG2395.jpg
-- **Author:** PJeganathan
-- **Source URL:** https://commons.wikimedia.org/wiki/File:Chippiparai_dog_at_the_streets_of_Tirupudaimarudur_JEG2395.jpg
-- **Direct image URL:** https://upload.wikimedia.org/wikipedia/commons/e/e1/Chippiparai_dog_at_the_streets_of_Tirupudaimarudur_JEG2395.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-- **License:** CC BY-SA 4.0
-- **License URL:** https://creativecommons.org/licenses/by-sa/4.0
-- **Date downloaded:** 2026-09-24
-- **Original size:** 4928x3264 → **delivered:** 1200x795
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
-- **Attribution requirements / notes:** ShareAlike: this file (and any adaptation of it) must stay under CC BY-SA 4.0 with attribution
 
 ## Kombai
 
@@ -375,9 +345,9 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 - **License:** CC BY-SA 4.0
 - **License URL:** https://creativecommons.org/licenses/by-sa/4.0
 - **Date downloaded:** 2026-09-24
-- **Original size:** 720x1282 → **delivered:** 674x1200
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
-- **Attribution requirements / notes:** ShareAlike: this file (and any adaptation of it) must stay under CC BY-SA 4.0 with attribution; Original is 720x1282
+- **Original size:** 720x1282 → **delivered:** 674x674
+- **Modification:** Cropped to a square around the head and chest for thumbnails; resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
+- **Attribution requirements / notes:** ShareAlike: this file (and any adaptation of it) must stay under CC BY-SA 4.0 with attribution
 
 ## Suggested in-app credit line
 

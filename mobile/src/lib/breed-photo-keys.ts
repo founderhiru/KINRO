@@ -27,8 +27,6 @@ export const BREED_PHOTO_KEYS = [
   "cane corso",
   "indian pariah / indian native dog",
   "rajapalayam",
-  "mudhol hound",
-  "chippiparai",
   "kombai",
 ] as const;
 
@@ -58,7 +56,6 @@ const ALIASES: Readonly<Record<string, BreedPhotoKey>> = {
   "english cocker spaniel": "cocker spaniel",
   "welsh corgi pembroke": "pembroke welsh corgi",
   "rajapalayam hound": "rajapalayam",
-  mudhol: "mudhol hound",
   combai: "kombai",
 };
 
