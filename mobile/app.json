@@ -18,15 +18,26 @@
         "foregroundImage": "./assets/images/kinro-android-adaptive-icon.png",
         "backgroundColor": "#FBF8F3"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [],
+      "blockedPermissions": ["android.permission.RECORD_AUDIO"]
     },
     "plugins": [
       "expo-router",
       [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/kinro-symbol.png",
+          "imageWidth": 128,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "Kinro needs access to your photos so you can add pictures of your dog.",
-          "cameraPermission": "Kinro needs access to your camera so you can take a photo of your dog."
+          "cameraPermission": "Kinro needs access to your camera so you can take a photo of your dog.",
+          "microphonePermission": false
         }
       ]
     ],
