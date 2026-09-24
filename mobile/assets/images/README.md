@@ -44,10 +44,25 @@ with an optimized original at the same filename when available.
 | File | Source in pack | Size now | Used by | Wanted for production |
 |---|---|---|---|---|
 | `splash-dog.jpg` | `marketing/hero_dog.jpg` | 194×299 | Splash (`src/components/SplashView.tsx`) | ~1170×2532 portrait |
-| `dog-golden-retriever.jpg` | `dog_photos/` | 152×144 | Onboarding 1, Home community card, sample profiles Rio + Nila | ≥ 800×600 |
-| `dog-labrador.jpg` | `dog_photos/` | 152×144 | Sample profiles Bodhi + Saffron | ≥ 800×600 |
-| `dog-german-shepherd.jpg` | `dog_photos/` | 153×144 | Sample profile Atlas | ≥ 800×600 |
-| `dog-beagle.jpg` | `dog_photos/` | 152×144 | Sample profile Pepper | ≥ 800×600 |
+| `dog-golden-retriever.jpg` | `dog_photos/` | 152×144 | Onboarding 1, Home community card, sample profiles Rio + Nila, Select Breed picker (Golden Retriever) | ≥ 800×600 |
+| `dog-labrador.jpg` | `dog_photos/` | 152×144 | Sample profiles Bodhi + Saffron, Select Breed picker (Labrador Retriever) | ≥ 800×600 |
+| `dog-german-shepherd.jpg` | `dog_photos/` | 153×144 | Sample profile Atlas, Select Breed picker (German Shepherd) | ≥ 800×600 |
+| `dog-beagle.jpg` | `dog_photos/` | 152×144 | Sample profile Pepper, Select Breed picker (Beagle) | ≥ 800×600 |
+
+### Breed reference thumbnails (`src/lib/breed-images.ts`)
+
+The Select Breed sheet (Add Dog, and anywhere else `SelectBottomSheet` is
+given `getOptionImage`) shows a small reference photo next to a breed name
+when one of the four real photos above matches it. This is deliberately
+separate from `demo-photos.ts`/`DogPhoto.tsx`, which must never show a stock
+photo that could pass as a real owner's actual dog — a labeled thumbnail in
+a *picker* is unambiguous reference imagery, not a claim about anyone's dog.
+
+Every other breed in the catalogue (`src/lib/dog-breeds.ts`), including
+Mixed Breed and Other / Unknown, falls back to `dog-cover-placeholder.jpg`.
+**Real photos are still needed** for the other 30+ catalogued breeds —
+Labrador, Golden Retriever, German Shepherd and Beagle are the only ones
+with one today.
 
 Not used, on purpose: `marketing/splash_dog.jpg` and `marketing/hero_group.jpg`
 have KINRO text and taglines baked into the picture, so they would print

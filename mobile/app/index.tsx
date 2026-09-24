@@ -2,6 +2,8 @@ import { getSetCookie, storageAdapter } from "@better-auth/expo/client";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { AppLaunchSplash } from "@/components/AppLaunchSplash";
 import { SplashView } from "@/components/SplashView";
 import { SESSION_COOKIE_STORAGE_KEY, useSession } from "@/lib/auth-client";
 import {
@@ -79,6 +81,7 @@ function SessionRedirect() {
 export default function Index() {
   const { cookie } = useLocalSearchParams<{ cookie?: string }>();
   const [ready, setReady] = useState(!cookie);
+  const [showBrandSplash, setShowBrandSplash] = useState(true);
 
   useEffect(() => {
     if (!cookie) return;
@@ -98,9 +101,24 @@ export default function Index() {
     };
   }, [cookie]);
 
-  if (!ready) {
-    return <LoadingSplash />;
-  }
-
-  return <SessionRedirect />;
+  // The animated brand splash sits on top of whatever's actually resolving
+  // underneath (cookie merge, then session lookup) so that work starts
+  // immediately rather than waiting for the animation — only the VISUAL
+  // reveal is delayed by ~1.5s, never the launch itself (see
+  // AppLaunchSplash's own comment).
+  return (
+    <View style={styles.fill}>
+      {!ready ? <LoadingSplash /> : <SessionRedirect />}
+      {showBrandSplash ? (
+        <View style={styles.overlay}>
+          <AppLaunchSplash onFinish={() => setShowBrandSplash(false)} />
+        </View>
+      ) : null}
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  fill: { flex: 1 },
+  overlay: StyleSheet.absoluteFillObject,
+});

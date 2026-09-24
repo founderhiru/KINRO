@@ -19,20 +19,22 @@ import { Screen } from "@/components/Screen";
 import { SelectBottomSheet } from "@/components/SelectBottomSheet";
 import { TextArea } from "@/components/TextArea";
 import { TextField } from "@/components/TextField";
+import { getBreedReferenceImage } from "@/lib/breed-images";
 import {
   createDog,
   fetchBreedSuggestions,
   type PickedImage,
   uploadDogPhoto,
 } from "@/lib/dog-api";
+import { breedSectionsWithServerSuggestions } from "@/lib/dog-breeds";
 import {
-  CITY_OPTIONS,
   type DogFormValues,
-  findCityOption,
   isDogFormValid,
+  resolveCity,
   SEX_OPTIONS,
   validateDogForm,
 } from "@/lib/dog-form";
+import { OTHER_CITY_NAMES, POPULAR_CITIES } from "@/lib/india-cities";
 import { pickDogPhoto } from "@/lib/pick-photo";
 import { colors, elevation, radius, spacing, typography } from "@/theme/tokens";
 
@@ -44,7 +46,10 @@ const EMPTY_VALUES: DogFormValues = {
   ageYears: "",
   bio: "",
 };
-const CITY_NAMES = CITY_OPTIONS.map((c) => c.name);
+const CITY_SECTIONS = [
+  { title: "Popular Cities", options: POPULAR_CITIES },
+  { title: "All Cities", options: OTHER_CITY_NAMES },
+] as const;
 
 type Step = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 const STEP_TITLES = [
@@ -137,7 +142,7 @@ function AddDogScreenContent() {
 
   async function handleCreateProfile() {
     if (!photo) return;
-    const cityOption = findCityOption(values.city);
+    const cityOption = resolveCity(values.city);
     if (!cityOption) return;
 
     setFormError(null);
@@ -382,32 +387,24 @@ function AddDogScreenContent() {
         visible={breedSheetOpen}
         onClose={() => setBreedSheetOpen(false)}
         title="Select Breed"
-        options={
-          breedSuggestions.length > 0
-            ? breedSuggestions
-            : [
-                "Labrador Retriever",
-                "Golden Retriever",
-                "German Shepherd",
-                "Beagle",
-                "Poodle",
-                "Rottweiler",
-                "Indian Pariah Dog",
-                "Others",
-              ]
-        }
+        sections={breedSectionsWithServerSuggestions(breedSuggestions)}
         value={values.breed}
         onSelect={(v) => set("breed", v)}
         searchable
         searchPlaceholder="Search breed..."
+        allowCustom
+        getOptionImage={getBreedReferenceImage}
       />
       <SelectBottomSheet
         visible={citySheetOpen}
         onClose={() => setCitySheetOpen(false)}
         title="Select City"
-        options={CITY_NAMES}
+        sections={CITY_SECTIONS}
         value={values.city}
         onSelect={(v) => set("city", v)}
+        searchable
+        searchPlaceholder="Search city or town..."
+        allowCustom
       />
     </Screen>
   );

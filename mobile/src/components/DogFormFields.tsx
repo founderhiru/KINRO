@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ChipSelect } from "@/components/ChipSelect";
 import { ErrorText } from "@/components/ErrorText";
+import { SelectBottomSheet } from "@/components/SelectBottomSheet";
 import { TextField } from "@/components/TextField";
 import { fetchBreedSuggestions } from "@/lib/dog-api";
+import { ALL_BREEDS } from "@/lib/dog-breeds";
 import {
-  CITY_OPTIONS,
   type DogFormErrors,
   type DogFormValues,
   SEX_OPTIONS,
 } from "@/lib/dog-form";
+import { OTHER_CITY_NAMES, POPULAR_CITIES } from "@/lib/india-cities";
 import { colors, radius, spacing, typography } from "@/theme/tokens";
 
 interface DogFormFieldsProps {
@@ -19,7 +21,10 @@ interface DogFormFieldsProps {
   disabled?: boolean;
 }
 
-const CITY_NAMES = CITY_OPTIONS.map((c) => c.name);
+const CITY_SECTIONS = [
+  { title: "Popular Cities", options: POPULAR_CITIES },
+  { title: "All Cities", options: OTHER_CITY_NAMES },
+] as const;
 
 /**
  * The fields DogProfileWrite actually requires (see src/lib/dog-form.ts) —
@@ -35,13 +40,15 @@ export function DogFormFields({
   disabled,
 }: DogFormFieldsProps) {
   const [breedSuggestions, setBreedSuggestions] = useState<string[]>([]);
+  const [citySheetOpen, setCitySheetOpen] = useState(false);
 
   useEffect(() => {
     fetchBreedSuggestions()
       .then(setBreedSuggestions)
       .catch(() => {
         // Suggestions are a nicety, not required — the breed field still
-        // works as free text if this fails (e.g. offline).
+        // works as free text if this fails (e.g. offline), and the local
+        // catalogue below already covers common breeds without a network call.
       });
   }, []);
 
@@ -49,9 +56,15 @@ export function DogFormFields({
     onChange({ ...values, [key]: value });
   }
 
-  const matchingSuggestions = breedSuggestions
-    .filter((b) => b.toLowerCase().includes(values.breed.trim().toLowerCase()))
-    .filter((b) => b.toLowerCase() !== values.breed.trim().toLowerCase())
+  // Server suggestions (real breeds already on file) plus the local
+  // catalogue (see dog-breeds.ts) so autocomplete works offline too and
+  // always covers breeds commonly encountered in India.
+  const breedQuery = values.breed.trim().toLowerCase();
+  const matchingSuggestions = Array.from(
+    new Set([...breedSuggestions, ...ALL_BREEDS]),
+  )
+    .filter((b) => b.toLowerCase().includes(breedQuery))
+    .filter((b) => b.toLowerCase() !== breedQuery)
     .slice(0, 5);
 
   return (
@@ -101,13 +114,29 @@ export function DogFormFields({
       </View>
 
       <View style={styles.field}>
-        <ChipSelect
-          label="City"
-          options={CITY_NAMES}
-          value={values.city}
-          onChange={(v) => set("city", v)}
-        />
+        <Text style={styles.label}>City</Text>
+        <Pressable
+          onPress={() => setCitySheetOpen(true)}
+          style={styles.pickerField}
+          accessibilityRole="button"
+        >
+          <Text style={values.city ? typography.body : styles.placeholderText}>
+            {values.city || "Select city"}
+          </Text>
+          <Text style={styles.chevron}>›</Text>
+        </Pressable>
         {errors.city ? <ErrorText>{errors.city}</ErrorText> : null}
+        <SelectBottomSheet
+          visible={citySheetOpen}
+          onClose={() => setCitySheetOpen(false)}
+          title="Select City"
+          sections={CITY_SECTIONS}
+          value={values.city}
+          onSelect={(v) => set("city", v)}
+          searchable
+          searchPlaceholder="Search city or town..."
+          allowCustom
+        />
       </View>
 
       <View style={styles.field}>
@@ -145,6 +174,21 @@ export function DogFormFields({
 const styles = StyleSheet.create({
   container: { gap: spacing.lg },
   field: { gap: 0 },
+  label: { ...typography.label, marginBottom: spacing.xs },
+  pickerField: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    minHeight: 48,
+  },
+  placeholderText: { ...typography.body, color: colors.textMuted },
+  chevron: { fontSize: 20, color: colors.textMuted },
   suggestions: {
     flexDirection: "row",
     flexWrap: "wrap",

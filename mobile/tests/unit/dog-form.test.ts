@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  CITY_OPTIONS,
   type DogFormValues,
-  findCityOption,
   isDogFormValid,
+  resolveCity,
   validateDogForm,
 } from "@/lib/dog-form";
 
@@ -31,8 +30,18 @@ describe("validateDogForm", () => {
     expect(errors.name).toBeDefined();
   });
 
-  it("requires a recognized city", () => {
+  it("accepts a city outside the popular list — not restricted to a fixed set", () => {
     const errors = validateDogForm({ ...validValues, city: "Nowhereville" });
+    expect(errors.city).toBeUndefined();
+  });
+
+  it("requires a non-empty city", () => {
+    const errors = validateDogForm({ ...validValues, city: "  " });
+    expect(errors.city).toBeDefined();
+  });
+
+  it("rejects a city name over 120 characters", () => {
+    const errors = validateDogForm({ ...validValues, city: "a".repeat(121) });
     expect(errors.city).toBeDefined();
   });
 
@@ -65,29 +74,32 @@ describe("validateDogForm", () => {
   });
 });
 
-describe("findCityOption", () => {
-  it("finds an exact match among the supported cities", () => {
-    expect(findCityOption("Mumbai")).toEqual(
+describe("resolveCity", () => {
+  it("finds an exact match's real coordinates, popular or not", () => {
+    expect(resolveCity("Mumbai")).toEqual(
       expect.objectContaining({
         name: "Mumbai",
         latitude: 19.076,
         longitude: 72.8777,
       }),
     );
+    expect(resolveCity("Coimbatore")).toEqual(
+      expect.objectContaining({ name: "Coimbatore" }),
+    );
   });
 
-  it("returns undefined for an unsupported city", () => {
-    expect(findCityOption("Atlantis")).toBeUndefined();
+  it("matches case-insensitively", () => {
+    expect(resolveCity("mumbai")?.name).toBe("Mumbai");
   });
 
-  it("has exactly the six cities the backend's discovery search recognizes", () => {
-    expect(CITY_OPTIONS.map((c) => c.name)).toEqual([
-      "Bengaluru",
-      "Delhi NCR",
-      "Mumbai",
-      "Hyderabad",
-      "Pune",
-      "Chennai",
-    ]);
+  it("still resolves a city that isn't in the known list, rather than rejecting it", () => {
+    const resolved = resolveCity("Nowhereville");
+    expect(resolved).toEqual(expect.objectContaining({ name: "Nowhereville" }));
+    expect(typeof resolved?.latitude).toBe("number");
+    expect(typeof resolved?.longitude).toBe("number");
+  });
+
+  it("returns undefined only for an empty name", () => {
+    expect(resolveCity("   ")).toBeUndefined();
   });
 });

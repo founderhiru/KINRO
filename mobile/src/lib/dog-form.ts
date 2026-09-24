@@ -1,27 +1,27 @@
 // Mobile (Phase mobile-M2) — pure validation, kept free of RN imports so it
 // can be unit-tested directly.
 
-// The backend's own city→lat/lng lookup (src/app/api/dog-profiles/route.ts,
-// CITY_CENTERS) is server-only route logic, not exposed via any endpoint —
-// there is no geocoding API to call. DogProfileWrite requires real
-// latitude/longitude, and Discover's distance search only works for cities
-// this exact list matches. Mirroring the same six cities (and their exact
-// coordinates) here — rather than free-text city entry — is what keeps a
-// mobile-created dog's location usable by the existing Discover logic.
-// Keep in sync with CITY_CENTERS if that list ever changes.
-export const CITY_OPTIONS = [
-  { name: "Bengaluru", latitude: 12.9716, longitude: 77.5946 },
-  { name: "Delhi NCR", latitude: 28.6139, longitude: 77.209 },
-  { name: "Mumbai", latitude: 19.076, longitude: 72.8777 },
-  { name: "Hyderabad", latitude: 17.385, longitude: 78.4867 },
-  { name: "Pune", latitude: 18.5204, longitude: 73.8567 },
-  { name: "Chennai", latitude: 13.0827, longitude: 80.2707 },
-] as const;
+import { findKnownCity, INDIA_CENTER } from "./india-cities";
 
-export type CityOption = (typeof CITY_OPTIONS)[number];
+export interface CityOption {
+  name: string;
+  latitude: number;
+  longitude: number;
+}
 
-export function findCityOption(name: string): CityOption | undefined {
-  return CITY_OPTIONS.find((option) => option.name === name);
+/**
+ * Resolves whatever the city picker produced — an exact pick from
+ * src/lib/india-cities.ts, or a city typed by hand that isn't in that list —
+ * into something DogProfileWrite can send. A known city gets its real
+ * coordinates; an unknown one gets the typed name paired with India's
+ * geographic centre as a best-effort placeholder (see india-cities.ts) so a
+ * dog's city is never restricted to a fixed list. Only an empty name fails
+ * to resolve, which is what validateDogForm below checks for.
+ */
+export function resolveCity(name: string): CityOption | undefined {
+  const trimmed = name.trim();
+  if (!trimmed) return undefined;
+  return findKnownCity(trimmed) ?? { name: trimmed, ...INDIA_CENTER };
 }
 
 export const SEX_OPTIONS = ["Male", "Female"] as const;
@@ -61,9 +61,9 @@ export function validateDogForm(values: DogFormValues): DogFormErrors {
   if (!breed) errors.breed = "Breed is required";
   else if (breed.length > 80) errors.breed = "Breed is too long";
 
-  if (!findCityOption(values.city)) {
-    errors.city = "Choose a city";
-  }
+  const city = values.city.trim();
+  if (!city) errors.city = "Choose a city";
+  else if (city.length > 120) errors.city = "City is too long";
 
   const sex = values.sex.trim();
   if (!sex) errors.sex = "Sex is required";

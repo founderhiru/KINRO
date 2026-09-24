@@ -18,8 +18,8 @@ import { Skeleton } from "@/components/Skeleton";
 import { getDog, updateDog } from "@/lib/dog-api";
 import {
   type DogFormValues,
-  findCityOption,
   isDogFormValid,
+  resolveCity,
   validateDogForm,
 } from "@/lib/dog-form";
 import { spacing, typography } from "@/theme/tokens";
@@ -53,7 +53,7 @@ function EditDogScreenContent() {
     setErrors(validationErrors);
     if (!isDogFormValid(validationErrors)) return;
 
-    const cityOption = findCityOption(values.city);
+    const cityOption = resolveCity(values.city);
     if (!cityOption) {
       setErrors({ ...validationErrors, city: "Choose a city" });
       return;
