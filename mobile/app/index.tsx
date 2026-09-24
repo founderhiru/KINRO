@@ -1,5 +1,5 @@
 import { getSetCookie, storageAdapter } from "@better-auth/expo/client";
-import { Redirect, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { SplashView } from "@/components/SplashView";
@@ -7,9 +7,9 @@ import { SESSION_COOKIE_STORAGE_KEY, useSession } from "@/lib/auth-client";
 import { resolveInitialRoute, type SessionStatus } from "@/lib/session-guard";
 
 /**
- * The KINRO photo screen (photo, logo, headline, spinner), shown only while
- * the session is still resolving; normally the launch splash in
- * app/_layout.tsx covers it and it's never seen.
+ * The KINRO launch screen (photo, logo, headline). While the session is
+ * still resolving it shows a spinner; once we know the visitor is signed
+ * out, the same screen offers the round arrow that continues to Home.
  */
 function LoadingSplash() {
   return <SplashView />;
@@ -33,12 +33,19 @@ function SessionRedirect() {
   const target = resolveInitialRoute(status);
 
   if (!target) {
+    // Rendered as <SplashView /> directly (not via LoadingSplash) so React keeps
+    // the same instance when the signed-out state arrives and the logo
+    // animation is not restarted by a remount.
     return <SplashView />;
   }
 
-  // Signed-in and signed-out alike go straight to Home (see
-  // resolveInitialRoute). The animated launch splash lives in app/_layout.tsx,
-  // above the navigator, so this redirect happens underneath it.
+  // Signed-out visitors see the hero photo screen and tap the arrow to
+  // continue to Home (the guest Home). Signed-in users skip straight to Home.
+  // The animated launch splash in app/_layout.tsx plays on top first.
+  if (status === "unauthenticated") {
+    return <SplashView onContinue={() => router.replace(target)} />;
+  }
+
   return <Redirect href={target} />;
 }
 
