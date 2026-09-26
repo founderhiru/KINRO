@@ -21,13 +21,10 @@ export default function ProfileLayout() {
         }}
       />
       <Stack.Screen name="pricing" options={{ title: "Connection Service" }} />
-      <Stack.Screen
-        name="support"
-        options={{
-          title: "Help & Support",
-          headerLeft: () => <HeaderBackButton />,
-        }}
-      />
+      {/* Help & Trust is its own nested stack (FAQ / Privacy / Security /
+          Terms / Contact Support) with its own headers, so the outer
+          header is hidden here — see help-trust/_layout.tsx. */}
+      <Stack.Screen name="help-trust" options={{ headerShown: false }} />
     </Stack>
   );
 }

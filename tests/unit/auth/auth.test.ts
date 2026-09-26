@@ -69,6 +69,31 @@ describe('mobile auth bridge (Phase mobile-M1)', () => {
   });
 });
 
+describe('phone OTP sign-up config', () => {
+  it('configures signUpOnVerification so a brand-new phone number can actually create a User', async () => {
+    // Regression test: without signUpOnVerification, better-auth's
+    // phoneNumber plugin only UPDATES an existing user matched by phone
+    // number on verify — a first-time number has nothing to update, so
+    // verification throws FAILED_TO_UPDATE_USER and phone sign-up can never
+    // succeed no matter how OTP delivery is configured. Confirmed against a
+    // real local Postgres + the actual better-auth phone-number routes
+    // before this option was added.
+    const { phoneNumber } = await import('better-auth/plugins');
+    await import('@/lib/auth');
+    const config = vi.mocked(phoneNumber).mock.calls[0]?.[0] as {
+      signUpOnVerification?: { getTempEmail: (phone: string) => string };
+    };
+    expect(config.signUpOnVerification).toBeDefined();
+    // User.email is @unique and NOT NULL (prisma/schema/auth.prisma), so a
+    // phone-only signup needs a placeholder — must be non-empty and unique
+    // per phone number (not the same constant for every signup).
+    const emailA = config.signUpOnVerification?.getTempEmail('+919876543210');
+    const emailB = config.signUpOnVerification?.getTempEmail('+919876543211');
+    expect(emailA).toBeTruthy();
+    expect(emailA).not.toBe(emailB);
+  });
+});
+
 describe('getAuthenticatedUser / requireAuthenticatedUser', () => {
   beforeEach(() => {
     getSessionMock.mockReset();

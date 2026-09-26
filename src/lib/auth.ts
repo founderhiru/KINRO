@@ -132,6 +132,19 @@ export const auth = betterAuth({
       sendOTP: async ({ phoneNumber: to, code }) => {
         await sendOtpSms(to, code);
       },
+      // Required for a FIRST-time phone number to actually create a User on
+      // verification. Without this, the phoneNumber plugin's verify route
+      // only ever updates an existing user matched by phone number (see
+      // node_modules/better-auth/dist/plugins/phone-number/routes.mjs) —
+      // for a brand-new number there is nothing to update, so it throws
+      // FAILED_TO_UPDATE_USER and phone sign-up can never succeed, no
+      // matter how OTP delivery is configured. User.email is @unique and
+      // NOT NULL (prisma/schema/auth.prisma), so a phone-only signup needs
+      // *some* placeholder email; ".invalid" is the RFC 2606 TLD reserved
+      // for exactly this — guaranteed never a real, deliverable domain.
+      signUpOnVerification: {
+        getTempEmail: (phoneNumber) => `${phoneNumber}@phone.kinro.invalid`,
+      },
     }),
   ],
 });
