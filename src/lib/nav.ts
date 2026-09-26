@@ -41,4 +41,9 @@ export const navItems: NavItem[] = [
   { label: 'Browse dogs', href: '/discover', group: 'footer', order: 2 },
   { label: 'Trust and transparency', href: '/#trust', group: 'footer', order: 3 },
   { label: 'Coming next', href: '/#coming-next', group: 'footer', order: 4 },
+  { label: 'FAQ', href: '/faq', group: 'footer', order: 5 },
+  { label: 'Privacy Policy', href: '/privacy', group: 'footer', order: 6 },
+  { label: 'Security', href: '/security', group: 'footer', order: 7 },
+  { label: 'Terms of Service', href: '/terms', group: 'footer', order: 8 },
+  { label: 'Contact Support', href: '/contact', group: 'footer', order: 9 },
 ];

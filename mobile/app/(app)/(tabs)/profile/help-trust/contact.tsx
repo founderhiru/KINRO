@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import {
   Alert,
   Linking,
@@ -10,7 +9,6 @@ import {
 } from "react-native";
 import { Card } from "@/components/Card";
 import { Screen } from "@/components/Screen";
-import { SectionHeader } from "@/components/SectionHeader";
 import {
   colors,
   pressedOpacity,
@@ -42,7 +40,7 @@ export async function openSupportEmail(kind: keyof typeof SUBJECTS) {
   }
 }
 
-function SupportRow({
+function ContactRow({
   label,
   description,
   onPress,
@@ -72,36 +70,18 @@ function SupportRow({
   );
 }
 
-/**
- * The "Support" card shown on Profile, for signed-in users and guests alike.
- * A single entry point: Contact KINRO and Send Feedback both live on the
- * Help & Support screen, so neither is duplicated here.
- */
-export function SupportCard() {
-  return (
-    <Card style={styles.supportCard}>
-      <SectionHeader title="Support" />
-      <SupportRow
-        label="Help & Support"
-        description="Contact KINRO or send feedback."
-        onPress={() => router.push("/(app)/(tabs)/profile/support")}
-      />
-    </Card>
-  );
-}
-
-export default function HelpAndSupportScreen() {
+export default function ContactSupportScreen() {
   return (
     <Screen>
       <Text style={[typography.body, styles.intro]}>We're here to help.</Text>
       <Card>
-        <SupportRow
+        <ContactRow
           label="Contact KINRO"
           description="Get help with your account, dogs, or Health Passport."
           onPress={() => openSupportEmail("support")}
         />
         <View style={styles.divider} />
-        <SupportRow
+        <ContactRow
           label="Send Feedback"
           description="Share an idea or tell us about a problem."
           onPress={() => openSupportEmail("feedback")}
@@ -113,7 +93,6 @@ export default function HelpAndSupportScreen() {
 
 const styles = StyleSheet.create({
   intro: { marginTop: spacing.md, marginBottom: spacing.md },
-  supportCard: { marginTop: spacing.md },
   row: {
     minHeight: touchTarget.minHeight,
     flexDirection: "row",

@@ -22,7 +22,7 @@ import type { OwnerProfileItem } from "@/lib/contracts";
 import { getOwnerProfile } from "@/lib/owner-profile-api";
 import { useRequireAuth } from "@/lib/use-require-auth";
 import { colors, spacing, typography } from "@/theme/tokens";
-import { SupportCard } from "./support";
+import { HelpTrustCard } from "./help-trust";
 
 export default function ProfileScreen() {
   const { data: session, isPending: isSessionPending } = useSession();
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
           actionLabel="Sign In"
           onAction={() => setPromptVisible(true)}
         />
-        <SupportCard />
+        <HelpTrustCard />
         <AuthPromptSheet
           visible={promptVisible}
           onClose={() => setPromptVisible(false)}
@@ -199,7 +199,7 @@ export default function ProfileScreen() {
           />
         </View>
 
-        <SupportCard />
+        <HelpTrustCard />
 
         <View style={styles.logoutButton}>
           <Button
