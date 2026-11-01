@@ -10,8 +10,8 @@ describe("resolveInitialRoute", () => {
     expect(resolveInitialRoute("authenticated")).toBe(ROUTES.home);
   });
 
-  it("routes signed-out visitors straight to (guest) Home, not Welcome", () => {
-    expect(resolveInitialRoute("unauthenticated")).toBe(ROUTES.home);
+  it("routes signed-out visitors to sign-in, not Welcome or guest Home", () => {
+    expect(resolveInitialRoute("unauthenticated")).toBe(ROUTES.signIn);
   });
 
   it("keeps Home and My Dogs as two different tabs", () => {
@@ -24,5 +24,6 @@ describe("resolveInitialRoute", () => {
     expect(ROUTES.welcome).toBe("/welcome");
     expect(ROUTES.onboarding).toBe("/onboarding");
     expect(ROUTES.signIn).toBe("/(auth)/mobile-number");
+    expect(ROUTES.tour).toBe("/(auth)/tour");
   });
 });

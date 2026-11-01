@@ -1,8 +1,10 @@
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
   Image,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -13,10 +15,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthFrame } from "@/components/AuthFrame";
 import { Button } from "@/components/Button";
 import { ErrorText } from "@/components/ErrorText";
+import { Floaty } from "@/components/Floaty";
 import { SocialSignInRow } from "@/components/SocialSignInRow";
 import { authClient } from "@/lib/auth-client";
 import { requestOtp } from "@/lib/auth-flows";
 import { isValidIndianMobileNumber } from "@/lib/phone";
+import { ROUTES } from "@/lib/session-guard";
 import { getSignInMethods, type SignInMethod } from "@/lib/sign-in-methods";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import {
@@ -46,7 +50,7 @@ const PHOTO_CENTER = require("../../assets/images/photos/dog-golden-retriever.jp
  */
 export default function MobileNumberScreen() {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const keyboardVisible = useKeyboardVisible();
   const [digits, setDigits] = useState("");
   const [loading, setLoading] = useState(false);
@@ -117,6 +121,20 @@ export default function MobileNumberScreen() {
   return (
     <AuthFrame>
       <View style={[styles.hero, { paddingTop: insets.top + spacing.lg }]}>
+        <Pressable
+          onPress={() => router.push(ROUTES.tour)}
+          accessibilityRole="button"
+          accessibilityLabel="Take a tour of KINRO"
+          hitSlop={8}
+          style={[styles.tourLink, { top: insets.top + 4 }]}
+        >
+          <Text style={styles.tourText}>Take a tour</Text>
+          <Ionicons
+            name="arrow-forward"
+            size={15}
+            color={brandField.textMuted}
+          />
+        </Pressable>
         <View style={styles.logoTile}>
           <Image
             source={SYMBOL}
@@ -128,32 +146,44 @@ export default function MobileNumberScreen() {
         <Text style={styles.wordmark}>KINRO</Text>
         <Text style={styles.tagline}>Genetic wellness. Brighter lives.</Text>
 
-        {keyboardVisible ? null : (
+        {keyboardVisible || height < 700 ? null : (
           <View style={styles.fan} accessibilityElementsHidden>
-            <Image
-              source={PHOTO_SIDE_LEFT}
-              style={[
-                styles.photo,
-                styles.photoLeft,
-                { width: photoWidth, height: photoWidth * 1.17 },
-              ]}
-            />
-            <Image
-              source={PHOTO_SIDE_RIGHT}
-              style={[
-                styles.photo,
-                styles.photoRight,
-                { width: photoWidth, height: photoWidth * 1.17 },
-              ]}
-            />
-            <Image
-              source={PHOTO_CENTER}
-              style={[
-                styles.photo,
-                styles.photoCenter,
-                { width: photoWidth * 1.15, height: photoWidth * 1.35 },
-              ]}
-            />
+            <Floaty
+              rotate="-7deg"
+              delayMs={600}
+              style={[styles.photoSlot, styles.photoLeft]}
+            >
+              <Image
+                source={PHOTO_SIDE_LEFT}
+                style={[
+                  styles.photo,
+                  { width: photoWidth, height: photoWidth * 1.17 },
+                ]}
+              />
+            </Floaty>
+            <Floaty
+              rotate="7deg"
+              delayMs={1200}
+              style={[styles.photoSlot, styles.photoRight]}
+            >
+              <Image
+                source={PHOTO_SIDE_RIGHT}
+                style={[
+                  styles.photo,
+                  { width: photoWidth, height: photoWidth * 1.17 },
+                ]}
+              />
+            </Floaty>
+            <Floaty style={[styles.photoSlot, styles.photoCenterSlot]}>
+              <Image
+                source={PHOTO_CENTER}
+                style={[
+                  styles.photo,
+                  styles.photoCenter,
+                  { width: photoWidth * 1.15, height: photoWidth * 1.35 },
+                ]}
+              />
+            </Floaty>
           </View>
         )}
       </View>
@@ -230,6 +260,16 @@ export default function MobileNumberScreen() {
           </Text>
           .
         </Text>
+
+        <Pressable
+          onPress={() => router.replace(ROUTES.home)}
+          accessibilityRole="button"
+          accessibilityLabel="Browse dogs as a guest"
+          hitSlop={8}
+          style={styles.guest}
+        >
+          <Text style={styles.guestText}>Just looking? Browse as a guest</Text>
+        </Pressable>
       </View>
     </AuthFrame>
   );
@@ -275,19 +315,36 @@ const styles = StyleSheet.create({
     height: 190,
     alignItems: "center",
   },
+  photoSlot: { position: "absolute", top: 26 },
   photo: {
-    position: "absolute",
-    top: 26,
     borderRadius: 22,
     borderWidth: 3,
     borderColor: "rgba(251,248,243,0.9)",
   },
-  photoLeft: { left: "9%", transform: [{ rotate: "-7deg" }] },
-  photoRight: { right: "9%", transform: [{ rotate: "7deg" }] },
+  photoLeft: { left: "9%" },
+  photoRight: { right: "9%" },
+  photoCenterSlot: { top: 0 },
   photoCenter: {
-    top: 0,
     borderRadius: 24,
     borderColor: colors.background,
+  },
+  tourLink: {
+    position: "absolute",
+    right: 16,
+    zIndex: 2,
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 6,
+  },
+  tourText: { fontSize: 15, fontWeight: "600", color: brandField.textMuted },
+  guest: { minHeight: 44, alignItems: "center", justifyContent: "center" },
+  guestText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.accent,
+    textDecorationLine: "underline",
   },
   sheet: {
     backgroundColor: colors.surface,

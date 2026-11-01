@@ -8,7 +8,7 @@ import { resolveInitialRoute, type SessionStatus } from "@/lib/session-guard";
 /**
  * The KINRO launch screen (photo, logo, headline). While the session is
  * still resolving it shows a spinner; once we know the visitor is signed
- * out, the same screen offers the round arrow that continues to Home.
+ * out, the same screen offers the round arrow that continues to sign-in.
  */
 function LoadingSplash() {
   return <SplashView />;
@@ -39,7 +39,8 @@ function SessionRedirect() {
   }
 
   // Signed-out visitors see the hero photo screen and tap the arrow to
-  // continue to Home (the guest Home). Signed-in users skip straight to Home.
+  // continue to sign-in (guest browsing stays available from there). Signed-in
+  // users skip straight to Home.
   // The animated launch splash in app/_layout.tsx plays on top first.
   if (status === "unauthenticated") {
     return <SplashView onContinue={() => router.replace(target)} />;
