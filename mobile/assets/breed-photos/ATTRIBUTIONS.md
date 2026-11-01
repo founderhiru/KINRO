@@ -31,7 +31,7 @@ Downloaded: 2026-09-24. Use in the app: breed-picker reference thumbnails only, 
 - **License URL:** https://creativecommons.org/publicdomain/zero/1.0/
 - **Date downloaded:** 2026-09-24
 - **Original size:** 5184x3456 → **delivered:** 1200x800
-- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped
+- **Modification:** Resized to max 1200px on the longest side and re-encoded as JPEG (quality 84); metadata stripped. Then the cluttered background (a national flag) was replaced with a soft blurred green backdrop; the dog itself is untouched. The licence (CC0) allows this.
 - **Attribution requirements / notes:** No attribution legally required; credit kept as courtesy; Background includes a US flag (no people)
 
 ## German Shepherd
