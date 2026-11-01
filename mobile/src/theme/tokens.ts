@@ -34,6 +34,22 @@ export const colors = {
   overlayScrim: "rgba(20,15,10,0.55)",
 } as const;
 
+/**
+ * The deep-green field used behind sign-in and code entry (a darker step of
+ * the brand green, with warm cream text). Kept here so every auth screen
+ * shares one look.
+ */
+export const brandField = {
+  background: colors.accentDark,
+  glow: colors.accent,
+  text: colors.background,
+  textMuted: "rgba(251,248,243,0.78)",
+  textFaint: "rgba(251,248,243,0.6)",
+  hairline: "rgba(251,248,243,0.38)",
+  inputFill: "rgba(251,248,243,0.10)",
+  tagline: "#F1E3B0",
+} as const;
+
 export const spacing = {
   xs: 4,
   sm: 8,

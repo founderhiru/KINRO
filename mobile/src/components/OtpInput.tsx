@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { colors, radius, typography } from "@/theme/tokens";
+import { brandField, colors, radius, typography } from "@/theme/tokens";
 
 const OTP_LENGTH = 6;
 
@@ -10,6 +10,8 @@ interface OtpInputProps {
   /** Called once the value reaches OTP_LENGTH digits — screens auto-submit from here. */
   onComplete: (value: string) => void;
   disabled?: boolean;
+  /** "onBrand" draws light boxes on the deep-green auth field. */
+  tone?: "default" | "onBrand";
 }
 
 /**
@@ -23,6 +25,7 @@ export function OtpInput({
   onChange,
   onComplete,
   disabled,
+  tone = "default",
 }: OtpInputProps) {
   const inputRef = useRef<TextInput>(null);
 
@@ -46,9 +49,21 @@ export function OtpInput({
                 // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length (6), never reordered.
                 i
               }`}
-              style={[styles.box, isActive && styles.boxActive]}
+              style={[
+                styles.box,
+                tone === "onBrand" && styles.boxOnBrand,
+                isActive && styles.boxActive,
+                isActive && tone === "onBrand" && styles.boxActiveOnBrand,
+              ]}
             >
-              <Text style={typography.title}>{digit}</Text>
+              <Text
+                style={[
+                  typography.title,
+                  tone === "onBrand" && { color: brandField.text },
+                ]}
+              >
+                {digit}
+              </Text>
             </View>
           );
         })}
@@ -92,6 +107,14 @@ const styles = StyleSheet.create({
   },
   boxActive: {
     borderColor: colors.accent,
+  },
+  boxOnBrand: {
+    borderColor: brandField.hairline,
+    backgroundColor: brandField.inputFill,
+  },
+  boxActiveOnBrand: {
+    borderColor: brandField.tagline,
+    borderWidth: 2,
   },
   // Real input sits invisibly on top so the OS treats this as a normal
   // text field (autofill, keyboard, cursor) while the boxes above do the
