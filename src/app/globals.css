@@ -128,10 +128,11 @@
   --brand-h: 161; /* brand hue, 0–360 — matches the mobile app's forest green (#2F6B4F) */
   --brand-c: 0.078; /* brand chroma (saturation), 0–0.3 */
   --brand-l: 0.559; /* lightness of the brand-500 step, 0.40–0.70 */
-  --radius: 0.85rem; /* corner roundness — cascades to every primitive */
+  --radius: 1rem; /* corner roundness — cascades to every primitive; cards resolve to 20px (mobile radius.lg) */
 
-  --font-display: "Fraunces", "Iowan Old Style", "Baskerville", serif;
-  --font-body: "Avenir Next", "Segoe UI", sans-serif;
+  /* Same system sans stack the mobile app renders with; bold weights carry the headings. */
+  --font-display: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 /* === END polsia-slot:brand_tokens === */
 
@@ -152,26 +153,28 @@
 
   --background: #fbf8f3; /* pinned to the mobile app's exact cream (was oklch(0.99 0.004 var(--brand-h))) — an explicit exception to "framework-derived", per direct instruction to align exactly with mobile; every other role below still derives from the seed as designed. */
   --foreground: #262a28; /* pinned to the mobile app's exact charcoal (was oklch(0.18 0.01 var(--brand-h))) — same exception as --background above. */
-  --card: oklch(1 0.002 var(--brand-h));
+  /* Mobile palette pins (mobile/src/theme/tokens.ts) — same documented exception as
+     --background/--foreground above, so light-mode surfaces match the app exactly. */
+  --card: #ffffff; /* colors.surface */
   --card-foreground: var(--foreground);
   --popover: var(--card);
   --popover-foreground: var(--foreground);
-  --primary: var(--brand-600);
-  --primary-foreground: oklch(0.99 0.01 var(--brand-h));
-  --secondary: oklch(0.96 0.006 var(--brand-h));
-  --secondary-foreground: oklch(0.25 0.02 var(--brand-h));
-  --muted: oklch(0.96 0.006 var(--brand-h));
-  --muted-foreground: oklch(0.5 0.02 var(--brand-h));
-  --accent: oklch(0.96 0.006 var(--brand-h));
-  --accent-foreground: oklch(0.25 0.02 var(--brand-h));
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.008 var(--brand-h));
-  --input: oklch(0.9 0.008 var(--brand-h));
+  --primary: #2f6b4f; /* colors.accent */
+  --primary-foreground: #ffffff; /* colors.accentText */
+  --secondary: #f3ecdf; /* colors.backgroundAlt */
+  --secondary-foreground: #262a28;
+  --muted: #f3ecdf; /* colors.backgroundAlt */
+  --muted-foreground: #6b6459; /* colors.textMuted */
+  --accent: #e3efe8; /* colors.accentTint */
+  --accent-foreground: #234f3b; /* colors.accentDark */
+  --destructive: #b3261e; /* colors.danger */
+  --border: #e7e0d4; /* colors.border */
+  --input: #d8cdb9; /* colors.borderStrong */
   --ring: var(--brand-500);
 
-  --elevation-1: oklch(0.2 0.03 var(--brand-h) / 0.06);
-  --elevation-2: oklch(0.2 0.04 var(--brand-h) / 0.1);
-  --elevation-3: oklch(0.2 0.05 var(--brand-h) / 0.14);
+  --elevation-1: rgb(31 27 22 / 0.06); /* mobile elevation.card */
+  --elevation-2: rgb(31 27 22 / 0.12); /* mobile elevation.floating */
+  --elevation-3: rgb(31 27 22 / 0.16);
   --shadow-brand-color: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.35);
 }
 
@@ -215,7 +218,15 @@
     @apply transition-[transform,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-lg;
   }
   .text-eyebrow {
-    @apply text-caption font-semibold uppercase tracking-[0.08em] text-brand-600;
+    @apply text-caption font-bold uppercase tracking-[0.08em] text-brand-600;
+  }
+  /* Mobile "card": white surface, 20px radius, soft warm shadow, hairline border. */
+  .app-card {
+    @apply rounded-xl border border-border bg-card shadow-sm;
+  }
+  /* Mobile accentTint chip (Badge tone="neutral"). */
+  .app-chip {
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-accent px-2.5 py-1 text-caption font-bold text-accent-foreground;
   }
 }
 
