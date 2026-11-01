@@ -9,7 +9,6 @@ import {
   MapPin,
   PawPrint,
   RefreshCw,
-  ShieldCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -253,11 +252,6 @@ export function DogProfileDetail({ slug }: { slug: string }) {
                         <h1 className="font-display text-3xl font-semibold tracking-tight">
                           {state.profile.name}
                         </h1>
-                        {state.profile.isVerified && (
-                          <Badge className="gap-1 rounded-full bg-brand-100 text-brand-800 hover:bg-brand-100">
-                            <ShieldCheck className="size-3" /> Verified
-                          </Badge>
-                        )}
                         {state.profile.hasHealthRecords && (
                           <Badge
                             variant="outline"
