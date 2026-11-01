@@ -13,17 +13,21 @@ import {
 import { AuthPromptSheet } from "@/components/AuthPromptSheet";
 import { Avatar } from "@/components/Avatar";
 import { HealthBadge } from "@/components/Badge";
+import { BreedMarquee } from "@/components/BreedMarquee";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { DogPhoto } from "@/components/DogPhoto";
-import { EmptyState } from "@/components/EmptyState";
 import { ErrorText } from "@/components/ErrorText";
+import { FirstDogCard } from "@/components/FirstDogCard";
+import { FirstInCityCard } from "@/components/FirstInCityCard";
 import { GuestHome } from "@/components/GuestHome";
 import { Screen } from "@/components/Screen";
 import { DogCardSkeleton } from "@/components/Skeleton";
 import { useSession } from "@/lib/auth-client";
 import type { OwnedDogProfileItem } from "@/lib/contracts";
+import { fetchDiscoverDogs } from "@/lib/discover-api";
 import { listMyDogs } from "@/lib/dog-api";
+import { countNearbyDogs, shouldShowFirstInCity } from "@/lib/nearby";
 import { listNotifications } from "@/lib/notification-api";
 import { ROUTES } from "@/lib/session-guard";
 import { useRequireAuth } from "@/lib/use-require-auth";
@@ -42,6 +46,7 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const [dogs, setDogs] = useState<OwnedDogProfileItem[] | null>(null);
   const [hasUnread, setHasUnread] = useState(false);
+  const [nearbyCount, setNearbyCount] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isAuthenticated = !!session;
 
@@ -49,12 +54,35 @@ export default function HomeScreen() {
     Math.min(210, Math.max(150, (width - spacing.screenPadding * 2) * 0.5)),
   );
 
+  // "Dogs near you": counts real public dogs in the owner's city so Home can
+  // say "be one of the first" instead of showing a thin list. A failure here
+  // just hides the section; it must never block Home.
+  const loadNearby = useCallback(async (owned: OwnedDogProfileItem[]) => {
+    const city = owned[0]?.city;
+    if (!city) {
+      setNearbyCount(null);
+      return;
+    }
+    try {
+      const result = await fetchDiscoverDogs({ city });
+      setNearbyCount(
+        countNearbyDogs(
+          result.items,
+          owned.map((dog) => dog.id),
+        ),
+      );
+    } catch {
+      setNearbyCount(null);
+    }
+  }, []);
+
   const load = useCallback(async () => {
     if (!isAuthenticated) return;
     setError(null);
     try {
       const result = await listMyDogs();
       setDogs(result.items);
+      void loadNearby(result.items);
     } catch {
       setError("Couldn't load your dogs. Check your connection.");
     }
@@ -65,7 +93,7 @@ export default function HomeScreen() {
     } catch {
       setHasUnread(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, loadNearby]);
 
   // Refetch every time this tab regains focus (e.g. returning from Add Dog
   // or Edit Dog) rather than relying on a single mount-time fetch.
@@ -150,19 +178,26 @@ export default function HomeScreen() {
 
         <View style={styles.headerCopy}>
           <Text style={styles.greeting}>
-            {greeting}
+            {hasDogs ? greeting : "Welcome"}
             {firstName ? `, ${firstName}` : ""}!
           </Text>
-          <Text style={typography.bodyMuted}>Happy dogs. Happier people.</Text>
+          <Text style={typography.bodyMuted}>
+            {hasDogs
+              ? "Happy dogs. Happier people."
+              : "Let’s set up your first dog. It takes about a minute."}
+          </Text>
         </View>
 
         {!hasDogs ? (
-          <EmptyState
-            title="No dogs added yet"
-            message="Add your dog to get started and unlock a world of new connections."
-            actionLabel="Add Your First Dog"
-            onAction={() => router.push("/(app)/(tabs)/my-dog/add")}
-          />
+          <>
+            <FirstDogCard
+              onAdd={() => router.push("/(app)/(tabs)/my-dog/add")}
+            />
+            <Text style={[typography.sectionTitle, styles.breedHeading]}>
+              Pick your breed, or add your own
+            </Text>
+            <BreedMarquee />
+          </>
         ) : (
           <>
             <View style={styles.sectionHeaderRow}>
@@ -274,6 +309,13 @@ export default function HomeScreen() {
               </Pressable>
             ) : null}
 
+            {nearbyCount !== null && shouldShowFirstInCity(nearbyCount) ? (
+              <View style={styles.nearby}>
+                <Text style={typography.sectionTitle}>Dogs near you</Text>
+                <FirstInCityCard city={primaryDog?.city} />
+              </View>
+            ) : null}
+
             <Pressable
               onPress={() => router.push(ROUTES.discover)}
               accessibilityRole="button"
@@ -354,6 +396,8 @@ const styles = StyleSheet.create({
     borderColor: colors.background,
   },
   headerCopy: { marginBottom: spacing.lg },
+  breedHeading: { marginTop: spacing.lg, marginBottom: spacing.md },
+  nearby: { marginTop: spacing.lg },
   greeting: { ...typography.title, marginBottom: 2 },
   sectionHeaderRow: {
     flexDirection: "row",

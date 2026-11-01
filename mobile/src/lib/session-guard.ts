@@ -11,6 +11,7 @@ export const ROUTES = {
   welcome: "/welcome",
   onboarding: "/onboarding",
   signIn: "/(auth)/mobile-number",
+  tour: "/(auth)/tour",
 } as const;
 
 /**
@@ -18,15 +19,15 @@ export const ROUTES = {
  * the current session status. Returns null while the status is still
  * loading, meaning "stay on the splash screen — don't redirect yet".
  *
- * Everyone lands on Home after the launch splash: Home is guest-first (a
- * signed-out visitor sees the guest Home with its Sign in call to action),
- * so the Welcome/onboarding intro is no longer part of the automatic launch
- * flow. Those screens are kept (ROUTES.welcome / ROUTES.onboarding) for
- * later use.
+ * Signed-in users land on Home. Signed-out visitors land on the sign-in
+ * screen (the launch splash's round arrow continues there). Guest browsing is
+ * still one tap away: the sign-in screen and the tour both offer "Browse as
+ * guest", which opens the guest Home (app/(app)/_layout.tsx is not gated), so
+ * the app never forces an account just to look around.
  */
 export function resolveInitialRoute(status: SessionStatus): string | null {
   if (status === "loading") {
     return null;
   }
-  return ROUTES.home;
+  return status === "authenticated" ? ROUTES.home : ROUTES.signIn;
 }
