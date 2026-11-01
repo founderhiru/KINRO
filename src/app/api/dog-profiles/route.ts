@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { DogDiscoveryQuery, DogProfileList, DogProfileWrite } from '@/lib/contracts/dog-profiles';
 import { prisma } from '@/lib/db';
+import { findKnownCity } from '@/lib/india-cities';
 
 // Minimal URL-safe slug from the dog's name plus a short random suffix for
 // uniqueness — there is no per-owner slug editing UI, so this only needs to
@@ -26,21 +27,11 @@ export const dynamic = 'force-dynamic';
 
 const RADIUS_OPTIONS = [5, 10, 25, 50, 75, 100] as const;
 
-const CITY_CENTERS = {
-  Bengaluru: { latitude: 12.9716, longitude: 77.5946 },
-  'Delhi NCR': { latitude: 28.6139, longitude: 77.209 },
-  Mumbai: { latitude: 19.076, longitude: 72.8777 },
-  Hyderabad: { latitude: 17.385, longitude: 78.4867 },
-  Pune: { latitude: 18.5204, longitude: 73.8567 },
-  Chennai: { latitude: 13.0827, longitude: 80.2707 },
-} as const;
-
 function findCityCenter(city: string | undefined) {
-  if (!city) return undefined;
-  const entry = Object.entries(CITY_CENTERS).find(
-    ([name]) => name.toLocaleLowerCase('en-IN') === city.toLocaleLowerCase('en-IN'),
-  );
-  return entry ? { name: entry[0], ...entry[1] } : undefined;
+  const entry = city ? findKnownCity(city) : undefined;
+  return entry
+    ? { name: entry.name, latitude: entry.latitude, longitude: entry.longitude }
+    : undefined;
 }
 
 function haversineDistanceKm(
@@ -75,9 +66,13 @@ export async function GET(request: Request) {
 
   try {
     const cityCenter = findCityCenter(parsed.data.city);
+    // A city outside the known list has no coordinates to measure from, so
+    // match dogs listed in that city by name instead of returning everyone.
+    const unlistedCity = parsed.data.city && !cityCenter ? parsed.data.city : undefined;
     const profiles = await prisma.dogProfile.findMany({
       where: {
         ...(parsed.data.breed ? { breed: { equals: parsed.data.breed, mode: 'insensitive' } } : {}),
+        ...(unlistedCity ? { city: { equals: unlistedCity, mode: 'insensitive' } } : {}),
         ...(parsed.data.verifiedOnly ? { isVerified: true } : {}),
       },
       include: {

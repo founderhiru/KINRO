@@ -127,4 +127,45 @@ describe('GET /api/dog-profiles (public Discover)', () => {
     // public payload.
     expect(JSON.stringify(body)).not.toMatch(/vetName|occurredOn|documents/);
   });
+
+  it('measures distance from cities outside the original six (e.g. Kolkata, Chandigarh)', async () => {
+    findManyMock.mockResolvedValue([
+      { ...FIXTURE_PROFILE, id: 'dog_kol', city: 'Kolkata', latitude: 22.5726, longitude: 88.3639 },
+    ]);
+    const { GET } = await import('@/app/api/dog-profiles/route');
+
+    for (const city of ['Kolkata', 'Chandigarh', 'Guwahati', 'Ahmedabad']) {
+      const res = await GET(new Request(`http://test/api/dog-profiles?city=${city}&radiusKm=100`));
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      // Kolkata is the only profile; for the other cities it is far outside the radius.
+      expect(body.items).toHaveLength(city === 'Kolkata' ? 1 : 0);
+      if (city === 'Kolkata') expect(body.items[0].distanceKm).toBe(0);
+    }
+  });
+
+  it('filters by city name when the city has no known coordinates, instead of returning everyone', async () => {
+    findManyMock.mockResolvedValue([]);
+    const { GET } = await import('@/app/api/dog-profiles/route');
+
+    await GET(new Request('http://test/api/dog-profiles?city=Somewhereville'));
+
+    expect(findManyMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          city: { equals: 'Somewhereville', mode: 'insensitive' },
+        }),
+      }),
+    );
+  });
+
+  it('does not add a city-name filter for a known city', async () => {
+    findManyMock.mockResolvedValue([]);
+    const { GET } = await import('@/app/api/dog-profiles/route');
+
+    await GET(new Request('http://test/api/dog-profiles?city=Pune'));
+
+    const where = findManyMock.mock.calls[0]?.[0]?.where ?? {};
+    expect(where).not.toHaveProperty('city');
+  });
 });
