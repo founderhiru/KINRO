@@ -40,7 +40,12 @@ function AccountControl({ className }: { className?: string }) {
 
   if (!data?.session) {
     return (
-      <Button asChild variant="secondary" size="sm" className={className}>
+      <Button
+        asChild
+        variant="outline"
+        size="sm"
+        className={cn('rounded-full bg-card px-4 font-semibold', className)}
+      >
         <Link href={`/login?next=${encodeURIComponent(pathname)}`}>Sign in</Link>
       </Button>
     );
@@ -50,7 +55,7 @@ function AccountControl({ className }: { className?: string }) {
     <Button
       variant="ghost"
       size="sm"
-      className={className}
+      className={cn('rounded-full', className)}
       onClick={() =>
         signOut({
           fetchOptions: { onSuccess: () => router.refresh() },
@@ -123,11 +128,13 @@ export function SiteNav() {
   const isAuthenticated = useIsAuthenticated();
   // The brand links home, so drop a redundant '/' item from the rendered links.
   const primary = visibleItems('primary', isAuthenticated).filter((item) => item.href !== '/');
+  // Desktop shows Download as the header CTA instead of a plain link.
+  const desktopPrimary = primary.filter((item) => item.href !== '/download');
   const secondary = visibleItems('secondary', isAuthenticated);
 
   // Top-bar slots (links + `menu` dropdowns); `inline` renders, `overflow` → "More".
   const slots = buildPrimarySlots(primary);
-  const { inline, overflow } = splitPrimarySlots(slots);
+  const { inline, overflow } = splitPrimarySlots(buildPrimarySlots(desktopPrimary));
   const collapsedCount = primary.length + secondary.length;
 
   // Controlled so a drawer link both navigates AND dismisses the overlay; without
@@ -143,15 +150,15 @@ export function SiteNav() {
     slot.type === 'link' ? isActive(slot.item.href) : slot.items.some((i) => isActive(i.href));
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <nav
         aria-label="Primary"
-        className="mx-auto flex h-14 max-w-screen-xl items-center gap-2 px-4"
+        className="mx-auto flex h-16 max-w-screen-xl items-center gap-2 px-4"
       >
         <Link href="/" className="mr-2 flex shrink-0 items-center gap-2">
           {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
-          <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-7 w-auto" />
-          <span className="truncate text-base font-semibold tracking-tight">{siteName}</span>
+          <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-8 w-auto" />
+          <span className="truncate text-lg font-bold tracking-tight">{siteName}</span>
         </Link>
 
         {/* Desktop (md+): inline slots — direct links + `menu` dropdowns */}
@@ -163,7 +170,10 @@ export function SiteNav() {
                 asChild
                 variant="ghost"
                 size="sm"
-                className={cn(isActive(slot.item.href) && 'bg-accent text-accent-foreground')}
+                className={cn(
+                  'rounded-full px-3.5 text-sm font-semibold',
+                  isActive(slot.item.href) && 'bg-accent text-accent-foreground',
+                )}
               >
                 <Link
                   href={slot.item.href}
@@ -258,15 +268,24 @@ export function SiteNav() {
         {/* Right cluster: ml-auto pushes it right at every breakpoint */}
         <div className="ml-auto flex items-center gap-1">
           {/* Desktop secondary buttons */}
-          <div className="hidden items-center gap-1 md:flex">
+          <div className="hidden items-center gap-1.5 md:flex">
             {secondary.map((item) => (
-              <Button key={item.href} asChild variant="secondary" size="sm">
+              <Button
+                key={item.href}
+                asChild
+                variant="secondary"
+                size="sm"
+                className="rounded-full font-semibold"
+              >
                 <Link href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                   {item.label}
                 </Link>
               </Button>
             ))}
             <AccountControl />
+            <Button asChild size="sm" className="rounded-full px-4 font-bold shadow-brand">
+              <Link href="/download">Download KINRO App</Link>
+            </Button>
           </div>
 
           {/* Always visible */}
@@ -372,15 +391,24 @@ export function SiteFooter() {
   if (footer.length === 0) return null;
 
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-border bg-secondary/60">
       <nav
         aria-label="Footer"
-        className="mx-auto flex max-w-screen-xl flex-wrap items-center gap-1 px-4 py-6 text-sm"
+        className="mx-auto flex max-w-screen-xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-8 text-sm"
       >
-        {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
-        <img src="/kinro/symbol.png" alt="KINRO" className="mr-2 h-5 w-auto opacity-80" />
+        <span className="mr-3 flex items-center gap-2">
+          {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
+          <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-6 w-auto" />
+          <span className="font-bold tracking-tight">{siteName}</span>
+        </span>
         {footer.map((item) => (
-          <Button key={item.href} asChild variant="link" size="sm">
+          <Button
+            key={item.href}
+            asChild
+            variant="link"
+            size="sm"
+            className="text-muted-foreground"
+          >
             <Link href={item.href}>{item.label}</Link>
           </Button>
         ))}
