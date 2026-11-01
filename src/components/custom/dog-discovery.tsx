@@ -12,16 +12,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { type PickerSection, SearchablePicker } from '@/components/custom/searchable-picker';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -32,13 +26,14 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
 import { apiFetch } from '@/lib/api-client';
 import {
   type DogProfileItem as DogProfileItemType,
   DogProfileList,
   type DogProfileList as DogProfileListType,
 } from '@/lib/contracts/dog-profiles';
+import { breedSectionsWithServerSuggestions } from '@/lib/dog-breeds';
+import { MAJOR_CITIES, MORE_CITY_NAMES } from '@/lib/india-cities';
 
 type FilterValues = {
   breed: string;
@@ -66,8 +61,17 @@ function includeCurrentOption(options: string[], current: string): string[] {
 }
 
 function FilterControls({ facets, filters, onChange, idPrefix }: FilterControlsProps) {
-  const breeds = includeCurrentOption(facets.breeds, filters.breed);
-  const cities = includeCurrentOption(facets.cities, filters.city);
+  const breedSections: PickerSection[] = [
+    ...breedSectionsWithServerSuggestions(includeCurrentOption(facets.breeds, filters.breed)),
+  ];
+  const listedCities = includeCurrentOption(facets.cities, filters.city).filter(
+    (city) => !MAJOR_CITIES.includes(city) && !MORE_CITY_NAMES.includes(city),
+  );
+  const citySections: PickerSection[] = [
+    { title: 'Major cities', options: MAJOR_CITIES },
+    ...(listedCities.length ? [{ title: 'Other listed cities', options: listedCities }] : []),
+    { title: 'All cities', options: MORE_CITY_NAMES },
+  ];
   const radiusOptions = facets.radiusOptions.length ? facets.radiusOptions : DEFAULT_RADIUS_OPTIONS;
   const minRadius = radiusOptions[0] ?? 5;
   const maxRadius = radiusOptions[radiusOptions.length - 1] ?? 100;
@@ -88,44 +92,33 @@ function FilterControls({ facets, filters, onChange, idPrefix }: FilterControlsP
         <label htmlFor={`${idPrefix}-breed`} className="text-sm font-semibold text-foreground">
           Breed
         </label>
-        <Select
-          value={filters.breed || 'all'}
-          onValueChange={(value) => onChange({ ...filters, breed: value === 'all' ? '' : value })}
-        >
-          <SelectTrigger id={`${idPrefix}-breed`} className="h-11 bg-background/70">
-            <SelectValue placeholder="All breeds" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All breeds</SelectItem>
-            {breeds.map((breed) => (
-              <SelectItem key={breed} value={breed}>
-                {breed}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchablePicker
+          id={`${idPrefix}-breed`}
+          value={filters.breed}
+          onChange={(breed) => onChange({ ...filters, breed })}
+          emptyLabel="All breeds"
+          searchPlaceholder="Search or type a breed"
+          sections={breedSections}
+          allowCustom
+          customHint="Not in the list? Search for it exactly as you know it."
+        />
       </div>
 
       <div className="space-y-2">
         <label htmlFor={`${idPrefix}-city`} className="text-sm font-semibold text-foreground">
           Search from
         </label>
-        <Select
-          value={filters.city || 'all'}
-          onValueChange={(value) => onChange({ ...filters, city: value === 'all' ? '' : value })}
-        >
-          <SelectTrigger id={`${idPrefix}-city`} className="h-11 bg-background/70">
-            <SelectValue placeholder="Everywhere" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Everywhere</SelectItem>
-            {cities.map((city) => (
-              <SelectItem key={city} value={city}>
-                {city}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchablePicker
+          id={`${idPrefix}-city`}
+          value={filters.city}
+          onChange={(city) => onChange({ ...filters, city })}
+          emptyLabel="Everywhere"
+          searchPlaceholder="Search any city in India"
+          sections={citySections}
+          quickPicks={MAJOR_CITIES}
+          allowCustom
+          customHint="Not listed? Dogs listed in this city are shown, without distances."
+        />
       </div>
 
       <div className="space-y-4">
@@ -158,17 +151,6 @@ function FilterControls({ facets, filters, onChange, idPrefix }: FilterControlsP
         <p className="text-xs leading-5 text-muted-foreground">
           Choose a city to apply this radius. Without one, browse the full demo network.
         </p>
-      </div>
-
-      <div className="flex items-center justify-between gap-3 rounded-lg bg-muted/70 px-3 py-2.5">
-        <label htmlFor={`${idPrefix}-verified`} className="text-sm font-semibold text-foreground">
-          Verified profiles only
-        </label>
-        <Switch
-          id={`${idPrefix}-verified`}
-          checked={filters.verifiedOnly}
-          onCheckedChange={(checked) => onChange({ ...filters, verifiedOnly: checked })}
-        />
       </div>
 
       {(filters.breed || filters.city || filters.verifiedOnly) && (
@@ -225,11 +207,6 @@ function ProfileCard({ profile }: { profile: DogProfileItemType }) {
                   <h2 className="font-display text-2xl font-semibold tracking-tight">
                     {profile.name}
                   </h2>
-                  {profile.isVerified && (
-                    <Badge className="gap-1 rounded-full bg-brand-100 text-brand-800 hover:bg-brand-100">
-                      <ShieldCheck className="size-3" /> Verified
-                    </Badge>
-                  )}
                   {profile.hasHealthRecords && (
                     <Badge
                       variant="outline"
@@ -360,7 +337,7 @@ export function DogDiscovery() {
               Welfare-first discovery
             </Badge>
             <span className="hidden text-brand-300 sm:inline">•</span>
-            <span>12 demo profiles across six cities</span>
+            <span>Owners and dogs from cities across India</span>
           </div>
         </div>
       </section>

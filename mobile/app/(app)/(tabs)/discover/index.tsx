@@ -28,6 +28,8 @@ import {
   hasActiveRefinements,
   refineDogs,
 } from "@/lib/discover-filters";
+import { breedSectionsWithServerSuggestions } from "@/lib/dog-breeds";
+import { MAJOR_CITIES, MORE_CITY_NAMES } from "@/lib/india-cities";
 import { colors, radius, spacing, typography } from "@/theme/tokens";
 
 const HEALTH_OPTION = "Health records on file";
@@ -87,6 +89,23 @@ export default function DiscoverScreen() {
     () =>
       dogs ? refineDogs(dogs, { query, ageBand, healthRecordsOnly }) : null,
     [dogs, query, ageBand, healthRecordsOnly],
+  );
+  // City sheet: the ten major metros first, then every known city, plus any
+  // other city dogs are already listed in. Typing an unlisted city still works.
+  const citySections = useMemo(() => {
+    const known = new Set<string>([...MAJOR_CITIES, ...MORE_CITY_NAMES]);
+    const listed = cities.filter((c) => !known.has(c));
+    return [
+      { title: "Major cities", options: MAJOR_CITIES },
+      ...(listed.length
+        ? [{ title: "Other listed cities", options: listed }]
+        : []),
+      { title: "All cities", options: MORE_CITY_NAMES },
+    ];
+  }, [cities]);
+  const breedSections = useMemo(
+    () => breedSectionsWithServerSuggestions(breeds),
+    [breeds],
   );
   const anyFilter =
     !!breed ||
@@ -208,19 +227,23 @@ export default function DiscoverScreen() {
         visible={citySheetOpen}
         onClose={() => setCitySheetOpen(false)}
         title="Show dogs near…"
-        options={cities}
+        sections={citySections}
         value={city ?? ""}
         onSelect={(v) => setCity(v === city ? undefined : v)}
+        searchable
+        searchPlaceholder="Search any city in India"
+        allowCustom
       />
       <SelectBottomSheet
         visible={breedSheetOpen}
         onClose={() => setBreedSheetOpen(false)}
         title="Filter by breed"
-        options={breeds}
+        sections={breedSections}
         value={breed ?? ""}
         onSelect={(v) => setBreed(v === breed ? undefined : v)}
         searchable
-        searchPlaceholder="Search breed..."
+        searchPlaceholder="Search or type a breed"
+        allowCustom
       />
       <SelectBottomSheet
         visible={ageSheetOpen}

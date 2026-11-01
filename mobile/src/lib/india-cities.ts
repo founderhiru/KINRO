@@ -218,6 +218,31 @@ export const OTHER_CITY_NAMES: readonly string[] = INDIA_CITIES.slice(
 ).map((c) => c.name);
 
 /**
+ * The ten metros shown first in the Discover city picker, in display order.
+ * Every name here must exist in INDIA_CITIES (checked by a unit test), so each
+ * resolves to real coordinates. "Delhi NCR" is the stored name for Delhi.
+ */
+export const MAJOR_CITIES: readonly string[] = [
+  "Delhi NCR",
+  "Mumbai",
+  "Bengaluru",
+  "Hyderabad",
+  "Chennai",
+  "Kolkata",
+  "Guwahati",
+  "Pune",
+  "Ahmedabad",
+  "Chandigarh",
+];
+
+/** Every other known city, alphabetically — the "All cities" list under MAJOR_CITIES. */
+export const MORE_CITY_NAMES: readonly string[] = INDIA_CITIES.map(
+  (c) => c.name,
+)
+  .filter((name) => !MAJOR_CITIES.includes(name))
+  .sort((a, b) => a.localeCompare(b, "en-IN"));
+
+/**
  * Geographic centre of India — the best-effort placeholder location for a
  * city someone typed by hand that isn't in INDIA_CITIES. There's no
  * geocoding API available here (see the module comment above), so this
