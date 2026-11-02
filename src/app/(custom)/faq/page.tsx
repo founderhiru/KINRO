@@ -152,7 +152,7 @@ export default function FaqPage() {
       </section>
 
       <section className="section">
-        <div className="container-page max-w-3xl">
+        <div className="container-page [&>*]:max-w-3xl">
           {SECTIONS.map((section) => (
             <div key={section.title} className="mb-10">
               <h2 className="mb-2 font-display text-xl font-semibold">{section.title}</h2>

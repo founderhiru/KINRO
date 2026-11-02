@@ -41,7 +41,7 @@ export default function ContactSupportPage() {
       </section>
 
       <section className="section">
-        <div className="container-page grid max-w-3xl gap-6 md:grid-cols-2">
+        <div className="container-page grid gap-6 md:grid-cols-2">
           {OPTIONS.map((option) => (
             <Card key={option.key} className="border-border">
               <CardContent className="flex flex-col gap-4 p-6">

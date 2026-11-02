@@ -1,32 +1,30 @@
 // KINRO homepage. KINRO is mobile-first: this page introduces the brand, builds
 // trust, supports SEO and public discovery, and sends people to the app.
 //
-// Copy rule: only describe what the product does today. Anything planned lives
-// in the clearly labelled "Coming next" section and is never presented as live.
+// Copy rule: only describe what the product does today. Keep lines short, and
+// never present anything planned as live.
 
 import {
   ArrowRight,
   Check,
-  ClipboardList,
   Download,
-  Flag,
   HeartPulse,
   PawPrint,
   ShieldCheck,
-  Stethoscope,
   Users,
 } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { DiscoverScreen, HealthScreen, HomeScreen } from '@/components/custom/app-mockups';
+import { QrSlot } from '@/components/custom/qr-slot';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 // Keep this a Server Component so it can export metadata.
 export const metadata: Metadata = {
-  title: { absolute: 'KINRO — Better information. Healthier generations.' },
+  title: { absolute: 'KINRO — Genetic Wellness. Brighter Lives.' },
   description:
-    'KINRO is a mobile-first platform for responsible dog owners in India: keep your dog’s health information together, discover dogs nearby, and make trusted connections.',
+    'KINRO is a mobile-first app for responsible dog owners. Keep health records together, discover dogs nearby, connect with trust.',
   // Do not export an explicit openGraph object here; that suppresses the
   // file-based opengraph-image.tsx for the home route.
   alternates: { canonical: '/' },
@@ -43,96 +41,61 @@ const pillars = [
     number: '01',
     title: 'Dog health information',
     description:
-      'Keep vaccinations, vet visits and supporting documents for each dog in one place. Detailed records and documents stay private to your account.',
+      'Vaccinations, vet visits and documents in one place. Details stay private to you.',
     icon: HeartPulse,
   },
   {
     number: '02',
     title: 'Responsible ownership',
-    description:
-      'Give every dog a clear profile with photos, breed, age and location, so the people you meet know who they are talking about.',
+    description: 'A clear profile for every dog: photos, breed, age and location.',
     icon: PawPrint,
   },
   {
     number: '03',
     title: 'Trusted connections',
-    description:
-      'Find dogs and owners nearby by breed and distance. Conversations open only when both sides have shown interest.',
+    description: 'Find dogs and owners nearby. Chat opens when both sides are interested.',
     icon: Users,
   },
   {
     number: '04',
-    title: 'Responsible breeding, in context',
-    description:
-      'For owners who choose to breed, better information supports better decisions for the dogs, the families and the puppies involved.',
+    title: 'Responsible breeding',
+    description: 'Better information for better decisions, for dogs, families and puppies.',
     icon: ShieldCheck,
   },
 ];
 
 const workflow = [
-  [
-    '01',
-    'Create your profile',
-    'Sign in with Google, your mobile number or an email link, then add yourself and your dog.',
-  ],
+  ['01', 'Create your profile', 'Sign in, then add yourself and your dog.'],
   [
     '02',
-    'Keep health information together',
-    'Log vaccinations and vet visits and attach documents. Only you can see the details.',
+    'Keep health together',
+    'Log vaccinations and vet visits. Attach documents. Only you see them.',
   ],
-  [
-    '03',
-    'Discover and connect',
-    'Browse dogs nearby, show interest, and start a conversation when the interest is mutual.',
-  ],
+  ['03', 'Discover and connect', 'Browse nearby dogs. Chat when interest is mutual.'],
 ];
 
 const honestyPoints = [
-  'Records are added by owners. KINRO does not verify them, and veterinarians have not reviewed them.',
-  'Detailed health records and documents are private to your account.',
-  'Conversations begin only when both people have shown interest.',
-  'KINRO is not a veterinary service and does not give medical advice or diagnoses.',
-];
-
-const comingNext = [
-  {
-    icon: ClipboardList,
-    status: 'Planned',
-    title: 'Verification',
-    description:
-      'A clear process for checking owner identity and health documents, with a visible status so you can see what has and has not been reviewed.',
-  },
-  {
-    icon: Flag,
-    status: 'Planned',
-    title: 'Moderation and reporting',
-    description:
-      'Tools to report concerning profiles or behaviour, and a review process to act on those reports.',
-  },
-  {
-    icon: Stethoscope,
-    status: 'Exploring',
-    title: 'Veterinary collaboration',
-    description:
-      'We would like to work with veterinary professionals to make health information more reliable. Nothing is in place today.',
-  },
+  'Records are added by owners. They are not verified or vet-reviewed.',
+  'Health records and documents stay private to you.',
+  'Chat opens only when both sides are interested.',
+  'Not a veterinary service. No medical advice.',
 ];
 
 const appScreens = [
   {
     Screen: HomeScreen,
     title: 'Home',
-    description: 'Your dogs and a quick way into Discover, the first thing you see in the app.',
+    description: 'Your dogs, one tap from Discover.',
   },
   {
     Screen: DiscoverScreen,
     title: 'Discover',
-    description: 'Browse public dog profiles by breed and distance. No account needed to look.',
+    description: 'Browse dogs by breed and distance. No account needed.',
   },
   {
     Screen: HealthScreen,
     title: 'Health',
-    description: 'Keep vaccinations, vet visits and documents together. Details stay private.',
+    description: 'Vaccinations, vet visits, documents. Private to you.',
   },
 ];
 
@@ -172,16 +135,14 @@ export default function KinroHome() {
           <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-3 duration-700">
             <span className="app-chip mb-6">
               <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
-              Mobile-first · Built for responsible dog owners in India
+              Mobile-first · For responsible dog owners
             </span>
             <h1 className="font-display text-[clamp(2.2rem,4.4vw,3.6rem)] font-bold leading-[1.02] tracking-[-0.03em] text-foreground">
-              Better information.
-              <span className="block text-primary">Healthier generations.</span>
-              <span className="block">Stronger connections.</span>
+              Genetic Wellness.
+              <span className="block text-primary">Brighter Lives.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
-              Built for responsible dog owners and breeders in India, with a focus on better
-              information, healthier decisions, and trusted connections.
+              Health records, nearby dogs and trusted connections, in one app.
             </p>
             <div className="mt-8">
               <StoreCtas />
@@ -231,12 +192,9 @@ export default function KinroHome() {
         <div className="container-page">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-eyebrow">The KINRO app</p>
-            <h2 className="mt-4 font-display text-h2 text-foreground">
-              Everything in one calm, simple app.
-            </h2>
+            <h2 className="mt-4 font-display text-h2 text-foreground">One calm, simple app.</h2>
             <p className="mt-5 text-body-lg text-muted-foreground">
-              The app is the main KINRO experience. You can also browse public dog profiles on this
-              website at any time.
+              The app is the full KINRO experience. Public dog profiles are open to browse here too.
             </p>
           </div>
           <div className="mt-14 grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -255,7 +213,7 @@ export default function KinroHome() {
             ))}
           </div>
           <p className="mt-12 text-center text-xs text-muted-foreground">
-            Illustrative screens with sample dogs and photos. The app itself may differ in detail.
+            Illustrative screens. Sample dogs and photos. The app may differ in detail.
           </p>
         </div>
       </section>
@@ -267,11 +225,10 @@ export default function KinroHome() {
             <p className="text-eyebrow">Why KINRO</p>
             <h2 className="mt-4 font-display text-h2 text-foreground">
               Clearer information for
-              <span className="text-primary"> every dog and every owner.</span>
+              <span className="text-primary"> every dog.</span>
             </h2>
             <p className="mt-5 text-body-lg text-muted-foreground">
-              KINRO starts with the dog: their health information, their people, and the community
-              around them. Breeding is one part of that picture, not the whole of it.
+              KINRO starts with the dog: health, people and community. Breeding is one part of it.
             </p>
           </div>
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
@@ -296,9 +253,7 @@ export default function KinroHome() {
         <div className="container-page">
           <div className="max-w-2xl">
             <p className="text-eyebrow">How it works</p>
-            <h2 className="mt-4 font-display text-h2 text-foreground">
-              Simple by design. Made for your phone.
-            </h2>
+            <h2 className="mt-4 font-display text-h2 text-foreground">Simple by design.</h2>
           </div>
           <ol className="mt-12 grid gap-4 md:grid-cols-3">
             {workflow.map(([number, title, description]) => (
@@ -335,10 +290,10 @@ export default function KinroHome() {
                   Trust and transparency
                 </Badge>
                 <h2 className="mt-5 font-display text-h2 font-bold">
-                  Clear about what KINRO is, and what it is not.
+                  Clear about what KINRO is, and isn’t.
                 </h2>
                 <p className="mt-5 text-lg leading-8 text-primary-foreground/80">
-                  Trust starts with honesty. Here is exactly what to expect today.
+                  Honest about what to expect today.
                 </p>
               </div>
               <ul className="grid gap-3 text-sm md:pl-4">
@@ -357,43 +312,11 @@ export default function KinroHome() {
         </div>
       </section>
 
-      {/* Coming next — plans only, never presented as live */}
-      <section id="coming-next" className="section-lg scroll-mt-14">
+      {/* Closing call to action — the app's warm promo card, scaled up. The right
+          column is reserved for the QR code (desktop visitors scan with a phone). */}
+      <section className="py-section">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <p className="text-eyebrow">Coming next</p>
-            <h2 className="mt-4 font-display text-h2 text-foreground">Where we are heading.</h2>
-            <p className="mt-5 text-body-lg text-muted-foreground">
-              These are plans, not current features. We will announce each one when it is ready.
-            </p>
-          </div>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {comingNext.map(({ icon: Icon, status, title, description }) => (
-              <article key={title} className="rounded-xl border border-dashed border-input p-6">
-                <div className="flex items-center justify-between">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-secondary text-muted-foreground">
-                    <Icon className="size-5" strokeWidth={1.8} aria-hidden="true" />
-                  </span>
-                  <Badge variant="outline" className="rounded-full text-[0.7rem]">
-                    {status}
-                  </Badge>
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-foreground">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{description}</p>
-              </article>
-            ))}
-          </div>
-          <p className="mt-6 text-sm text-muted-foreground">
-            Timing may change. Until a feature is announced as available, please do not assume it
-            exists.
-          </p>
-        </div>
-      </section>
-
-      {/* Closing call to action — the app's warm promo card, scaled up */}
-      <section className="section">
-        <div className="container-page">
-          <div className="flex flex-col gap-8 rounded-[1.75rem] bg-[#f8e9c8] p-8 md:flex-row md:items-center md:justify-between md:p-12">
+          <div className="grid gap-10 rounded-[1.75rem] bg-[#f8e9c8] p-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-14 md:p-12">
             <div className="max-w-xl">
               {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
               <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="mb-5 h-12 w-auto" />
@@ -401,11 +324,15 @@ export default function KinroHome() {
                 Take KINRO <span className="text-primary">with you.</span>
               </h2>
               <p className="mt-4 text-foreground/75">
-                Get the app to keep your dog’s health information together and connect with trusted
-                owners nearby. Store links appear on the Download page once the app is published.
+                Health records and trusted owners nearby, in your pocket.
               </p>
+              <div className="mt-8">
+                <StoreCtas />
+              </div>
             </div>
-            <StoreCtas />
+            <div className="hidden md:block">
+              <QrSlot />
+            </div>
           </div>
         </div>
       </section>

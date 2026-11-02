@@ -113,7 +113,7 @@ function FilterControls({ facets, filters, onChange, idPrefix }: FilterControlsP
           value={filters.city}
           onChange={(city) => onChange({ ...filters, city })}
           emptyLabel="Everywhere"
-          searchPlaceholder="Search any city in India"
+          searchPlaceholder="Search your city"
           sections={citySections}
           quickPicks={MAJOR_CITIES}
           allowCustom
@@ -337,7 +337,7 @@ export function DogDiscovery() {
               Welfare-first discovery
             </Badge>
             <span className="hidden text-brand-300 sm:inline">•</span>
-            <span>Owners and dogs from cities across India</span>
+            <span>Owners and dogs from cities near you</span>
           </div>
         </div>
       </section>

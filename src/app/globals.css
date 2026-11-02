@@ -206,10 +206,10 @@
 
 @layer components {
   .section {
-    @apply py-section px-gutter;
+    @apply py-section;
   }
   .section-lg {
-    @apply py-section-lg px-gutter;
+    @apply py-section-lg;
   }
   .container-page {
     @apply mx-auto w-full max-w-[var(--container-page)] px-gutter;
