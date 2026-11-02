@@ -2,9 +2,10 @@
 // sends people to get the app. Store links live in src/lib/app-links.ts and are
 // null until the app is published — this page never invents a store URL.
 
-import { ArrowRight, Download, QrCode, Smartphone } from 'lucide-react';
+import { ArrowRight, Download, Smartphone } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { QrSlot } from '@/components/custom/qr-slot';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,8 +13,7 @@ import { appLinks, safeStoreUrl } from '@/lib/app-links';
 
 export const metadata: Metadata = {
   title: 'Download the KINRO app',
-  description:
-    'KINRO is built for your phone. Get the app for iOS and Android to keep your dog’s health information, discover dogs nearby, and make trusted connections.',
+  description: 'KINRO is built for your phone. Get the app for iOS and Android.',
   alternates: { canonical: '/download' },
 };
 
@@ -47,8 +47,7 @@ export default function DownloadPage() {
               <span className="block text-brand-700">for your phone.</span>
             </h1>
             <p className="mt-6 max-w-xl text-body-lg text-muted-foreground">
-              The KINRO app is where you keep your dog’s health information, discover dogs and
-              owners nearby, and make trusted connections.
+              Health records, nearby dogs and trusted connections, in one app.
             </p>
           </div>
         </div>
@@ -89,29 +88,13 @@ export default function DownloadPage() {
 
       <section className="section border-t border-border bg-muted/40">
         <div className="container-page grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-12">
-          {appLinks.qrImage ? (
-            <div className="w-fit rounded-xl border border-border bg-card p-4 shadow-sm">
-              {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
-              <img
-                src={appLinks.qrImage}
-                alt="QR code that opens the KINRO download page on your phone"
-                width={176}
-                height={176}
-                className="size-44"
-              />
-            </div>
-          ) : (
-            <div className="flex size-44 items-center justify-center rounded-xl border border-dashed border-border bg-card text-muted-foreground">
-              <QrCode className="size-10" aria-hidden="true" />
-              <span className="sr-only">QR code not available yet</span>
-            </div>
-          )}
+          <QrSlot />
           <div className="max-w-xl">
             <h2 className="font-display text-h4">On a computer?</h2>
             <p className="mt-3 leading-7 text-muted-foreground">
               {appLinks.qrImage
-                ? 'Scan this code with your phone’s camera to open this page on your phone and get the app.'
-                : 'A QR code will appear here once the app is published, so you can scan it with your phone. Until then, you can explore the KINRO website.'}
+                ? 'Scan the code with your phone camera to open this page and get the app.'
+                : 'A QR code will appear here once the app is published. Until then, explore KINRO on the web.'}
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Button asChild variant="outline" className="h-11 rounded-full px-5">
@@ -129,9 +112,11 @@ export default function DownloadPage() {
 
       {!anyAvailable ? (
         <section className="section border-t border-border">
-          <div className="container-page max-w-2xl text-sm leading-6 text-muted-foreground">
-            KINRO is being prepared for iOS and Android. We only list a store link here once it is
-            live and working.
+          <div className="container-page">
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              KINRO is being prepared for iOS and Android. A store link appears here only once it is
+              live.
+            </p>
           </div>
         </section>
       ) : null}

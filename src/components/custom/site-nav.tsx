@@ -151,10 +151,7 @@ export function SiteNav() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <nav
-        aria-label="Primary"
-        className="mx-auto flex h-16 max-w-screen-xl items-center gap-2 px-4"
-      >
+      <nav aria-label="Primary" className="container-page flex h-16 items-center gap-2">
         <Link href="/" className="mr-2 flex shrink-0 items-center gap-2">
           {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
           <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-8 w-auto" />
@@ -390,29 +387,58 @@ export function SiteFooter() {
   const footer = visibleItems('footer', isAuthenticated);
   if (footer.length === 0) return null;
 
+  // Group links into columns by `section`, keeping first-seen order.
+  const columns = new Map<string, NavItem[]>();
+  for (const item of footer) {
+    const key = item.section ?? 'More';
+    const bucket = columns.get(key);
+    if (bucket) bucket.push(item);
+    else columns.set(key, [item]);
+  }
+
   return (
     <footer className="border-t border-border bg-secondary/60">
-      <nav
-        aria-label="Footer"
-        className="mx-auto flex max-w-screen-xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-8 text-sm"
-      >
-        <span className="mr-3 flex items-center gap-2">
-          {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
-          <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-6 w-auto" />
-          <span className="font-bold tracking-tight">{siteName}</span>
-        </span>
-        {footer.map((item) => (
-          <Button
-            key={item.href}
-            asChild
-            variant="link"
-            size="sm"
-            className="text-muted-foreground"
+      <div className="container-page py-12">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
+          <div className="max-w-xs">
+            <Link href="/" className="inline-flex items-center gap-2">
+              {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
+              <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-8 w-auto" />
+              <span className="text-lg font-bold tracking-tight">{siteName}</span>
+            </Link>
+            <p className="mt-4 text-sm leading-6 text-muted-foreground">
+              Genetic Wellness. Brighter Lives.
+            </p>
+          </div>
+          <nav
+            aria-label="Footer"
+            className="grid grid-cols-2 gap-x-6 gap-y-8 md:col-span-4 md:grid-cols-4"
           >
-            <Link href={item.href}>{item.label}</Link>
-          </Button>
-        ))}
-      </nav>
+            {[...columns].map(([heading, items]) => (
+              <div key={heading}>
+                <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                  {heading}
+                </h2>
+                <ul className="mt-4 space-y-3 text-sm">
+                  {items.map((item) => (
+                    <li key={`${heading}:${item.href}`}>
+                      <Link
+                        href={item.href}
+                        className="text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </div>
+        <div className="mt-10 border-t border-border pt-6 text-xs text-muted-foreground">
+          © {new Date().getFullYear()} {siteName}. All rights reserved.
+        </div>
+      </div>
     </footer>
   );
 }
