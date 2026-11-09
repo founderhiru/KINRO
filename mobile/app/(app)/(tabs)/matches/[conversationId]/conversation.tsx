@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/Button";
 import { ErrorText } from "@/components/ErrorText";
 import { RequireAuthScreen } from "@/components/RequireAuthScreen";
+import { SafetyActions } from "@/components/SafetyActions";
 import { Screen } from "@/components/Screen";
 import { Skeleton } from "@/components/Skeleton";
 import { ApiError } from "@/lib/api-client";
@@ -238,6 +239,12 @@ function ConversationContent() {
             About {conversation.targetDogName}
           </Text>
         </View>
+        <SafetyActions
+          variant="menu"
+          target={{ conversationId: conversation.id }}
+          subjectName={conversation.otherUserName ?? "this person"}
+          onBlocked={() => router.replace("/(app)/(tabs)/matches")}
+        />
       </View>
 
       <KeyboardAvoidingView

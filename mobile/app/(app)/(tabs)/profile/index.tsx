@@ -20,6 +20,8 @@ import { Skeleton } from "@/components/Skeleton";
 import { authClient, useSession } from "@/lib/auth-client";
 import type { OwnerProfileItem } from "@/lib/contracts";
 import { getOwnerProfile } from "@/lib/owner-profile-api";
+import { DELETE_ACCOUNT_WARNING, safetyErrorMessage } from "@/lib/safety";
+import { deleteMyAccount } from "@/lib/safety-api";
 import { useRequireAuth } from "@/lib/use-require-auth";
 import { colors, spacing, typography } from "@/theme/tokens";
 import { HelpTrustCard } from "./help-trust";
@@ -32,6 +34,7 @@ export default function ProfileScreen() {
   );
   const [profileError, setProfileError] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const isAuthenticated = !!session;
 
   const load = useCallback(async () => {
@@ -71,6 +74,39 @@ export default function ProfileScreen() {
     } finally {
       setLoggingOut(false);
     }
+  }
+
+  function confirmDeleteAccount() {
+    Alert.alert("Delete your account?", DELETE_ACCOUNT_WARNING, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete account",
+        style: "destructive",
+        onPress: () => void handleDeleteAccount(),
+      },
+    ]);
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    try {
+      await deleteMyAccount();
+    } catch (err) {
+      setDeleting(false);
+      Alert.alert(
+        "Couldn't delete your account",
+        safetyErrorMessage(err, "Please check your connection and try again."),
+      );
+      return;
+    }
+    // The server session is already gone; this just clears the stored cookie.
+    try {
+      await authClient.signOut();
+    } catch {
+      // Nothing left to sign out of.
+    }
+    setDeleting(false);
+    router.replace("/");
   }
 
   const name = session?.user.name ?? null;
@@ -199,6 +235,14 @@ export default function ProfileScreen() {
           />
         </View>
 
+        <View style={styles.blockedButton}>
+          <Button
+            label="Blocked users"
+            onPress={() => router.push("/(app)/(tabs)/profile/blocked")}
+            variant="secondary"
+          />
+        </View>
+
         <HelpTrustCard />
 
         <View style={styles.logoutButton}>
@@ -209,6 +253,18 @@ export default function ProfileScreen() {
             loading={loggingOut}
           />
         </View>
+
+        <Pressable
+          onPress={confirmDeleteAccount}
+          disabled={deleting}
+          accessibilityRole="button"
+          accessibilityLabel="Delete account"
+          style={styles.deleteAccount}
+        >
+          <Text style={styles.deleteAccountText}>
+            {deleting ? "Deleting…" : "Delete account"}
+          </Text>
+        </Pressable>
       </ScrollView>
     </Screen>
   );
@@ -226,6 +282,18 @@ const styles = StyleSheet.create({
   myDogsButton: { marginTop: spacing.md },
   notificationsButton: { marginTop: spacing.md },
   pricingButton: { marginTop: spacing.md },
+  blockedButton: { marginTop: spacing.md },
+  deleteAccount: {
+    alignSelf: "center",
+    minHeight: 44,
+    justifyContent: "center",
+    marginTop: spacing.lg,
+  },
+  deleteAccountText: {
+    ...typography.caption,
+    color: colors.danger,
+    fontWeight: "700",
+  },
   skeletonWrap: { marginTop: spacing.xs },
   skeletonGap: { marginTop: spacing.xs },
   logoutButton: { marginTop: spacing.xl },

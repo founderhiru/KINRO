@@ -6,10 +6,11 @@
 import 'server-only';
 
 import { NextResponse } from 'next/server';
-import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
+import { AuthError, getAuthenticatedUser, requireAuthenticatedUser } from '@/lib/auth';
 import { DogDiscoveryQuery, DogProfileList, DogProfileWrite } from '@/lib/contracts/dog-profiles';
 import { prisma } from '@/lib/db';
 import { findKnownCity } from '@/lib/india-cities';
+import { getBlockedUserIds } from '@/lib/safety';
 
 // Minimal URL-safe slug from the dog's name plus a short random suffix for
 // uniqueness — there is no per-owner slug editing UI, so this only needs to
@@ -69,8 +70,13 @@ export async function GET(request: Request) {
     // A city outside the known list has no coordinates to measure from, so
     // match dogs listed in that city by name instead of returning everyone.
     const unlistedCity = parsed.data.city && !cityCenter ? parsed.data.city : undefined;
+    // Discovery is public, but a signed-in caller never sees dogs owned by
+    // someone they blocked or who blocked them.
+    const viewer = await getAuthenticatedUser();
+    const blockedIds = viewer ? await getBlockedUserIds(viewer.id) : [];
     const profiles = await prisma.dogProfile.findMany({
       where: {
+        ...(blockedIds.length ? { NOT: { ownerId: { in: blockedIds } } } : {}),
         ...(parsed.data.breed ? { breed: { equals: parsed.data.breed, mode: 'insensitive' } } : {}),
         ...(unlistedCity ? { city: { equals: unlistedCity, mode: 'insensitive' } } : {}),
         ...(parsed.data.verifiedOnly ? { isVerified: true } : {}),

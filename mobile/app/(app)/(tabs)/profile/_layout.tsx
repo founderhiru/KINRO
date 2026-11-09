@@ -20,6 +20,7 @@ export default function ProfileLayout() {
           headerLeft: () => <HeaderBackButton />,
         }}
       />
+      <Stack.Screen name="blocked" options={{ title: "Blocked users" }} />
       <Stack.Screen name="pricing" options={{ title: "Connection Service" }} />
       {/* Help & Trust is its own nested stack (FAQ / Privacy / Security /
           Terms / Contact Support) with its own headers, so the outer

@@ -1,0 +1,32 @@
+// Safety: user reports and blocks (App Store / Play user-generated-content
+// requirements). A Block hides two users from each other everywhere. A Report
+// is a record for KINRO to review; it deliberately has NO foreign keys so the
+// evidence survives if either account is later deleted.
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blocker   User     @relation("BlockBlocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockedId String
+  blocked   User     @relation("BlockBlocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+  @@index([blockedId])
+  @@map("block")
+}
+
+model Report {
+  id           String   @id @default(cuid())
+  reporterId   String
+  targetUserId String
+  targetDogId  String?
+  reason       String
+  details      String?
+  status       String   @default("open")
+  createdAt    DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@index([targetUserId])
+  @@map("report")
+}

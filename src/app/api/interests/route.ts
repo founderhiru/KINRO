@@ -10,6 +10,7 @@ import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { InterestWrite, toInterestItem } from '@/lib/contracts/interests';
 import { prisma } from '@/lib/db';
 import { emitNotification } from '@/lib/notifications';
+import { isBlockedBetween } from '@/lib/safety';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +38,11 @@ export async function POST(request: Request) {
     // checks below.
     const targetDog = await prisma.dogProfile.findUnique({ where: { id: targetDogId } });
     if (!targetDog) {
+      return NextResponse.json({ error: 'Dog profile not found' }, { status: 404 });
+    }
+
+    // A block in either direction looks exactly like a missing dog.
+    if (targetDog.ownerId && (await isBlockedBetween(user.id, targetDog.ownerId))) {
       return NextResponse.json({ error: 'Dog profile not found' }, { status: 404 });
     }
 

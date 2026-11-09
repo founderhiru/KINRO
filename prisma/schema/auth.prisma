@@ -64,6 +64,8 @@ model User {
   entitlements        Entitlement[]
   // Launch MVP Phase D — see prisma/schema/notification-event.prisma.
   notificationEvents  NotificationEvent[]
+  blocksMade          Block[]             @relation("BlockBlocker")
+  blocksReceived      Block[]             @relation("BlockBlocked")
 
   @@map("user")
 }
