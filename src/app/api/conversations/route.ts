@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { ConversationList } from '@/lib/contracts/conversations';
 import { prisma } from '@/lib/db';
+import { getBlockedUserIds } from '@/lib/safety';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,11 +17,16 @@ export async function GET() {
   try {
     const user = await requireAuthenticatedUser();
 
+    const blockedIds = await getBlockedUserIds(user.id);
     const conversations = await prisma.conversation.findMany({
       where: {
         match: {
           status: 'active',
           OR: [{ senderId: user.id }, { receiverId: user.id }],
+          // Blocked in either direction: hidden from both people.
+          ...(blockedIds.length
+            ? { AND: [{ senderId: { notIn: blockedIds } }, { receiverId: { notIn: blockedIds } }] }
+            : {}),
         },
       },
       include: {

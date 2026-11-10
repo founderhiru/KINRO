@@ -13,6 +13,7 @@
 import 'server-only';
 
 import { prisma } from '@/lib/db';
+import { isBlockedBetween } from '@/lib/safety';
 
 export class ConversationAccessError extends Error {
   readonly status = 404;
@@ -41,6 +42,12 @@ export async function loadOwnedConversation(
     (conversation.match.senderId === userId || conversation.match.receiverId === userId);
 
   if (!conversation || !isParticipant || conversation.match.status !== 'active') {
+    throw new ConversationAccessError('Conversation not found');
+  }
+
+  // A block in either direction closes the conversation for both people, and
+  // looks exactly like a missing one — the blocked user is never told.
+  if (await isBlockedBetween(conversation.match.senderId, conversation.match.receiverId)) {
     throw new ConversationAccessError('Conversation not found');
   }
 

@@ -83,13 +83,13 @@ const SECTIONS: Section[] = [
   {
     heading: "Your choices",
     paragraphs: [
-      "You can update your owner profile and your dogs' profiles at any time from within the app. For anything you can't change yourself yet — including removing a dog profile or closing your account — contact KINRO support and we'll help.",
+      "You can update your owner profile and your dogs' profiles at any time from within the app. You can report or block other users, and delete your account yourself. To remove a single dog profile, contact KINRO support and we'll help.",
     ],
   },
   {
     heading: "Account deletion",
     paragraphs: [
-      "There's no self-serve \"Delete account\" button in the app today. To close your account, contact KINRO support and we'll take care of it for you.",
+      "You can delete your account yourself: go to Profile → Delete account (or sign in on the website and use Profile → Delete account). Deleting permanently removes your profile, your dogs, their photos and health records, your conversations and your sign-in. Reports about unsafe behaviour, including any you made or that were made about you, may be kept so we can keep people safe. If you can't sign in, contact KINRO support and we'll delete it for you.",
     ],
   },
   {

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { DeleteAccountCard } from '@/components/custom/delete-account';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -191,6 +192,7 @@ export function OwnerProfileView() {
           )}
         </CardContent>
       </Card>
+      <DeleteAccountCard />
     </main>
   );
 }

@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { OutgoingInterestList } from '@/lib/contracts/interests';
 import { prisma } from '@/lib/db';
+import { getBlockedUserIds } from '@/lib/safety';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +14,12 @@ export async function GET() {
   try {
     const user = await requireAuthenticatedUser();
 
+    const blockedIds = await getBlockedUserIds(user.id);
     const interests = await prisma.interest.findMany({
-      where: { senderId: user.id },
+      where: {
+        senderId: user.id,
+        ...(blockedIds.length ? { NOT: { targetDog: { ownerId: { in: blockedIds } } } } : {}),
+      },
       include: { targetDog: true },
       orderBy: { createdAt: 'desc' },
     });

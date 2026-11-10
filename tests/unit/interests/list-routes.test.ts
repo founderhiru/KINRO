@@ -3,6 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
+// Blocking has its own tests (tests/unit/safety); here nobody is blocked.
+vi.mock('@/lib/safety', () => ({
+  getBlockedUserIds: vi.fn().mockResolvedValue([]),
+  isBlockedBetween: vi.fn().mockResolvedValue(false),
+}));
+
 class FakeAuthError extends Error {
   readonly status = 401;
 }

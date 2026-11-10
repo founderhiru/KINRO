@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { MatchList } from '@/lib/contracts/matches';
 import { prisma } from '@/lib/db';
+import { getBlockedUserIds } from '@/lib/safety';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,8 +15,14 @@ export async function GET() {
   try {
     const user = await requireAuthenticatedUser();
 
+    const blockedIds = await getBlockedUserIds(user.id);
     const matches = await prisma.match.findMany({
-      where: { OR: [{ senderId: user.id }, { receiverId: user.id }] },
+      where: {
+        OR: [{ senderId: user.id }, { receiverId: user.id }],
+        ...(blockedIds.length
+          ? { AND: [{ senderId: { notIn: blockedIds } }, { receiverId: { notIn: blockedIds } }] }
+          : {}),
+      },
       include: { sender: true, receiver: true, targetDog: true, conversation: true },
       orderBy: { createdAt: 'desc' },
     });

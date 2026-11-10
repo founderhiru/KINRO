@@ -44,7 +44,7 @@ const SECTIONS: FaqSection[] = [
     items: [
       {
         q: "What is KINRO?",
-        a: "KINRO is a verified, health-first platform for dog owners — a place to build a profile for your dog, keep track of health information, discover other dogs and owners nearby, and make trusted connections.",
+        a: "KINRO is a health-first platform for dog owners — a place to build a profile for your dog, keep track of health information, discover other dogs and owners nearby, and make trusted connections.",
       },
       {
         q: "Is KINRO free?",
@@ -90,11 +90,11 @@ const SECTIONS: FaqSection[] = [
       },
       {
         q: "Can I report another user?",
-        a: "There's no in-app report button today. If you run into a problem with another user, please contact KINRO support directly and we'll look into it.",
+        a: "Yes. Tap Report or block on a dog profile, or the ⋯ in a conversation. Choose a reason and send it. The KINRO team reviews reports, and the other person isn't told who reported them.",
       },
       {
         q: "Can I block someone?",
-        a: "There's no in-app block feature yet. If someone is bothering you, contact KINRO support and we'll help.",
+        a: "Yes. Tap Report or block on their dog profile, or the ⋯ in your conversation, then choose Block. You'll no longer see each other in Discover or Messages, and they aren't told. You can unblock any time from Profile → Blocked users.",
       },
       {
         q: "What happens when I send a connection request?",
@@ -119,7 +119,7 @@ const SECTIONS: FaqSection[] = [
       },
       {
         q: "Can I delete my account?",
-        a: "There's no self-serve \"Delete account\" option in the app today. Contact KINRO support and we'll help you close your account.",
+        a: "Yes. Go to Profile → Delete account. This permanently deletes your profile, your dogs with their photos and health records, and your conversations.",
       },
     ],
   },

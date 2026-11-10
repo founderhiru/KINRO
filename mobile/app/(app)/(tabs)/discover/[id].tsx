@@ -8,9 +8,11 @@ import { Card } from "@/components/Card";
 import { DogPhoto } from "@/components/DogPhoto";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorText } from "@/components/ErrorText";
+import { SafetyActions } from "@/components/SafetyActions";
 import { Screen } from "@/components/Screen";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ApiError } from "@/lib/api-client";
+import { useSession } from "@/lib/auth-client";
 import { getCachedDiscoverDog } from "@/lib/discover-cache";
 import { expressInterest } from "@/lib/interest-api";
 import { useRequireAuth } from "@/lib/use-require-auth";
@@ -40,6 +42,7 @@ export default function PublicDogDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dog = getCachedDiscoverDog(id);
   const { promptVisible, setPromptVisible, requireAuth } = useRequireAuth();
+  const { data: session } = useSession();
   const [interestState, setInterestState] = useState<InterestState>("idle");
   const [interestError, setInterestError] = useState<string | null>(null);
 
@@ -125,6 +128,15 @@ export default function PublicDogDetailScreen() {
               ) : null}
             </View>
           )}
+
+          {/* Report / block: needs an account (the report is tied to one). */}
+          {session ? (
+            <SafetyActions
+              target={{ dogId: dog.id }}
+              subjectName={`${dog.name}'s owner`}
+              onBlocked={() => router.replace("/(app)/(tabs)/discover")}
+            />
+          ) : null}
         </View>
       </ScrollView>
 
