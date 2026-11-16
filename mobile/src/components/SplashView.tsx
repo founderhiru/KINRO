@@ -78,7 +78,9 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
           <Text style={styles.wordmark} accessibilityRole="header">
             KINRO
           </Text>
-          <Text style={styles.tagline}>Dogs bring people closer</Text>
+          <Text style={styles.tagline}>
+            The Digital Life Record for Every Dog
+          </Text>
         </View>
 
         <View style={styles.footer}>
@@ -91,7 +93,7 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
               },
             ]}
           >
-            A happier world for dogs and the people who love them.
+            Your dog’s whole life, in one safe place.
           </Text>
           <View style={styles.footerRow}>
             <IntroDots total={INTRO_DOT_COUNT} active={0} tone="light" />

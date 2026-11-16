@@ -47,7 +47,8 @@ export default function DownloadPage() {
               <span className="block text-brand-700">for your phone.</span>
             </h1>
             <p className="mt-6 max-w-xl text-body-lg text-muted-foreground">
-              Health records, nearby dogs and trusted connections, in one app.
+              Your dog’s whole life, in one safe place: health records, a lasting profile and
+              trusted connections.
             </p>
           </div>
         </div>
