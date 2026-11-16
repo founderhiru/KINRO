@@ -34,5 +34,4 @@ content differs from the brief.
 
 ## Current state
 
-Only `pillar-identity.jpg` is a real photo today (an interim licensed
-placeholder). Every other slot uses a fallback until a photo is added.
+Interim AI-generated images are in place for `lifetime-puppy`, `lifetime-adult` and `lifetime-senior`, and an interim licensed photo for `pillar-identity`. The other slots use fallbacks until photos are added. Replace the interim images with commissioned or licensed photography when available.

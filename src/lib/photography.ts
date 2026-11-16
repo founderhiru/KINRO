@@ -17,17 +17,17 @@ import path from 'node:path';
 
 export const PHOTO_SLOTS = {
   'lifetime-puppy': {
-    alt: 'A Golden Retriever or Labrador puppy having a check-up while its owner and a veterinarian look on.',
+    alt: 'A smiling Golden Retriever puppy, close up, with soft ears and bright eyes.',
     brief:
       'Golden Retriever or Labrador puppy at a vet check-up, owner and veterinarian together. Warm and reassuring.',
   },
   'lifetime-adult': {
-    alt: 'A healthy adult dog at home with its family, children close by.',
+    alt: 'A happy adult Golden Retriever smiling in soft outdoor light.',
     brief:
       'Healthy adult dog with its family at home, children interacting with the dog. Natural light.',
   },
   'lifetime-senior': {
-    alt: 'A senior Golden Retriever or Labrador being gently examined by a veterinarian.',
+    alt: 'A senior Golden Retriever with a grey muzzle resting its head on its paw.',
     brief:
       'Senior Golden Retriever or Labrador in a wellness exam with a veterinarian. Care and trust.',
   },
