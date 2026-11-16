@@ -3,10 +3,10 @@
 //
 // Positioning: "The Digital Life Record for Every Dog".
 //
-// Copy rule: only describe what the product does today. Anything planned is
-// labelled "Coming soon" and is never presented as live. Keep lines short.
-// Status labels below were set from an audit of the web app, API and mobile app
-// (see docs/PRODUCT_GAP_ASSESSMENT.md). Update them when features ship.
+// Copy rule: only show what the product does today. Planned features are NOT
+// shown on this page (no "coming soon" items). Keep lines short.
+// What is listed below was checked against the web app, API and mobile app
+// (see docs/PRODUCT_GAP_ASSESSMENT.md). Add a feature here only once it ships.
 
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -14,14 +14,12 @@ import {
   BookOpen,
   Building2,
   Check,
-  Clock,
   Download,
   Fingerprint,
   HeartPulse,
   Home,
   MessageCircle,
   PawPrint,
-  Sparkles,
   Stethoscope,
   Users,
 } from 'lucide-react';
@@ -33,7 +31,6 @@ import { QrSlot } from '@/components/custom/qr-slot';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { PhotoSlot } from '@/lib/photography';
-import { cn } from '@/lib/utils';
 
 // Keep this a Server Component so it can export metadata.
 export const metadata: Metadata = {
@@ -45,41 +42,17 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 };
 
-type Status = 'live' | 'partial' | 'soon';
-
-const statusLabel: Record<Status, string> = {
-  live: 'Available',
-  partial: 'Partly available',
-  soon: 'Coming soon',
-};
-
 interface Feature {
   text: string;
-  /** false = planned, shown with a "Coming soon" tag. */
-  live: boolean;
 }
 
 function FeatureList({ items }: { items: Feature[] }) {
   return (
     <ul className="space-y-2.5 text-sm leading-6">
-      {items.map(({ text, live }) => (
+      {items.map(({ text }) => (
         <li key={text} className="flex items-start gap-2.5">
-          {live ? (
-            <Check className="mt-1 size-4 shrink-0 text-primary" aria-hidden="true" />
-          ) : (
-            <Clock className="mt-1 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-          )}
-          <span className={cn('min-w-0', live ? 'text-foreground' : 'text-muted-foreground')}>
-            {text}
-            {live ? null : (
-              <>
-                {/* A real space gives the browser a place to wrap the tag onto its own line. */}{' '}
-                <span className="inline-flex whitespace-nowrap rounded-full border border-border px-2 py-0.5 align-middle text-[0.6rem] font-semibold uppercase leading-none tracking-wide">
-                  Coming soon
-                </span>
-              </>
-            )}
-          </span>
+          <Check className="mt-1 size-4 shrink-0 text-primary" aria-hidden="true" />
+          <span className="min-w-0 text-foreground">{text}</span>
         </li>
       ))}
     </ul>
@@ -117,9 +90,9 @@ const stages: {
     title: 'A healthy start',
     icon: PawPrint,
     features: [
-      { text: 'Log each vaccination as it happens', live: true },
-      { text: 'Keep vet notes and certificates together', live: true },
-      { text: 'Deworming schedules and growth tracking', live: false },
+      { text: 'Log each vaccination as it happens' },
+      { text: 'Keep vet notes and certificates together' },
+      { text: 'A profile with photos from day one' },
     ],
   },
   {
@@ -128,9 +101,9 @@ const stages: {
     title: 'Everyday life, organised',
     icon: Home,
     features: [
-      { text: 'Vet visits and documents in one place', live: true },
-      { text: 'A clear profile with photos, breed and age', live: true },
-      { text: 'Meet responsible dog owners nearby', live: true },
+      { text: 'Vet visits and documents in one place' },
+      { text: 'A clear profile with photos, breed and age' },
+      { text: 'Meet responsible dog owners nearby' },
     ],
   },
   {
@@ -139,9 +112,9 @@ const stages: {
     title: 'Care that remembers',
     icon: Stethoscope,
     features: [
-      { text: 'The full history, ready for every vet visit', live: true },
-      { text: 'Medication records', live: false },
-      { text: 'Preventive-care reminders', live: false },
+      { text: 'The full history, ready for every vet visit' },
+      { text: 'Prescriptions and lab reports kept on file' },
+      { text: 'Private to you, and removed if you delete your account' },
     ],
   },
 ];
@@ -150,7 +123,6 @@ interface Pillar {
   number: string;
   title: string;
   description: string;
-  status: Status;
   slot: PhotoSlot;
   visual: 'health' | 'community' | { icon: LucideIcon };
   visualLabel?: string;
@@ -160,89 +132,39 @@ interface Pillar {
 const pillars: Pillar[] = [
   {
     number: '01',
-    title: 'Dog Health Intelligence',
+    title: 'Dog Health Records',
     description: 'Vaccinations, vet visits and documents, kept together and private to you.',
-    status: 'partial',
     slot: 'pillar-health',
     visual: 'health',
     visualLabel: 'App screen showing a dog’s vaccination, vet visit and document records.',
     features: [
-      { text: 'Vaccination records', live: true },
-      { text: 'Vet visit history', live: true },
-      { text: 'Private health documents, such as lab reports and prescriptions', live: true },
-      { text: 'Deworming, medication and allergy records', live: false },
-      { text: 'Vaccination and medication reminders', live: false },
+      { text: 'Vaccination records' },
+      { text: 'Vet visit history, with the vet’s name' },
+      { text: 'Private health documents, such as lab reports and prescriptions' },
     ],
   },
   {
     number: '02',
-    title: 'Family Dog Management',
-    description: 'One dog, the whole family. Share care with permissions you control.',
-    status: 'soon',
-    slot: 'pillar-family',
-    visual: { icon: Users },
+    title: 'Dog Identity',
+    description: 'A lasting profile for every dog, with its story building over time.',
+    slot: 'pillar-identity',
+    visual: { icon: Fingerprint },
     features: [
-      { text: 'Several family members on one dog', live: false },
-      { text: 'Permission-based shared access', live: false },
-      { text: 'Shared care history', live: false },
+      { text: 'Dog profile with photos, breed, age, sex and city' },
+      { text: 'Your owner profile, linked to your dogs' },
     ],
   },
   {
     number: '03',
-    title: 'Dog Identity & Lineage',
-    description: 'A lasting profile for every dog, with its story building over time.',
-    status: 'partial',
-    slot: 'pillar-identity',
-    visual: { icon: Fingerprint },
-    features: [
-      { text: 'Dog profile with photos, breed, age, sex and city', live: true },
-      { text: 'Parent dog profiles and lineage', live: false },
-      { text: 'Pedigree and registration documents', live: false },
-      { text: 'Responsible breeding records', live: false },
-    ],
-  },
-  {
-    number: '04',
     title: 'Community & Connections',
     description: 'Meet responsible dog owners nearby. Chat opens when both sides are interested.',
-    status: 'live',
     slot: 'pillar-community',
     visual: 'community',
     visualLabel: 'App screen showing nearby dogs to discover.',
     features: [
-      { text: 'Discover dogs by breed and city', live: true },
-      { text: 'Show interest, then chat when it is mutual', live: true },
-      { text: 'Owner profiles, with report and block', live: true },
-      { text: 'Breed-based communities', live: false },
-    ],
-  },
-  {
-    number: '05',
-    title: 'Vet & Pet Care Network',
-    description: 'Your vet, in your dog’s record. Shared only when you say so.',
-    status: 'partial',
-    slot: 'pillar-vet',
-    visual: { icon: Stethoscope },
-    features: [
-      { text: 'Vet name noted on each visit record', live: true },
-      { text: 'Veterinary clinic discovery', live: false },
-      { text: 'Share records with your vet, only with your permission', live: false },
-      { text: 'Verified vet badges, where verification exists', live: false },
-    ],
-  },
-  {
-    number: '06',
-    title: 'AI Dog Wellness Intelligence',
-    description:
-      'Helps you understand your dog’s records. Never diagnoses, never replaces your vet.',
-    status: 'soon',
-    slot: 'pillar-ai',
-    visual: { icon: Sparkles },
-    features: [
-      { text: 'Plain-language summaries of prescriptions and lab reports', live: false },
-      { text: 'Spot missing or incomplete records', live: false },
-      { text: 'Prepare questions for your vet visit', live: false },
-      { text: 'Age-based preventive-care reminders', live: false },
+      { text: 'Discover dogs by breed and city' },
+      { text: 'Show interest, then chat when it is mutual' },
+      { text: 'Owner profiles, with report and block' },
     ],
   },
 ];
@@ -291,21 +213,6 @@ function StoreCtas() {
         </Link>
       </Button>
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: Status }) {
-  return (
-    <span
-      className={cn(
-        'rounded-full px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide',
-        status === 'live' && 'bg-primary text-primary-foreground',
-        status === 'partial' && 'bg-accent text-accent-foreground',
-        status === 'soon' && 'border border-border text-muted-foreground',
-      )}
-    >
-      {statusLabel[status]}
-    </span>
   );
 }
 
@@ -454,13 +361,13 @@ export default function KinroHome() {
       <section id="pillars" className="section-lg scroll-mt-14">
         <div className="container-page">
           <div className="max-w-2xl">
-            <p className="text-eyebrow">What KINRO is building</p>
+            <p className="text-eyebrow">In the app today</p>
             <h2 className="mt-4 font-display text-h2 text-foreground">
-              Six pillars for
-              <span className="text-primary"> every dog’s life.</span>
+              Everything for your dog,
+              <span className="text-primary"> in one app.</span>
             </h2>
             <p className="mt-5 text-body-lg text-muted-foreground">
-              Some of this is in the app today. The rest is on the way, and we mark it clearly.
+              Keep the health record, build your dog’s profile, and meet owners nearby.
             </p>
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -468,10 +375,7 @@ export default function KinroHome() {
               <article key={pillar.number} className="app-card lift flex flex-col p-3">
                 <PhotoFrame slot={pillar.slot} fallback={pillarFallback(pillar)} />
                 <div className="flex flex-1 flex-col p-4 pb-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-bold text-muted-foreground">{pillar.number}</span>
-                    <StatusBadge status={pillar.status} />
-                  </div>
+                  <span className="text-sm font-bold text-muted-foreground">{pillar.number}</span>
                   <h3 className="mt-3 font-display text-h4 font-bold text-foreground">
                     {pillar.title}
                   </h3>
@@ -534,7 +438,7 @@ export default function KinroHome() {
                   Your dog’s records stay yours.
                 </h2>
                 <p className="mt-5 text-lg leading-8 text-primary-foreground/80">
-                  Clear about what KINRO is today, and what it is not.
+                  Clear about what KINRO is, and what it is not.
                 </p>
               </div>
               <ul className="grid gap-3 text-sm md:pl-4">
