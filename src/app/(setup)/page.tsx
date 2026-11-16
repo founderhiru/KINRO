@@ -343,12 +343,13 @@ export default function KinroHome() {
               The Digital Life Record for Every Dog
             </span>
             <h1 className="font-display text-[clamp(2.2rem,3.6vw,3.1rem)] font-bold leading-[1.02] tracking-[-0.03em] text-foreground">
-              Your dog’s whole life,
-              <span className="block text-primary">in one safe place.</span>
+              Every pawprint.
+              <span className="block">Every milestone.</span>
+              <span className="block text-primary">One life story.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
-              Vaccinations, vet visits and documents, from puppy days to golden years. No more
-              hunting for the vaccination card.
+              From identity and health to photos and connections, give your dog one trusted digital
+              home for every stage of life.
             </p>
             <div className="mt-8">
               <StoreCtas />
