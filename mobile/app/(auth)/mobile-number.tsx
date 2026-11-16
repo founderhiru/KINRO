@@ -126,7 +126,9 @@ export default function MobileNumberScreen() {
           />
         </View>
         <Text style={styles.wordmark}>KINRO</Text>
-        <Text style={styles.tagline}>Genetic wellness. Brighter lives.</Text>
+        <Text style={styles.tagline}>
+          The Digital Life Record for Every Dog
+        </Text>
 
         {keyboardVisible ? null : (
           <View style={styles.fan} accessibilityElementsHidden>

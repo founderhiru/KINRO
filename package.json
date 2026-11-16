@@ -2,7 +2,7 @@
   "name": "canidknot",
   "version": "0.1.0",
   "private": true,
-  "description": "KINRO — verified, health-first breeding connections for India's responsible dog owners.",
+  "description": "KINRO — The Digital Life Record for Every Dog.",
   "engines": {
     "node": ">=20.18.1"
   },

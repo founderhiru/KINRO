@@ -57,7 +57,8 @@ export default function WelcomeScreen() {
             KINRO
           </Text>
           <Text style={styles.supporting}>
-            A safe, trusted platform for dog owners, built with care.
+            The Digital Life Record for Every Dog. Health records and trusted
+            connections, in one place.
           </Text>
         </View>
 

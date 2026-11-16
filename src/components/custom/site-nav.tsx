@@ -158,8 +158,8 @@ export function SiteNav() {
           <span className="truncate text-lg font-bold tracking-tight">{siteName}</span>
         </Link>
 
-        {/* Desktop (md+): inline slots — direct links + `menu` dropdowns */}
-        <div className="hidden items-center gap-1 md:flex">
+        {/* Desktop (lg+): inline slots — direct links + `menu` dropdowns */}
+        <div className="hidden items-center gap-1 lg:flex">
           {inline.map((slot) =>
             slot.type === 'link' ? (
               <Button
@@ -265,7 +265,7 @@ export function SiteNav() {
         {/* Right cluster: ml-auto pushes it right at every breakpoint */}
         <div className="ml-auto flex items-center gap-1">
           {/* Desktop secondary buttons */}
-          <div className="hidden items-center gap-1.5 md:flex">
+          <div className="hidden items-center gap-1.5 lg:flex">
             {secondary.map((item) => (
               <Button
                 key={item.href}
@@ -288,11 +288,11 @@ export function SiteNav() {
           {/* Always visible */}
           <ThemeToggle />
 
-          {/* Mobile (below md): burger + drawer — only when there's something to collapse */}
+          {/* Mobile (below lg): burger + drawer — only when there's something to collapse */}
           {collapsedCount > 0 && (
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="lg:hidden">
                   <Menu />
                   <span className="sr-only">Open menu</span>
                 </Button>
@@ -407,7 +407,7 @@ export function SiteFooter() {
               <span className="text-lg font-bold tracking-tight">{siteName}</span>
             </Link>
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
-              Genetic Wellness. Brighter Lives.
+              The Digital Life Record for Every Dog.
             </p>
           </div>
           <nav
