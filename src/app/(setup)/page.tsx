@@ -27,10 +27,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { DiscoverScreen, HealthScreen, HomeScreen } from '@/components/custom/app-mockups';
 import { IconTile, PhotoFrame, ScreenCrop } from '@/components/custom/photo-frame';
-import { QrSlot } from '@/components/custom/qr-slot';
+import { ScanToDownload, StoreQrs } from '@/components/custom/store-qrs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { PhotoSlot } from '@/lib/photography';
+import { siteUrl } from '@/lib/site';
 
 // Keep this a Server Component so it can export metadata.
 export const metadata: Metadata = {
@@ -261,7 +262,10 @@ export default function KinroHome() {
             <div className="mt-8">
               <StoreCtas />
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
+            <div className="mt-6">
+              <ScanToDownload origin={siteUrl} />
+            </div>
+            <p className="mt-5 text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link
                 href="/login"
@@ -270,7 +274,7 @@ export default function KinroHome() {
                 Sign in
               </Link>
             </p>
-            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm font-medium text-muted-foreground">
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm font-medium text-muted-foreground">
               {signals.map(({ icon: Icon, label }) => (
                 <span key={label} className="inline-flex items-center gap-2">
                   <Icon className="size-4 text-primary" aria-hidden="true" />
@@ -488,7 +492,7 @@ export default function KinroHome() {
       </section>
 
       {/* Closing call to action — the app's warm promo card, scaled up. The right
-          column is reserved for the QR code (desktop visitors scan with a phone). */}
+          column holds the iPhone and Android QR codes (desktop visitors scan with a phone). */}
       <section className="py-section">
         <div className="container-page">
           <div className="grid gap-10 rounded-[1.75rem] bg-[#f8e9c8] p-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-14 md:p-12">
@@ -506,7 +510,7 @@ export default function KinroHome() {
               </div>
             </div>
             <div className="hidden md:block">
-              <QrSlot />
+              <StoreQrs origin={siteUrl} size="md" />
             </div>
           </div>
         </div>

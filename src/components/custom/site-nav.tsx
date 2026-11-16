@@ -6,6 +6,7 @@ import { ChevronDown, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
+import { GetTheApp } from '@/components/custom/store-qrs';
 import { ThemeToggle } from '@/components/custom/theme-toggle';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,7 +21,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { signOut, useSession } from '@/lib/auth-client';
 import { type NavGroup, type NavItem, navItems } from '@/lib/nav';
-import { siteName } from '@/lib/site';
+import { siteName, siteUrl } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 // Session seam (Phase 2) — wired to the real better-auth client.
@@ -396,47 +397,60 @@ export function SiteFooter() {
     else columns.set(key, [item]);
   }
 
+  // Public origin the download QR codes point at (NEXT_PUBLIC_APP_URL, or the local
+  // default in development).
+  const origin = siteUrl;
+
   return (
     <footer className="border-t border-border bg-secondary/60">
-      <div className="container-page py-12">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
-          <div className="max-w-xs">
+      <div className="container-page">
+        {/* Row 1: brand on the left, get the app on the right */}
+        <div className="flex flex-col gap-8 py-10 md:flex-row md:items-center md:justify-between md:gap-12">
+          <div className="max-w-sm">
             <Link href="/" className="inline-flex items-center gap-2">
               {/* biome-ignore lint/performance/noImgElement: static public/ asset, not an optimizable remote image */}
-              <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-8 w-auto" />
-              <span className="text-lg font-bold tracking-tight">{siteName}</span>
+              <img src="/kinro/symbol.png" alt="" aria-hidden="true" className="h-9 w-auto" />
+              <span className="text-xl font-bold tracking-tight">{siteName}</span>
             </Link>
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
               The Digital Life Record for Every Dog.
             </p>
           </div>
-          <nav
-            aria-label="Footer"
-            className="grid grid-cols-2 gap-x-6 gap-y-8 md:col-span-4 md:grid-cols-4"
-          >
-            {[...columns].map(([heading, items]) => (
-              <div key={heading}>
-                <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                  {heading}
-                </h2>
-                <ul className="mt-4 space-y-3 text-sm">
-                  {items.map((item) => (
-                    <li key={`${heading}:${item.href}`}>
-                      <Link
-                        href={item.href}
-                        className="text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
+          <GetTheApp origin={origin} />
         </div>
-        <div className="mt-10 border-t border-border pt-6 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} {siteName}. All rights reserved.
+
+        {/* Row 2: links, one tidy row of columns */}
+        <nav
+          aria-label="Footer"
+          className="grid grid-cols-2 gap-x-6 gap-y-8 border-t border-border py-10 sm:grid-cols-4"
+        >
+          {[...columns].map(([heading, items]) => (
+            <div key={heading}>
+              <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                {heading}
+              </h2>
+              <ul className="mt-4 space-y-3 text-sm">
+                {items.map((item) => (
+                  <li key={`${heading}:${item.href}`}>
+                    <Link
+                      href={item.href}
+                      className="text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        {/* Row 3: copyright and the honest disclaimer */}
+        <div className="flex flex-col gap-1.5 border-t border-border py-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <p>
+            © {new Date().getFullYear()} {siteName}. All rights reserved.
+          </p>
+          <p>KINRO is not a veterinary service and is not government-certified.</p>
         </div>
       </div>
     </footer>
