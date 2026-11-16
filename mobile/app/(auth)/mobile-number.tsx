@@ -1,3 +1,4 @@
+import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -36,7 +37,7 @@ const PHOTO_CENTER = require("../../assets/images/photos/dog-golden-retriever.jp
 /**
  * The login screen: a deep-green brand field above a white sheet holding the
  * single sign-in form — mobile number + Continue, then "or continue with"
- * Google / Email (Apple appears only once it works; see sign-in-methods.ts).
+ * Google / Email (and Apple on iOS once it is switched on; see sign-in-methods.ts).
  * A known number logs in and a new one signs up, through the same code.
  *
  * Mobile OTP: requestOtp (src/lib/auth-flows.ts) calls better-auth's
@@ -102,14 +103,51 @@ export default function MobileNumberScreen() {
     }
   }
 
+  async function handleApple() {
+    setError(null);
+    setBusyMethod("apple");
+    try {
+      // Native Sign in with Apple: the system sheet returns a signed identity
+      // token, which the server verifies against Apple's public keys (the
+      // better-auth Apple provider, audience = our bundle identifier). No
+      // browser round trip, and the session cookie is stored like Google's.
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      if (!credential.identityToken) {
+        setError("Apple sign-in failed, try again");
+        return;
+      }
+      const { error: signInError } = await authClient.signIn.social({
+        provider: "apple",
+        idToken: { token: credential.identityToken },
+      });
+      if (signInError) {
+        setError(signInError.message ?? "Apple sign-in failed, try again");
+        return;
+      }
+      router.replace("/");
+    } catch (e) {
+      // Closing the Apple sheet is a choice, not an error worth showing.
+      if ((e as { code?: string }).code !== "ERR_REQUEST_CANCELED") {
+        setError("Apple sign-in failed, try again");
+      }
+    } finally {
+      setBusyMethod(null);
+    }
+  }
+
   function handleMethod(method: SignInMethod) {
     if (method === "google") {
       void handleGoogle();
+    } else if (method === "apple") {
+      void handleApple();
     } else if (method === "email") {
       router.push("/(auth)/email-link");
     }
-    // "apple" is never offered yet (see sign-in-methods.ts), so there is
-    // deliberately no handler for it.
   }
 
   const photoWidth = Math.min(118, width * 0.3);

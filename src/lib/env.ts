@@ -31,6 +31,11 @@ export const env = createEnv({
     // prod, http://localhost:3000/api/auth/callback/google in dev).
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
+    // Sign in with Apple (iOS app, native flow). Optional: when unset the Apple
+    // provider is simply not registered. Set it to the app's iOS bundle
+    // identifier (mobile/app.json -> ios.bundleIdentifier), which is the
+    // audience of the identity token Apple issues to the app.
+    APPLE_APP_BUNDLE_IDENTIFIER: z.string().min(1).optional(),
     // Resend (transactional email — Phase 2 magic-link delivery). In
     // sandbox mode (no verified sending domain yet) Resend only delivers to
     // the account owner's own verified address — see .env.example.
@@ -81,6 +86,7 @@ export const env = createEnv({
     SESSION_SECRET: process.env.SESSION_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    APPLE_APP_BUNDLE_IDENTIFIER: process.env.APPLE_APP_BUNDLE_IDENTIFIER,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     EMAIL_FROM: process.env.EMAIL_FROM,
     SMS_PROVIDER: process.env.SMS_PROVIDER,
