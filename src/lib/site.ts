@@ -15,7 +15,7 @@ import { env } from '@/lib/env';
 // `.default()`) and can return undefined for an unset var; validated builds
 // always carry a value. Trailing slashes are stripped so `${siteUrl}${href}`
 // never produces a double slash.
-export const siteUrl = (env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
+export const siteUrl = (env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/+$/, '');
 
 // Brand identity (name + description) is USER-OWNED — the agent sets it per app
 // in src/lib/brand.ts. Re-exported here so the SEO plumbing (layout/manifest) and
