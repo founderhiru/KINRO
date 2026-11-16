@@ -20,3 +20,9 @@
 - Subject: Golden Retriever at puppy, adult and senior life stages
 - Source: AI-generated image, cropped to 3:2 and resized to 1200 x 800
 - Status: interim placeholders, shown as illustrative. Replace with commissioned or licensed KINRO photography.
+
+## lifetime-puppy.jpg, lifetime-adult.jpg, lifetime-senior.jpg (interim)
+
+- Subject: Golden Retriever at puppy, adult and senior life stages
+- Source: AI-generated image, cropped to 3:2 and resized to 1200 x 800
+- Status: interim placeholders, shown as illustrative. Replace with commissioned or licensed KINRO photography.
