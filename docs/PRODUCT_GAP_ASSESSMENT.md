@@ -23,7 +23,9 @@
 | AI health intelligence | None. No LLM calls anywhere in the code. | None | Document summarisation service, consent flow, safety guardrails (no diagnosis, no prescribing). |
 | Trust and safety | Private health documents, account deletion removes dogs, photos, records and files (`src/lib/account-deletion.ts`), report and block, `isVerified` flag (hidden in UI). | A real verification workflow before any badge is shown. | Moderation tooling and admin review queue. |
 
-## 2. Pillar status (as shown on the homepage)
+## 2. Pillar status
+
+**Homepage policy (16 Nov 2026):** the homepage shows only shipped features. It has no status labels and no "coming soon" items. Pillars 1, 3 and 4 appear (as Dog Health Records, Dog Identity, Community & Connections). Pillars 2, 5 and 6 are left off until they ship. When a feature ships, add it to `src/app/(setup)/page.tsx` and update this table.
 
 | Pillar | Status shown | Live now | Coming soon |
 |---|---|---|---|
