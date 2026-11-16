@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import {
   Image,
   Pressable,
@@ -36,6 +36,8 @@ interface SelectBottomSheetProps {
   allowCustom?: boolean;
   /** Optional small reference thumbnail shown before each row's label (e.g. a breed photo). */
   getOptionImage?: (option: string) => number;
+  /** Custom thumbnail node for a row (wins over getOptionImage); fills a square frame. */
+  renderOptionThumb?: (option: string) => ReactNode;
 }
 
 /**
@@ -57,6 +59,7 @@ export function SelectBottomSheet({
   searchPlaceholder = "Search...",
   allowCustom,
   getOptionImage,
+  renderOptionThumb,
 }: SelectBottomSheetProps) {
   const [query, setQuery] = useState("");
 
@@ -116,6 +119,7 @@ export function SelectBottomSheet({
         renderItem={({ item }) => {
           const selected = item === value;
           const image = getOptionImage?.(item);
+          const thumb = renderOptionThumb?.(item);
           return (
             <Pressable
               onPress={() => handleSelect(item)}
@@ -124,7 +128,11 @@ export function SelectBottomSheet({
               accessibilityState={{ selected }}
             >
               <View style={styles.rowMain}>
-                {image ? (
+                {thumb ? (
+                  <View style={[styles.optionImage, styles.optionThumb]}>
+                    {thumb}
+                  </View>
+                ) : image ? (
                   <Image source={image} style={styles.optionImage} />
                 ) : null}
                 <Text style={typography.body}>{item}</Text>
@@ -190,6 +198,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   optionImage: { width: 28, height: 28, borderRadius: 6 },
+  optionThumb: { overflow: "hidden" },
   check: { color: colors.accent, fontWeight: "700", fontSize: 16 },
   customText: { color: colors.accent, fontWeight: "600" },
   empty: { textAlign: "center", paddingVertical: spacing.lg },

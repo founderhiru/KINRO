@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { BreedThumb } from "@/components/BreedThumb";
 import { Button } from "@/components/Button";
 import { ChipSelect } from "@/components/ChipSelect";
 import { ErrorText } from "@/components/ErrorText";
@@ -19,7 +20,6 @@ import { Screen } from "@/components/Screen";
 import { SelectBottomSheet } from "@/components/SelectBottomSheet";
 import { TextArea } from "@/components/TextArea";
 import { TextField } from "@/components/TextField";
-import { getBreedReferenceImage } from "@/lib/breed-images";
 import {
   createDog,
   fetchBreedSuggestions,
@@ -393,7 +393,7 @@ function AddDogScreenContent() {
         searchable
         searchPlaceholder="Search breed..."
         allowCustom
-        getOptionImage={getBreedReferenceImage}
+        renderOptionThumb={(breed) => <BreedThumb breed={breed} />}
       />
       <SelectBottomSheet
         visible={citySheetOpen}
