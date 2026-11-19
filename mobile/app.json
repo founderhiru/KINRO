@@ -10,7 +10,8 @@
     "icon": "./assets/images/kinro-app-icon.png",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.canidknot.app"
+      "bundleIdentifier": "com.canidknot.app",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "com.canidknot.app",
@@ -23,6 +24,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-apple-authentication",
       [
         "expo-splash-screen",
         {

@@ -7,8 +7,10 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
+import { BreedTile } from "@/components/BreedTile";
 import { Skeleton } from "@/components/Skeleton";
 import { getBreedSamplePhoto, NEUTRAL_DOG_IMAGE } from "@/lib/breed-images";
+import { breedTileFor } from "@/lib/breed-tile";
 import { colors } from "@/theme/tokens";
 
 /**
@@ -35,7 +37,10 @@ function isLoadableUri(uri: string): boolean {
  *   1. The dog's own uploaded photo (`uri`), if present and safely loadable.
  *   2. The licensed real sample photo for the dog's `breed`, if the breed
  *      pack has one (see src/lib/breed-images.ts).
- *   3. A neutral, non-illustrated placeholder (NEUTRAL_DOG_IMAGE).
+ *   3. A breed tile (the breed's initials on a calm colour, different per
+ *      breed) when the breed has no sample photo, so different breeds do not
+ *      all show one identical picture; or, when no breed is known (or it is
+ *      "Mixed Breed" / "Other"), the neutral placeholder (NEUTRAL_DOG_IMAGE).
  *
  * This ordering (and rendering the fallback synchronously whenever
  * `uri` is absent or fails validation, rather than waiting on a load
@@ -81,6 +86,8 @@ export function DogPhoto({
   const showFallback = !canAttemptLoad || status === "error";
   const samplePhoto = getBreedSamplePhoto(breed);
   const fallbackSource = samplePhoto ?? NEUTRAL_DOG_IMAGE;
+  const breedTile = samplePhoto ? null : breedTileFor(breed);
+  const showTile = showFallback && !!breedTile;
   const label = !showFallback
     ? null
     : samplePhoto && sampleLabel
@@ -89,20 +96,24 @@ export function DogPhoto({
 
   return (
     <View style={style} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-      <Image
-        source={showFallback ? fallbackSource : { uri: uri as string }}
-        // iOS shows this immediately while the real photo above is still
-        // downloading, so there's never a blank frame during the network
-        // fetch (Android ignores defaultSource; the Skeleton below covers
-        // that case instead). Harmless — and never shown at all — in the
-        // showFallback branch, since source and defaultSource are then
-        // the same image.
-        defaultSource={fallbackSource}
-        style={styles.image}
-        resizeMode="cover"
-        onLoadEnd={() => setStatus("loaded")}
-        onError={() => setStatus("error")}
-      />
+      {showTile && breedTile ? (
+        <BreedTile tile={breedTile} />
+      ) : (
+        <Image
+          source={showFallback ? fallbackSource : { uri: uri as string }}
+          // iOS shows this immediately while the real photo above is still
+          // downloading, so there's never a blank frame during the network
+          // fetch (Android ignores defaultSource; the Skeleton below covers
+          // that case instead). Harmless — and never shown at all — in the
+          // showFallback branch, since source and defaultSource are then
+          // the same image.
+          defaultSource={fallbackSource}
+          style={styles.image}
+          resizeMode="cover"
+          onLoadEnd={() => setStatus("loaded")}
+          onError={() => setStatus("error")}
+        />
+      )}
       {!showFallback && status === "loading" ? (
         // height is irrelevant here — absoluteFill's inset-0 positioning
         // stretches this to match the Image regardless of Skeleton's own

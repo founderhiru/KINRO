@@ -8,6 +8,7 @@
 // Three passwordless sign-in methods, all via official better-auth plugins
 // (no custom OTP/session/JWT logic):
 //   - Google OAuth (socialProviders.google)
+//   - Sign in with Apple, iOS app only, when APPLE_APP_BUNDLE_IDENTIFIER is set
 //   - Mobile OTP (better-auth's phoneNumber plugin)
 //   - Email magic link (better-auth's magicLink plugin)
 //
@@ -54,7 +55,11 @@ export const auth = betterAuth({
   // the OAuth-callback deep link back into the Expo app uses.
   // See @better-auth/expo's `expo()` plugin below for the matching half of
   // this on the request-handling side.
-  trustedOrigins: [env.MOBILE_APP_SCHEME],
+  trustedOrigins: [
+    env.MOBILE_APP_SCHEME,
+    // Apple's identity-token flow is checked against this origin.
+    ...(env.APPLE_APP_BUNDLE_IDENTIFIER ? ['https://appleid.apple.com'] : []),
+  ],
 
   // No password surface at all — Google, phone OTP, and email magic link
   // are the only sign-in methods.
@@ -65,6 +70,19 @@ export const auth = betterAuth({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
+    // Sign in with Apple, native iOS flow only: the app sends the identity token
+    // Apple signed and better-auth verifies it against Apple's public keys, with
+    // our bundle identifier as the audience. Registered only when configured, so
+    // it adds no sign-in surface (and no failure mode) until you turn it on.
+    // See docs/apple-sign-in.md.
+    ...(env.APPLE_APP_BUNDLE_IDENTIFIER
+      ? {
+          apple: {
+            clientId: env.APPLE_APP_BUNDLE_IDENTIFIER,
+            appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER,
+          },
+        }
+      : {}),
   },
 
   account: {
