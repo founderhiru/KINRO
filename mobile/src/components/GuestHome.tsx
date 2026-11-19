@@ -16,6 +16,7 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { DogPhoto } from "@/components/DogPhoto";
 import { ErrorText } from "@/components/ErrorText";
+import { FirstInCityCard } from "@/components/FirstInCityCard";
 import { Screen } from "@/components/Screen";
 import { Skeleton } from "@/components/Skeleton";
 import { fetchDiscoverDogs } from "@/lib/discover-api";
@@ -122,9 +123,7 @@ export function GuestHome() {
             </View>
           </View>
         ) : dogs && dogs.length === 0 ? (
-          <Text style={[typography.bodyMuted, styles.emptyText]}>
-            No dogs are listed yet. Check back soon.
-          </Text>
+          <FirstInCityCard />
         ) : (
           <ScrollView
             horizontal
@@ -293,7 +292,6 @@ const styles = StyleSheet.create({
   railSkeleton: { flexDirection: "row", gap: spacing.md },
   inlineError: { alignItems: "center", paddingVertical: spacing.lg },
   retryButton: { marginTop: spacing.md },
-  emptyText: { paddingVertical: spacing.lg },
   miniCard: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,

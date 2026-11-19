@@ -165,7 +165,20 @@ const demoProfiles = [
   },
 ] as const;
 
+/**
+ * Demo dog profiles are sample content for development and design previews.
+ * They are NOT seeded unless SEED_DEMO_PROFILES=true, so a production database
+ * only ever lists real owners' dogs. (Turning the flag off does not delete
+ * profiles that were seeded earlier; see docs/remove-demo-dog-profiles.md.)
+ */
+export function shouldSeedDemoProfiles(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  return env.SEED_DEMO_PROFILES === 'true';
+}
+
 export async function seed(): Promise<void> {
+  if (!shouldSeedDemoProfiles()) return;
   for (const profile of demoProfiles) {
     await prisma.dogProfile.upsert({
       where: { slug: profile.slug },
