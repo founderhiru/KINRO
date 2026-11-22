@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { HealthBadge, VerifiedBadge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { CareEntryCard } from "@/components/care/CareEntryCard";
 import { DogPhoto } from "@/components/DogPhoto";
 import { ErrorText } from "@/components/ErrorText";
 import { PhotoGrid } from "@/components/PhotoGrid";
@@ -165,6 +166,10 @@ export default function DogDetailScreen() {
             </View>
           </View>
 
+          <View style={styles.careEntry}>
+            <CareEntryCard dogId={dog.id} dogName={dog.name} />
+          </View>
+
           <View style={styles.photos}>
             <Text style={typography.sectionTitle}>Photos</Text>
             <View style={styles.photosSpacing}>
@@ -230,6 +235,7 @@ const styles = StyleSheet.create({
   bio: { marginTop: spacing.sm },
   actionRow: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.xl },
   actionButton: { flex: 1 },
+  careEntry: { marginTop: spacing.md },
   photos: { marginTop: spacing.xl },
   photosSpacing: { marginTop: spacing.md },
 });

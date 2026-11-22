@@ -38,4 +38,5 @@ model DogProfile {
   @@index([breed])
   @@index([city])
   @@index([ownerId])
+  careRelationships CareRelationship[]
 }

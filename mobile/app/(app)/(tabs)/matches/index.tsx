@@ -1,14 +1,16 @@
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { type ReactNode, useCallback, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { AuthPromptSheet } from "@/components/AuthPromptSheet";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { CareConnections } from "@/components/care/CareConnections";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorText } from "@/components/ErrorText";
 import { Screen } from "@/components/Screen";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { Skeleton } from "@/components/Skeleton";
 import { useSession } from "@/lib/auth-client";
 import { listIncomingInterests, respondToInterest } from "@/lib/interest-api";
@@ -88,7 +90,7 @@ function MatchCard({
   );
 }
 
-function MatchesContent() {
+function MatchesContent({ header }: { header?: ReactNode }) {
   const [incoming, setIncoming] = useState<IncomingInterestItem[] | null>(null);
   const [matches, setMatches] = useState<MatchItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -130,6 +132,7 @@ function MatchesContent() {
   if (incoming === null && matches === null && !error) {
     return (
       <Screen>
+        {header}
         <View style={styles.skeletonWrap}>
           <Skeleton height={22} width="50%" />
           <Skeleton height={80} style={styles.gapTop} />
@@ -142,6 +145,7 @@ function MatchesContent() {
   if (error) {
     return (
       <Screen>
+        {header}
         <View style={styles.centered}>
           <ErrorText>{error}</ErrorText>
           <View style={styles.retryButton}>
@@ -158,6 +162,7 @@ function MatchesContent() {
   if (!hasIncoming && !hasMatches) {
     return (
       <Screen>
+        {header}
         <EmptyState
           emoji="🤝"
           title="No matches yet"
@@ -171,6 +176,7 @@ function MatchesContent() {
 
   return (
     <Screen>
+      {header}
       <FlatList
         data={matches ?? []}
         keyExtractor={(item) => item.id}
@@ -235,7 +241,39 @@ export default function MatchesScreen() {
     );
   }
 
-  return <MatchesContent />;
+  return <MessagesWithCare />;
+}
+
+type MessagesView = "dog" | "care";
+
+// Dog Connections stays the default landing view. `?view=care` deep-links
+// to the Care segment (notifications, the dog-profile "Care" card).
+function MessagesWithCare() {
+  const params = useLocalSearchParams<{ view?: string }>();
+  const [view, setView] = useState<MessagesView>(
+    params.view === "care" ? "care" : "dog",
+  );
+
+  const header = (
+    <SegmentedControl
+      options={[
+        { value: "dog", label: "Dog Connections" },
+        { value: "care", label: "Care" },
+      ]}
+      value={view}
+      onChange={setView}
+    />
+  );
+
+  if (view === "care") {
+    return (
+      <Screen>
+        {header}
+        <CareConnections onFindCare={() => router.push("/(app)/(tabs)/care")} />
+      </Screen>
+    );
+  }
+  return <MatchesContent header={header} />;
 }
 
 const styles = StyleSheet.create({
