@@ -114,7 +114,7 @@ const dogs = [
   },
 ] as const;
 
-export function HomeScreen() {
+export function HomeScreen({ showCare = false }: { showCare?: boolean }) {
   return (
     <PhoneFrame active="Home">
       <Header title="KINRO" />
@@ -131,6 +131,23 @@ export function HomeScreen() {
         </div>
         <ChevronRight className="size-4 text-input" />
       </div>
+
+      {showCare ? (
+        <div className="app-card mt-3 flex items-center gap-2 p-2.5">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+            <Stethoscope className="size-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1.5 text-xs font-bold">
+              Find Veterinary Care <CareTag />
+            </p>
+            <p className="truncate text-[0.55rem] text-muted-foreground">
+              Vets and clinics near you.
+            </p>
+          </div>
+          <ChevronRight className="size-4 text-input" />
+        </div>
+      ) : null}
 
       <div className="mt-3 rounded-xl bg-[#f8e9c8] p-3">
         <p className="text-xs font-bold">Meet dogs nearby</p>
@@ -220,6 +237,87 @@ export function HealthScreen() {
       <p className="mt-3 text-[0.55rem] leading-snug text-muted-foreground">
         Records are added by owners and are not verified by KINRO.
       </p>
+    </PhoneFrame>
+  );
+}
+
+/** The small green "CARE" label that marks the extension in the app. */
+function CareTag() {
+  return (
+    <span className="rounded-full bg-accent px-1.5 py-px text-[0.45rem] font-bold uppercase tracking-wider text-accent-foreground">
+      Care
+    </span>
+  );
+}
+
+const providers = [
+  {
+    initials: 'AR',
+    name: 'Dr. Ananya Rao',
+    note: 'General practice · Surgery',
+    place: 'Jubilee Hills',
+    verified: true,
+  },
+  {
+    initials: 'KM',
+    name: 'Dr. Karthik Menon',
+    note: 'Internal medicine',
+    place: 'Banjara Hills',
+    verified: true,
+  },
+  {
+    initials: 'SN',
+    name: 'Dr. Sana Naqvi',
+    note: 'Skin and allergy',
+    place: 'Madhapur',
+    verified: false,
+  },
+] as const;
+
+/** The Care directory: sample vets only. Real listings appear as vets are verified. */
+export function CareScreen() {
+  return (
+    <PhoneFrame active="Home">
+      <div className="mb-1 flex items-center gap-1.5">
+        <p className="text-base font-bold leading-tight tracking-tight">Find care</p>
+        <CareTag />
+      </div>
+      <p className="mb-2.5 text-[0.6rem] text-muted-foreground">
+        Vets and clinics, with credentials checked by KINRO.
+      </p>
+      <div className="mb-2.5 flex rounded-lg bg-secondary p-0.5 text-[0.6rem] font-bold">
+        <span className="flex-1 rounded-md bg-card py-1 text-center text-accent-foreground">
+          Find a Vet
+        </span>
+        <span className="flex-1 py-1 text-center text-muted-foreground">Find a Clinic</span>
+      </div>
+      <div className="space-y-2">
+        {providers.map((p) => (
+          <div key={p.name} className="app-card flex items-center gap-2.5 p-2.5">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-[0.65rem] font-bold text-accent-foreground">
+              {p.initials}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-bold">{p.name}</p>
+              <p className="truncate text-[0.58rem] text-muted-foreground">{p.note}</p>
+              <p className="flex items-center gap-1 truncate text-[0.55rem] text-muted-foreground">
+                <MapPin className="size-3 shrink-0 text-primary" />
+                {p.place}
+              </p>
+              <span
+                className={cn(
+                  'mt-1 inline-block rounded-full px-1.5 py-0.5 text-[0.5rem] font-bold',
+                  p.verified
+                    ? 'bg-accent text-accent-foreground'
+                    : 'bg-secondary text-muted-foreground',
+                )}
+              >
+                {p.verified ? 'Verified by KINRO' : 'Not yet verified'}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
     </PhoneFrame>
   );
 }

@@ -25,11 +25,17 @@ import {
 } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { DiscoverScreen, HealthScreen, HomeScreen } from '@/components/custom/app-mockups';
+import {
+  CareScreen,
+  DiscoverScreen,
+  HealthScreen,
+  HomeScreen,
+} from '@/components/custom/app-mockups';
 import { IconTile, PhotoFrame, ScreenCrop } from '@/components/custom/photo-frame';
 import { ScanToDownload, StoreQrs } from '@/components/custom/store-qrs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { careLive } from '@/lib/care-flag';
 import type { PhotoSlot } from '@/lib/photography';
 import { siteUrl } from '@/lib/site';
 
@@ -125,7 +131,7 @@ interface Pillar {
   title: string;
   description: string;
   slot: PhotoSlot;
-  visual: 'health' | 'community' | { icon: LucideIcon };
+  visual: 'health' | 'community' | 'care' | { icon: LucideIcon };
   visualLabel?: string;
   features: Feature[];
 }
@@ -170,6 +176,27 @@ const pillars: Pillar[] = [
   },
 ];
 
+// KINRO Care is an extension of the record and the community, not a new product.
+// Shown only once it is live (see @/lib/care-flag). No online consultation is
+// advertised: it is not built yet.
+if (careLive) {
+  pillars.push({
+    number: '04',
+    title: 'Veterinary Care',
+    description:
+      'Find vets and clinics, request appointments, and share records only when you choose.',
+    slot: 'pillar-vet',
+    visual: 'care',
+    visualLabel: 'App screen showing a directory of vets with their verification status.',
+    features: [
+      { text: 'Find a vet or clinic near you' },
+      { text: '“Verified by KINRO” only after credentials are checked' },
+      { text: 'Request appointments in the app' },
+      { text: 'Your health records stay private unless you share them' },
+    ],
+  });
+}
+
 const workflow = [
   ['01', 'Create your profile', 'Sign in, then add yourself and your dog.'],
   [
@@ -184,7 +211,9 @@ const trustPoints = [
   'Your dog’s records are private to your account, and removed when you delete it.',
   'Records are added by owners. They are not verified or vet-reviewed.',
   'Chat opens only when both sides are interested. Report or block anyone, any time.',
-  'No badge says “verified” until real verification exists.',
+  careLive
+    ? '“Verified by KINRO” appears only on vets whose credentials KINRO has checked.'
+    : 'No badge says “verified” until real verification exists.',
   'KINRO is not a veterinary service or authority, and is not government-certified. No medical advice.',
 ];
 
@@ -192,6 +221,7 @@ const signals = [
   { icon: HeartPulse, label: 'Health records' },
   { icon: PawPrint, label: 'Dog profiles' },
   { icon: Users, label: 'Trusted connections' },
+  ...(careLive ? [{ icon: Stethoscope, label: 'Vet care' }] : []),
 ];
 
 function StoreCtas() {
@@ -222,6 +252,13 @@ function pillarFallback(pillar: Pillar) {
     return (
       <ScreenCrop label={pillar.visualLabel ?? ''}>
         <HealthScreen />
+      </ScreenCrop>
+    );
+  }
+  if (pillar.visual === 'care') {
+    return (
+      <ScreenCrop label={pillar.visualLabel ?? ''}>
+        <CareScreen />
       </ScreenCrop>
     );
   }
@@ -292,10 +329,10 @@ export default function KinroHome() {
             />
             <div className="relative">
               <div className="absolute -left-10 top-10 hidden w-[62%] -rotate-6 opacity-95 sm:block">
-                <HomeScreen />
+                <HomeScreen showCare={careLive} />
               </div>
               <div className="relative mx-auto w-[16rem] sm:ml-auto sm:w-[68%] sm:min-w-[15rem] sm:rotate-3">
-                <HealthScreen />
+                {careLive ? <CareScreen /> : <HealthScreen />}
               </div>
             </div>
             <figcaption className="mt-6 text-center text-xs text-muted-foreground">
@@ -371,10 +408,14 @@ export default function KinroHome() {
               <span className="text-primary"> in one app.</span>
             </h2>
             <p className="mt-5 text-body-lg text-muted-foreground">
-              Keep the health record, build your dog’s profile, and meet owners nearby.
+              {careLive
+                ? 'Keep the health record, meet owners nearby, and find a vet when you need one.'
+                : 'Keep the health record, build your dog’s profile, and meet owners nearby.'}
             </p>
           </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            className={`mt-12 grid gap-5 md:grid-cols-2 ${careLive ? 'xl:grid-cols-4' : 'lg:grid-cols-3'}`}
+          >
             {pillars.map((pillar) => (
               <article key={pillar.number} className="app-card lift flex flex-col p-3">
                 <PhotoFrame slot={pillar.slot} fallback={pillarFallback(pillar)} />
