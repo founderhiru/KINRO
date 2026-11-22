@@ -111,6 +111,9 @@ export default function TabsLayout() {
         name="profile"
         options={{ title: "Profile", tabBarIcon: makeTabBarIcon("profile") }}
       />
+      {/* Care is an extension reached from Home, a dog profile and
+          Messages, not a sixth tab. */}
+      <Tabs.Screen name="care" options={{ href: null }} />
     </Tabs>
   );
 }

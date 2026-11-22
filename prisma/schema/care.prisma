@@ -1,0 +1,95 @@
+// KINRO Care — additive module. Vets and clinics are an extension of the
+// dog-connections platform, never a replacement: nothing here touches
+// Interest / Match / Conversation / Message. Statuses are plain strings (house
+// style) and validated in src/lib/contracts/care.ts.
+
+// A veterinarian or a clinic listing. `verificationStatus` is KINRO's
+// credential check and is unrelated to DogProfile.isVerified.
+model CareProvider {
+  id                    String   @id @default(cuid())
+  kind                  String // vet | clinic
+  slug                  String   @unique
+  name                  String
+  qualifications        String?
+  specialties           String[]
+  languages             String[]
+  city                  String
+  locality              String?
+  addressLine           String?
+  verificationStatus    String   @default("unverified") // unverified | pending | verified | rejected | suspended | expired
+  verifiedAt            DateTime?
+  verifiedUntil         DateTime?
+  registrationCouncil   String?
+  registrationLast4     String?
+  // A vet may be linked to the clinic they practise at.
+  parentId              String?
+  parent                CareProvider?  @relation("ClinicVets", fields: [parentId], references: [id], onDelete: SetNull)
+  vets                  CareProvider[] @relation("ClinicVets")
+  // The provider opts in to online consultations. Bookings with mode=online
+  // are accepted only when true. No video is built into KINRO in this release:
+  // an online appointment is a request the provider confirms and runs.
+  offersOnline          Boolean  @default(false)
+  listingStatus         String   @default("draft") // draft | published | hidden
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  relationships         CareRelationship[]
+
+  @@index([listingStatus, kind, city])
+  @@map("care_provider")
+}
+
+// An owner + dog + provider relationship. Appointments and record sharing
+// hang off this, so future online consultation reuses the same spine.
+model CareRelationship {
+  id           String       @id @default(cuid())
+  ownerId      String
+  owner        User         @relation("CareRelationshipOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  dogId        String
+  dog          DogProfile   @relation(fields: [dogId], references: [id], onDelete: Cascade)
+  providerId   String
+  provider     CareProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  status       String       @default("active") // active | ended
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  appointments CareAppointment[]
+  shareGrants  RecordShareGrant[]
+
+  @@unique([ownerId, dogId, providerId])
+  @@index([providerId])
+  @@map("care_relationship")
+}
+
+model CareAppointment {
+  id              String           @id @default(cuid())
+  relationshipId  String
+  relationship    CareRelationship @relation(fields: [relationshipId], references: [id], onDelete: Cascade)
+  mode            String           @default("in_person") // in_person | online
+  reason          String // check_up | vaccination | skin_ears | follow_up | other
+  preferredDay    String? // today | tomorrow | this_week | ISO date
+  preferredTime   String?
+  note            String?
+  status          String           @default("requested") // requested | confirmed | declined | cancelled | completed
+  scheduledAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([relationshipId, status])
+  @@map("care_appointment")
+}
+
+// Owner-authorised, time-limited, revocable access to part of a dog's
+// health records. Private by default: no grant, no access.
+model RecordShareGrant {
+  id              String           @id @default(cuid())
+  relationshipId  String
+  relationship    CareRelationship @relation(fields: [relationshipId], references: [id], onDelete: Cascade)
+  categories      String[] // vaccination | vetVisit | other | documents
+  expiresAt       DateTime
+  revokedAt       DateTime?
+  createdAt       DateTime         @default(now())
+
+  @@index([relationshipId])
+  @@map("record_share_grant")
+}

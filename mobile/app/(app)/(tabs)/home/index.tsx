@@ -16,6 +16,7 @@ import { HealthBadge } from "@/components/Badge";
 import { BreedMarquee } from "@/components/BreedMarquee";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { CareEntryCard } from "@/components/care/CareEntryCard";
 import { DogPhoto } from "@/components/DogPhoto";
 import { ErrorText } from "@/components/ErrorText";
 import { FirstDogCard } from "@/components/FirstDogCard";
@@ -315,6 +316,8 @@ export default function HomeScreen() {
                 <FirstInCityCard city={primaryDog?.city} />
               </View>
             ) : null}
+
+            <CareEntryCard />
 
             <Pressable
               onPress={() => router.push(ROUTES.discover)}
