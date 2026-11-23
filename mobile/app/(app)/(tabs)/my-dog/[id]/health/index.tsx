@@ -2,6 +2,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Button } from "@/components/Button";
+import { CareEntryCard } from "@/components/care/CareEntryCard";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorText } from "@/components/ErrorText";
 import { HealthRecordCard } from "@/components/HealthRecordCard";
@@ -103,6 +104,9 @@ function HealthPassportListContent() {
               }
               variant="secondary"
             />
+            <View style={styles.care}>
+              <CareEntryCard dogId={id} />
+            </View>
           </View>
         }
       />
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
   list: { paddingTop: spacing.sm, paddingBottom: spacing.xl },
   intro: { marginBottom: spacing.lg },
   footer: { marginTop: spacing.sm },
+  care: { marginTop: spacing.lg },
 });
 
 export default function HealthPassportListScreen() {
