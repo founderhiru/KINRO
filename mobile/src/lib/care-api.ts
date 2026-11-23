@@ -57,3 +57,9 @@ export async function getNearbyVets(area: string): Promise<NearbyPlaces> {
     schema: NearbyPlaces,
   });
 }
+
+export async function getCareConfig(): Promise<{ nearby: boolean }> {
+  return apiFetch("/api/care/config", {
+    schema: z.object({ nearby: z.boolean() }),
+  });
+}

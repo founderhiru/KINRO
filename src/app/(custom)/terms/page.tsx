@@ -58,9 +58,11 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    heading: 'Connection Service',
+    heading: 'KINRO Care',
     paragraphs: [
-      'Some extended messaging currently requires the Connection Service. Purchasing the Connection Service is not available yet in this version of the app, so no payment can currently be taken from you. If and when in-app purchases become available, updated terms covering pricing, billing, and refunds will apply.',
+      'KINRO Care lists veterinarians and clinics and lets you send them a visit request. KINRO is not a veterinary service and does not provide, supervise or guarantee any veterinary care. Any care, advice, treatment and fees are between you and the vet or clinic.',
+      "“Verified by KINRO” means KINRO checked a vet's registration at the time shown. It is not an endorsement. Listings without that label, including any listings shown from Google Maps, have not been checked by KINRO.",
+      'A visit request is not a booking until the vet or clinic confirms it.',
     ],
   },
   {
@@ -84,7 +86,7 @@ const SECTIONS: Section[] = [
   {
     heading: 'Changes to these terms',
     paragraphs: [
-      "We may update these Terms of Service as KINRO evolves. We'll update the effective date below when we do.",
+      "We may update these Terms of Service as KINRO changes. We'll update the effective date below when we do.",
     ],
   },
   {

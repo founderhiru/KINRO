@@ -1,5 +1,5 @@
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "@/components/Button";
 import { CareTag } from "@/components/care/CareTag";
@@ -10,7 +10,11 @@ import { ErrorText } from "@/components/ErrorText";
 import { Screen } from "@/components/Screen";
 import { SegmentedControl } from "@/components/SegmentedControl";
 import { Skeleton } from "@/components/Skeleton";
-import { getNearbyVets, listCareProviders } from "@/lib/care-api";
+import {
+  getCareConfig,
+  getNearbyVets,
+  listCareProviders,
+} from "@/lib/care-api";
 import type { CareProviderItem, NearbyPlace } from "@/lib/care-contracts";
 import { colors, radius, spacing, typography } from "@/theme/tokens";
 
@@ -24,7 +28,7 @@ export default function CareDirectoryScreen() {
   const [q, setQ] = useState("");
   const [items, setItems] = useState<CareProviderItem[] | null>(null);
   const [nearby, setNearby] = useState<NearbyPlace[] | null>(null);
-  const [nearbyConfigured, setNearbyConfigured] = useState(true);
+  const [nearbyOn, setNearbyOn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -32,7 +36,6 @@ export default function CareDirectoryScreen() {
     try {
       if (kind === "nearby") {
         const res = await getNearbyVets(q.trim() || "Hyderabad");
-        setNearbyConfigured(res.configured);
         setNearby(res.items);
         return;
       }
@@ -42,6 +45,12 @@ export default function CareDirectoryScreen() {
       setError("Couldn't load vets and clinics. Check your connection.");
     }
   }, [kind, q]);
+
+  useEffect(() => {
+    getCareConfig()
+      .then((c) => setNearbyOn(c.nearby))
+      .catch(() => setNearbyOn(false));
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -56,7 +65,7 @@ export default function CareDirectoryScreen() {
         <CareTag />
       </View>
       <Text style={[typography.bodyMuted, styles.sub]}>
-        Vets and clinics, with credentials checked by KINRO.
+        Vets and clinics near you. Look for Verified by KINRO.
       </Text>
       <TextInput
         accessibilityLabel={
@@ -76,7 +85,7 @@ export default function CareDirectoryScreen() {
         options={[
           { value: "vet", label: "Find a Vet" },
           { value: "clinic", label: "Find a Clinic" },
-          { value: "nearby", label: "Nearby" },
+          ...(nearbyOn ? [{ value: "nearby" as const, label: "Nearby" }] : []),
         ]}
         value={kind}
         onChange={(k) => {
@@ -112,16 +121,8 @@ export default function CareDirectoryScreen() {
             renderItem={({ item }) => <NearbyRow place={item} />}
             ListEmptyComponent={
               <EmptyState
-                title={
-                  nearbyConfigured
-                    ? "No vets found there"
-                    : "Nearby search isn't switched on yet"
-                }
-                message={
-                  nearbyConfigured
-                    ? "Try a nearby area name."
-                    : "Verified vets are still listed under Find a Vet."
-                }
+                title="No vets found there"
+                message="Try a nearby area name."
               />
             }
           />
@@ -149,10 +150,8 @@ export default function CareDirectoryScreen() {
           )}
           ListEmptyComponent={
             <EmptyState
-              title={
-                kind === "vet" ? "No vets listed yet" : "No clinics listed yet"
-              }
-              message="We're adding verified vets and clinics in Hyderabad. Check back soon."
+              title={kind === "vet" ? "No vets listed" : "No clinics listed"}
+              message="No listings match this search."
             />
           }
         />

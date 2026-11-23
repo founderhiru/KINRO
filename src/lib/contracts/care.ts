@@ -37,6 +37,8 @@ export const CareProviderDetail = CareProviderItem.extend({
   verifiedAt: z.string().nullable(),
   clinic: z.object({ id: z.string(), name: z.string() }).nullable(),
   vets: z.array(CareProviderItem),
+  phone: z.string().nullable(),
+  canRequest: z.boolean(),
 });
 export type CareProviderDetail = z.infer<typeof CareProviderDetail>;
 
@@ -47,6 +49,10 @@ export const AppointmentWrite = z.object({
   reason: z.enum(CARE_REASONS),
   preferredDay: z.enum(CARE_DAYS).optional(),
   note: z.string().trim().max(500).optional(),
+  ownerPhone: z
+    .string()
+    .trim()
+    .regex(/^\+?[\d\s-]{8,16}$/, 'Enter a phone number the vet can reach you on'),
 });
 export type AppointmentWrite = z.infer<typeof AppointmentWrite>;
 

@@ -1,12 +1,13 @@
 // KINRO Care — request an appointment. The owner must own the dog; the
 // provider must be a published listing. mode=online is accepted only when the
 // provider has opted in (offersOnline). No video exists in this release: the
-// request is confirmed and run by the provider. No health records are shared
-// by creating an appointment — sharing is a separate, explicit owner action.
+// request is emailed to the provider, who confirms or declines it from a
+// signed link. No health records are shared by creating an appointment.
 import 'server-only';
 
 import { NextResponse } from 'next/server';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
+import { sendProviderRequestEmail } from '@/lib/care/appointment-response';
 import { AppointmentWrite } from '@/lib/contracts/care';
 import { prisma } from '@/lib/db';
 
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({ errors }, { status: 400 });
     }
-    const { providerId, dogId, mode, reason, preferredDay, note } = parsed.data;
+    const { providerId, dogId, mode, reason, preferredDay, note, ownerPhone } = parsed.data;
 
     // Owner-only: the dog must belong to the caller. Anything else looks
     // like a missing dog.
@@ -46,6 +47,12 @@ export async function POST(request: Request) {
     }
     if (provider.verificationStatus === 'suspended' || provider.verificationStatus === 'rejected') {
       return NextResponse.json({ error: 'Provider not found' }, { status: 404 });
+    }
+    if (!provider.contactEmail) {
+      return NextResponse.json(
+        { error: 'This provider does not take requests through KINRO. Call them instead.' },
+        { status: 400 },
+      );
     }
     if (mode === 'online' && !provider.offersOnline) {
       return NextResponse.json(
@@ -67,8 +74,31 @@ export async function POST(request: Request) {
         reason,
         preferredDay: preferredDay ?? null,
         note: note || null,
+        ownerPhone,
       },
     });
+
+    // The request only exists if the provider actually receives it.
+    try {
+      await sendProviderRequestEmail({
+        to: provider.contactEmail,
+        providerName: provider.name,
+        appointmentId: appointment.id,
+        ownerName: user.name ?? null,
+        ownerPhone,
+        dog: { name: dog.name, breed: dog.breed, ageYears: dog.ageYears },
+        mode,
+        reason,
+        preferredDay: preferredDay ?? null,
+        note: note || null,
+      });
+    } catch {
+      await prisma.careAppointment.delete({ where: { id: appointment.id } });
+      return NextResponse.json(
+        { error: "We couldn't reach this provider. Please try again or call them." },
+        { status: 502 },
+      );
+    }
 
     return NextResponse.json(
       { id: appointment.id, relationshipId: relationship.id, status: appointment.status },

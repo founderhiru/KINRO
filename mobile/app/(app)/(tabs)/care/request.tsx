@@ -7,6 +7,7 @@ import { ErrorText } from "@/components/ErrorText";
 import { Screen } from "@/components/Screen";
 import { SegmentedControl } from "@/components/SegmentedControl";
 import { TextArea } from "@/components/TextArea";
+import { TextField } from "@/components/TextField";
 import { ApiError } from "@/lib/api-client";
 import { requestAppointment } from "@/lib/care-api";
 import { listMyDogs } from "@/lib/dog-api";
@@ -42,6 +43,7 @@ export default function RequestAppointmentScreen() {
   const [reason, setReason] = useState<keyof typeof REASONS>("Check-up");
   const [day, setDay] = useState<keyof typeof DAYS>("Tomorrow");
   const [note, setNote] = useState("");
+  const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,10 +61,15 @@ export default function RequestAppointmentScreen() {
       setError("Add a dog first, then request an appointment.");
       return;
     }
+    if (!/^\+?[\d\s-]{8,16}$/.test(phone.trim())) {
+      setError("Enter a phone number the vet can reach you on.");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
       await requestAppointment({
+        ownerPhone: phone.trim(),
         providerId: p.providerId,
         dogId,
         mode,
@@ -72,7 +79,7 @@ export default function RequestAppointmentScreen() {
       });
       Alert.alert(
         "Request sent",
-        `${p.providerName} will confirm. You can follow it in Messages > Care.`,
+        `${p.providerName} has been emailed your request. You can follow it in Messages > Care.`,
       );
       router.replace({
         pathname: "/(app)/(tabs)/matches",
@@ -81,7 +88,7 @@ export default function RequestAppointmentScreen() {
     } catch (e) {
       setError(
         e instanceof ApiError
-          ? "Couldn't send this request."
+          ? e.message || "Couldn't send this request."
           : "Check your connection and try again.",
       );
     } finally {
@@ -139,10 +146,18 @@ export default function RequestAppointmentScreen() {
           maxLength={500}
           placeholder="Anything the clinic should know"
         />
+        <TextField
+          label="Your phone number"
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+          autoComplete="tel"
+          placeholder="So the vet can reach you"
+        />
         <View style={styles.privacy}>
           <Text style={styles.privacyText}>
-            They see your dog's name, breed and age. No health records are
-            shared unless you choose to.
+            The vet sees your dog's name, breed and age, your message and your
+            phone number. Your health records stay private.
           </Text>
         </View>
         {error ? <ErrorText>{error}</ErrorText> : null}

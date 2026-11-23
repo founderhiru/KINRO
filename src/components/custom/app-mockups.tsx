@@ -299,7 +299,7 @@ export function CareBody() {
       </div>
 
       <div className="mb-3 rounded-xl bg-secondary p-2.5 text-[0.52rem] leading-snug text-foreground/80">
-        No health records are shared unless you choose to.
+        Your health records stay private.
       </div>
       <span className="flex w-full items-center justify-center rounded-xl bg-primary py-2 text-[0.65rem] font-bold text-primary-foreground">
         Send request

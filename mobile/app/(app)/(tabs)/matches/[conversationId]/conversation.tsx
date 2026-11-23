@@ -96,7 +96,7 @@ function ConnectionServicePaywall() {
       </Text>
       {unavailable ? (
         <Text style={[typography.caption, styles.paywallUnavailable]}>
-          Connection service isn't available to purchase yet — check back soon.
+          Connection service can't be purchased right now.
         </Text>
       ) : (
         <View style={styles.paywallButton}>

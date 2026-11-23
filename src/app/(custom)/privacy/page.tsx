@@ -65,6 +65,13 @@ const SECTIONS: Section[] = [
     ],
   },
   {
+    heading: 'KINRO Care',
+    paragraphs: [
+      "When you request a visit, KINRO emails the vet or clinic your dog's name, breed and age, the reason and time you choose, your message and your phone number. Your dog's health records are not shared.",
+      "If you use Nearby, the area you type is sent to Google Maps Platform to find vets, and Google's privacy policy applies to that search.",
+    ],
+  },
+  {
     heading: 'Third-party service providers',
     paragraphs: [
       'We rely on a small number of service providers to run KINRO: Google, for Google sign-in; an email provider, for magic-link sign-in and account emails; an SMS provider, for mobile OTP sign-in; Cloudflare R2, for storing photos and health documents; and our hosting and database providers, for running the app and its database. Each provider only receives the information it needs to perform its function.',
@@ -105,7 +112,7 @@ const SECTIONS: Section[] = [
   {
     heading: 'Changes to this policy',
     paragraphs: [
-      "We may update this Privacy Policy from time to time as KINRO evolves. We'll update the effective date below when we do.",
+      "We may update this Privacy Policy from time to time as KINRO changes. We'll update the effective date below when we do.",
     ],
   },
   {

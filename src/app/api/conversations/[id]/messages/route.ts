@@ -22,6 +22,7 @@ import {
   hasActiveEntitlement,
 } from '@/lib/entitlements';
 import { emitNotification } from '@/lib/notifications';
+import { isPaywallLive } from '@/lib/paywall';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,7 +59,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     // src/lib/entitlements.ts. Checked AFTER validating the body so a
     // malformed request never gets a misleading "you need to pay" error.
     const sentCount = await prisma.message.count({ where: { conversationId: conversation.id } });
-    if (sentCount >= FREE_MESSAGE_LIMIT) {
+    if (isPaywallLive() && sentCount >= FREE_MESSAGE_LIMIT) {
       const entitled = await hasActiveEntitlement(
         user.id,
         CONNECTION_MESSAGING_SERVICE,

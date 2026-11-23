@@ -23,6 +23,7 @@ describe("care-api", () => {
       dogId: "d1",
       mode: "in_person",
       reason: "check_up",
+      ownerPhone: "+91 98765 43210",
     });
     const [path, init] = apiFetchMock.mock.calls[0] as [string, RequestInit];
     expect(path).toBe("/api/care/appointments");
