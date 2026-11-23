@@ -191,7 +191,7 @@ if (careLive) {
       'Find vets and clinics, request appointments, and share records only when you choose.',
     slot: 'pillar-vet',
     visual: 'care',
-    visualLabel: 'App screen showing a directory of vets with their verification status.',
+    visualLabel: 'App screen for requesting a vet appointment, with records kept private.',
     features: [
       { text: 'Find a vet or clinic near you' },
       { text: '“Verified by KINRO” only after credentials are checked' },
@@ -281,7 +281,13 @@ const heroScreens: ShowcaseScreen[] = [
   { label: 'Health records that stay with you', active: 'My Dogs', body: <HealthBody /> },
   { label: 'Meet responsible owners nearby', active: 'Discover', body: <DiscoverBody /> },
   ...(careLive
-    ? [{ label: 'Find a vet when you need one', active: 'Home' as const, body: <CareBody /> }]
+    ? [
+        {
+          label: 'Request a vet visit, keep records private',
+          active: 'Home' as const,
+          body: <CareBody />,
+        },
+      ]
     : []),
 ];
 

@@ -250,53 +250,60 @@ function CareTag() {
   );
 }
 
-/** The Care directory: sample vets only. Real listings appear as vets are verified. */
+/** The Care request flow: no real or invented vets, only the app's own labels. */
 export function CareBody() {
-  // No real or invented people: names, specialities and places are placeholder bars.
-  const rows = [true, true, false] as const;
+  const chip = (label: string, on = false) => (
+    <span
+      key={label}
+      className={cn(
+        'whitespace-nowrap rounded-full border px-2 py-1 text-[0.55rem] font-bold',
+        on
+          ? 'border-primary bg-primary text-primary-foreground'
+          : 'border-border bg-card text-muted-foreground',
+      )}
+    >
+      {label}
+    </span>
+  );
   return (
     <>
       <div className="mb-1 flex items-center gap-1.5">
-        <p className="text-base font-bold leading-tight tracking-tight">Find care</p>
+        <p className="text-base font-bold leading-tight tracking-tight">Request a visit</p>
         <CareTag />
       </div>
-      <p className="mb-2.5 text-[0.6rem] text-muted-foreground">
-        Vets and clinics, with credentials checked by KINRO.
+      <p className="mb-3 text-[0.6rem] text-muted-foreground">
+        With a vet near you, in a few taps.
       </p>
-      <div className="mb-2.5 flex rounded-lg bg-secondary p-0.5 text-[0.6rem] font-bold">
-        <span className="flex-1 rounded-md bg-card py-1 text-center text-accent-foreground">
-          Find a Vet
+
+      <div className="mb-3 flex items-center gap-2 rounded-xl bg-accent p-2.5">
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-card text-accent-foreground">
+          <Stethoscope className="size-4" />
         </span>
-        <span className="flex-1 py-1 text-center text-muted-foreground">Find a Clinic</span>
+        <div className="min-w-0">
+          <p className="text-[0.6rem] font-bold text-accent-foreground">Verified by KINRO</p>
+          <p className="text-[0.5rem] leading-snug text-accent-foreground/80">
+            Credentials checked before they are listed.
+          </p>
+        </div>
       </div>
-      <div className="space-y-2">
-        {rows.map((verified, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder rows
-          <div key={i} className="app-card flex items-center gap-2.5 p-2.5">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-              <Stethoscope className="size-4" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="h-2.5 w-24 rounded-full bg-border" />
-              <div className="mt-1.5 h-2 w-32 rounded-full bg-secondary" />
-              <div className="mt-1.5 flex items-center gap-1">
-                <MapPin className="size-3 shrink-0 text-primary" />
-                <div className="h-2 w-16 rounded-full bg-secondary" />
-              </div>
-              <span
-                className={cn(
-                  'mt-1.5 inline-block whitespace-nowrap rounded-full px-1.5 py-0.5 text-[0.5rem] font-bold',
-                  verified
-                    ? 'bg-accent text-accent-foreground'
-                    : 'bg-secondary text-muted-foreground',
-                )}
-              >
-                {verified ? 'Verified by KINRO' : 'Not yet verified'}
-              </span>
-            </div>
-          </div>
-        ))}
+
+      <p className="mb-1 text-[0.6rem] font-bold">Which dog?</p>
+      <div className="mb-2.5 flex gap-1.5">{[chip('Bodhi', true)]}</div>
+      <p className="mb-1 text-[0.6rem] font-bold">Reason</p>
+      <div className="mb-2.5 flex flex-wrap gap-1.5">
+        {[chip('Check-up', true), chip('Vaccination'), chip('Skin or ears')]}
       </div>
+      <p className="mb-1 text-[0.6rem] font-bold">Preferred time</p>
+      <div className="mb-3 flex gap-1.5">
+        {[chip('Today'), chip('Tomorrow', true), chip('This week')]}
+      </div>
+
+      <div className="mb-3 rounded-xl bg-secondary p-2.5 text-[0.52rem] leading-snug text-foreground/80">
+        No health records are shared unless you choose to.
+      </div>
+      <span className="flex w-full items-center justify-center rounded-xl bg-primary py-2 text-[0.65rem] font-bold text-primary-foreground">
+        Send request
+      </span>
     </>
   );
 }
