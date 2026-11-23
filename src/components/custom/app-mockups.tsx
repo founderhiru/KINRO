@@ -250,32 +250,10 @@ function CareTag() {
   );
 }
 
-const providers = [
-  {
-    initials: 'AR',
-    name: 'Dr. Ananya Rao',
-    note: 'General practice · Surgery',
-    place: 'Jubilee Hills',
-    verified: true,
-  },
-  {
-    initials: 'KM',
-    name: 'Dr. Karthik Menon',
-    note: 'Internal medicine',
-    place: 'Banjara Hills',
-    verified: true,
-  },
-  {
-    initials: 'SN',
-    name: 'Dr. Sana Naqvi',
-    note: 'Skin and allergy',
-    place: 'Madhapur',
-    verified: false,
-  },
-] as const;
-
 /** The Care directory: sample vets only. Real listings appear as vets are verified. */
 export function CareScreen() {
+  // No real or invented people: names, specialities and places are placeholder bars.
+  const rows = [true, true, false] as const;
   return (
     <PhoneFrame active="Home">
       <div className="mb-1 flex items-center gap-1.5">
@@ -292,27 +270,28 @@ export function CareScreen() {
         <span className="flex-1 py-1 text-center text-muted-foreground">Find a Clinic</span>
       </div>
       <div className="space-y-2">
-        {providers.map((p) => (
-          <div key={p.name} className="app-card flex items-center gap-2.5 p-2.5">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-[0.65rem] font-bold text-accent-foreground">
-              {p.initials}
+        {rows.map((verified, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder rows
+          <div key={i} className="app-card flex items-center gap-2.5 p-2.5">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+              <Stethoscope className="size-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold">{p.name}</p>
-              <p className="truncate text-[0.58rem] text-muted-foreground">{p.note}</p>
-              <p className="flex items-center gap-1 truncate text-[0.55rem] text-muted-foreground">
+              <div className="h-2.5 w-24 rounded-full bg-border" />
+              <div className="mt-1.5 h-2 w-32 rounded-full bg-secondary" />
+              <div className="mt-1.5 flex items-center gap-1">
                 <MapPin className="size-3 shrink-0 text-primary" />
-                {p.place}
-              </p>
+                <div className="h-2 w-16 rounded-full bg-secondary" />
+              </div>
               <span
                 className={cn(
-                  'mt-1 inline-block rounded-full px-1.5 py-0.5 text-[0.5rem] font-bold',
-                  p.verified
+                  'mt-1.5 inline-block whitespace-nowrap rounded-full px-1.5 py-0.5 text-[0.5rem] font-bold',
+                  verified
                     ? 'bg-accent text-accent-foreground'
                     : 'bg-secondary text-muted-foreground',
                 )}
               >
-                {p.verified ? 'Verified by KINRO' : 'Not yet verified'}
+                {verified ? 'Verified by KINRO' : 'Not yet verified'}
               </span>
             </div>
           </div>

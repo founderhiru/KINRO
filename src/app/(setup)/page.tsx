@@ -31,6 +31,7 @@ import {
   HealthScreen,
   HomeScreen,
 } from '@/components/custom/app-mockups';
+import { HeroShowcase, type ShowcaseScreen } from '@/components/custom/hero-showcase';
 import { IconTile, PhotoFrame, ScreenCrop } from '@/components/custom/photo-frame';
 import { ScanToDownload, StoreQrs } from '@/components/custom/store-qrs';
 import { Badge } from '@/components/ui/badge';
@@ -272,6 +273,13 @@ function pillarFallback(pillar: Pillar) {
   return <IconTile icon={pillar.visual.icon} />;
 }
 
+const heroScreens: ShowcaseScreen[] = [
+  { label: 'Your dog, in one place', node: <HomeScreen showCare={careLive} /> },
+  { label: 'Health records that stay with you', node: <HealthScreen /> },
+  { label: 'Meet responsible owners nearby', node: <DiscoverScreen /> },
+  ...(careLive ? [{ label: 'Find a vet when you need one', node: <CareScreen /> }] : []),
+];
+
 export default function KinroHome() {
   return (
     <main className="overflow-hidden">
@@ -321,24 +329,14 @@ export default function KinroHome() {
             </div>
           </div>
 
-          {/* Illustrative app screens — sample dogs and photos, not real profiles. */}
-          <figure className="relative mx-auto w-full max-w-[26rem] animate-in fade-in zoom-in-95 duration-1000">
+          {/* Product tour: flashes the key app screens on load, then loops. Sample content. */}
+          <div className="relative mx-auto w-full max-w-[26rem]">
             <div
               className="absolute left-1/2 top-1/2 -z-10 size-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent"
               aria-hidden="true"
             />
-            <div className="relative">
-              <div className="absolute -left-10 top-10 hidden w-[62%] -rotate-6 opacity-95 sm:block">
-                <HomeScreen showCare={careLive} />
-              </div>
-              <div className="relative mx-auto w-[16rem] sm:ml-auto sm:w-[68%] sm:min-w-[15rem] sm:rotate-3">
-                {careLive ? <CareScreen /> : <HealthScreen />}
-              </div>
-            </div>
-            <figcaption className="mt-6 text-center text-xs text-muted-foreground">
-              Illustrative app screens. Sample dogs and photos, not real profiles.
-            </figcaption>
-          </figure>
+            <HeroShowcase screens={heroScreens} />
+          </div>
         </div>
       </section>
 
