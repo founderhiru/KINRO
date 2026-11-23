@@ -84,7 +84,7 @@ const problems = [
   {
     icon: Building2,
     title: 'Every clinic has its own file',
-    text: 'Switch vets, move cities or share care, and the history stays behind.',
+    text: 'Switch vets or move cities, and the history stays behind.',
   },
 ];
 
@@ -187,8 +187,7 @@ if (careLive) {
   pillars.push({
     number: '04',
     title: 'Veterinary Care',
-    description:
-      'Find vets and clinics, request appointments, and share records only when you choose.',
+    description: 'Find vets and clinics, request appointments, and keep your records private.',
     slot: 'pillar-vet',
     visual: 'care',
     visualLabel: 'App screen for requesting a vet appointment, with records kept private.',
@@ -196,7 +195,7 @@ if (careLive) {
       { text: 'Find a vet or clinic near you' },
       { text: '“Verified by KINRO” only after credentials are checked' },
       { text: 'Request appointments in the app' },
-      { text: 'Your health records stay private unless you share them' },
+      { text: 'Your health records stay private to you' },
     ],
   });
 }
