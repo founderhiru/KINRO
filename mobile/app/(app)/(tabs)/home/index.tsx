@@ -53,8 +53,11 @@ export default function HomeScreen() {
   const [error, setError] = useState<string | null>(null);
   const isAuthenticated = !!session;
 
-  const cardWidth = Math.round(
-    Math.min(210, Math.max(150, (width - spacing.screenPadding * 2) * 0.5)),
+  // Every dog card is the same size. One or two dogs share the row evenly so
+  // nothing is cut off; three or more show a peek of the next card.
+  const railWidth = width - spacing.screenPadding * 2;
+  const cardWidth = Math.floor(
+    (dogs?.length ?? 0) >= 3 ? railWidth * 0.46 : (railWidth - spacing.md) / 2,
   );
 
   // "Dogs near you": counts real public dogs in the owner's city so Home can
@@ -444,7 +447,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   pressed: { opacity: 0.85 },
-  miniPhoto: { width: "100%", height: 130 },
+  miniPhoto: { width: "100%", aspectRatio: 4 / 3 },
   primaryBadge: {
     position: "absolute",
     top: spacing.sm,
