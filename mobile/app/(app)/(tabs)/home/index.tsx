@@ -28,6 +28,7 @@ import { DogCardSkeleton } from "@/components/Skeleton";
 import { useSession } from "@/lib/auth-client";
 import type { OwnedDogProfileItem } from "@/lib/contracts";
 import { fetchDiscoverDogs } from "@/lib/discover-api";
+import { firstNameOf, realName } from "@/lib/display-name";
 import { listMyDogs } from "@/lib/dog-api";
 import { countNearbyDogs, shouldShowFirstInCity } from "@/lib/nearby";
 import { listNotifications } from "@/lib/notification-api";
@@ -105,7 +106,7 @@ export default function HomeScreen() {
     }, [load]),
   );
 
-  const firstName = session?.user.name?.split(" ")[0];
+  const firstName = firstNameOf(session?.user.name);
   const greeting = greetingForNow();
 
   // Guest-first: a signed-out visitor gets the public Home (dog listings,
@@ -158,7 +159,10 @@ export default function HomeScreen() {
             accessibilityLabel="Open your profile"
             hitSlop={8}
           >
-            <Avatar name={session?.user.name} size={44} />
+            <Avatar
+              name={realName(session?.user.name) ?? undefined}
+              size={44}
+            />
           </Pressable>
           <Pressable
             onPress={() => router.push("/(app)/(tabs)/profile/notifications")}
@@ -183,6 +187,16 @@ export default function HomeScreen() {
             {hasDogs ? greeting : "Welcome"}
             {firstName ? `, ${firstName}` : ""}!
           </Text>
+          {!firstName ? (
+            <Pressable
+              onPress={() => router.push("/(app)/(tabs)/profile/edit")}
+              accessibilityRole="button"
+              accessibilityLabel="Add your first name"
+              hitSlop={8}
+            >
+              <Text style={styles.addName}>Add your first name</Text>
+            </Pressable>
+          ) : null}
           <Text style={typography.bodyMuted}>
             {hasDogs
               ? "Happy dogs. Happier people."
@@ -403,6 +417,12 @@ const styles = StyleSheet.create({
   headerCopy: { marginBottom: spacing.lg },
   breedHeading: { marginTop: spacing.lg, marginBottom: spacing.md },
   nearby: { marginTop: spacing.lg },
+  addName: {
+    ...typography.bodyMuted,
+    color: colors.accent,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
   greeting: { ...typography.title, marginBottom: 2 },
   sectionHeaderRow: {
     flexDirection: "row",
