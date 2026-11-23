@@ -17,7 +17,7 @@ export interface ShowcaseScreen {
   body: ReactNode;
 }
 
-const STEP_MS = 2400;
+const STEP_MS = 1800;
 
 export function HeroShowcase({ screens }: { screens: ShowcaseScreen[] }) {
   const [index, setIndex] = useState(0);
@@ -49,7 +49,7 @@ export function HeroShowcase({ screens }: { screens: ShowcaseScreen[] }) {
             <div
               key={screen.label}
               className={cn(
-                'absolute inset-x-3.5 top-9 bottom-0 transition-opacity duration-300 ease-out',
+                'absolute inset-x-3.5 top-9 bottom-0 transition-opacity duration-200 ease-out',
                 i === index ? 'opacity-100' : 'pointer-events-none opacity-0',
               )}
             >
@@ -80,7 +80,7 @@ export function HeroShowcase({ screens }: { screens: ShowcaseScreen[] }) {
                   className={cn(
                     'absolute inset-y-0 left-0 rounded-full bg-primary',
                     i < index || (reduceMotion && i === index) ? 'w-full' : 'w-0',
-                    i === index && !reduceMotion && 'w-full animate-[hero-fill_2400ms_linear]',
+                    i === index && !reduceMotion && 'w-full animate-[hero-fill_1800ms_linear]',
                   )}
                 />
               </span>
