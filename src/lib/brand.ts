@@ -1,9 +1,12 @@
 // @polsia:user-owned — brand identity. Edit freely. `site.ts` re-exports
 // siteName/siteDescription; `manifest.ts` + `opengraph-image.tsx` read `brandVisual`.
 
+import { careLive } from '@/lib/care-flag';
+
 export const siteName = 'KINRO';
-export const siteDescription =
-  'The Digital Life Record for Every Dog: health records, a lasting dog profile and trusted connections, in one mobile-first app.';
+export const siteDescription = careLive
+  ? 'The Digital Life Record for Every Dog: health records, a lasting dog profile, trusted connections and vet care, in one mobile-first app.'
+  : 'The Digital Life Record for Every Dog: health records, a lasting dog profile and trusted connections, in one mobile-first app.';
 
 // PWA + social-share colors. HEX only (the oklch() tokens in globals.css aren't
 // readable here) — set to match your brand seed.

@@ -246,3 +246,13 @@
     cursor: pointer;
   }
 }
+
+/* Hero product tour: the active progress bar fills over one screen's dwell time. */
+@keyframes hero-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}

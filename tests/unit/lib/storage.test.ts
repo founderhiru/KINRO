@@ -17,7 +17,7 @@ vi.mock('@/lib/env', () => ({
     R2_ACCESS_KEY_ID: 'key',
     R2_SECRET_ACCESS_KEY: 'secret',
     R2_BUCKET_NAME: 'canidknot-uploads',
-      R2_PHOTOS_BUCKET_NAME: 'canidknot-photos',
+    R2_PHOTOS_BUCKET_NAME: 'canidknot-photos',
     R2_PUBLIC_HOSTNAME: 'cdn.canidknot.test',
   },
 }));

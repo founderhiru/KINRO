@@ -13,6 +13,7 @@ import {
   FREE_MESSAGE_LIMIT,
   hasActiveEntitlement,
 } from '@/lib/entitlements';
+import { isPaywallLive } from '@/lib/paywall';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'service is required' }, { status: 400 });
     }
 
-    const active = await hasActiveEntitlement(user.id, service, scopeId);
+    // With no payment provider connected, messaging is free (see paywall.ts).
+    const active =
+      (service === CONNECTION_MESSAGING_SERVICE && !isPaywallLive()) ||
+      (await hasActiveEntitlement(user.id, service, scopeId));
 
     let freeMessagesRemaining: number | null = null;
     if (service === CONNECTION_MESSAGING_SERVICE && scopeId) {

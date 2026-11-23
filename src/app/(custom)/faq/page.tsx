@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { careLive } from '@/lib/care-flag';
 import { SUPPORT_EMAIL } from '@/lib/support';
 
 export const metadata: Metadata = {
@@ -23,6 +24,32 @@ interface FaqSection {
   items: FaqItem[];
 }
 
+const CARE_SECTION: FaqSection = {
+  title: 'KINRO Care',
+  items: [
+    {
+      q: 'What is KINRO Care?',
+      a: 'KINRO Care helps you find vets and clinics and request a visit for your dog. It is separate from Dog Connections: vets do not appear in Discover or in your matches.',
+    },
+    {
+      q: 'What does “Verified by KINRO” mean?',
+      a: "KINRO has checked the vet's registration with their veterinary council. A listing without that label has not been checked by KINRO, so ask to see their registration before relying on it. Verification is not an endorsement of any treatment.",
+    },
+    {
+      q: 'How do I request a visit?',
+      a: 'Open a vet or clinic, tap Request appointment, choose your dog, the reason and a preferred time, and add your phone number. KINRO emails the request to the vet or clinic. When they confirm or decline, you see the answer in Messages under Care. They then contact you on the number you gave to agree the time.',
+    },
+    {
+      q: "Does KINRO share my dog's health records with vets?",
+      a: "No. Your dog's health records stay private to you. A visit request shares only your dog's name, breed and age, the reason, your preferred time, your message and your phone number.",
+    },
+    {
+      q: 'Does KINRO charge for vet visits?',
+      a: 'No. KINRO does not take payments for vet visits. Any fee is set by the vet or clinic and paid to them directly.',
+    },
+  ],
+};
+
 const SECTIONS: FaqSection[] = [
   {
     title: 'Getting started',
@@ -33,7 +60,7 @@ const SECTIONS: FaqSection[] = [
       },
       {
         q: 'Is KINRO free?',
-        a: "Yes. Creating an owner and dog profile, browsing Discover, and sending and receiving connection requests are all free. Once you're matched with someone, the first few messages in that conversation are free too. Continuing a conversation beyond that currently requires the Connection Service — purchasing it isn't available yet in this version of the app, so nothing can be charged to you today.",
+        a: 'Yes. Creating an owner and dog profile, browsing Discover, sending and accepting connection requests, and messaging your matches are all free.',
       },
       {
         q: 'Can I connect with other dogs or owners for free?',
@@ -50,11 +77,11 @@ const SECTIONS: FaqSection[] = [
     items: [
       {
         q: 'What information can I add about my dog?',
-        a: "You can add your dog's name, breed, sex, age, city, a bio, photos, and health records (with supporting documents). KINRO may add more fields, such as pedigree or genetic information, as the platform evolves.",
+        a: "You can add your dog's name, breed, sex, age, city, a bio, photos, and health records (with supporting documents).",
       },
       {
         q: 'Can I add more than one dog?',
-        a: "Your account can include the dog profiles supported by the current KINRO experience. There's no fixed number built into the app today — KINRO may adjust this as the platform grows.",
+        a: 'Yes. There is no fixed limit on the number of dog profiles in your account.',
       },
       {
         q: "Is my dog's information public?",
@@ -113,7 +140,7 @@ const SECTIONS: FaqSection[] = [
     items: [
       {
         q: 'Is KINRO a veterinary service?',
-        a: "No. KINRO is not a veterinary service, and nothing in the app is veterinary diagnosis or medical advice. Always consult a qualified veterinarian about your dog's health.",
+        a: `No. KINRO is not a veterinary service, and nothing in the app is veterinary diagnosis or medical advice.${careLive ? ' KINRO Care lists vets and clinics so you can contact them; any care is provided by them, not by KINRO.' : ''} Always consult a qualified veterinarian about your dog's health.`,
       },
       {
         q: 'Can I use KINRO for breeding?',
@@ -125,6 +152,7 @@ const SECTIONS: FaqSection[] = [
       },
     ],
   },
+  ...(careLive ? [CARE_SECTION] : []),
   {
     title: 'Support',
     items: [

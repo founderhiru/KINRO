@@ -2,6 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+process.env.PAYWALL_LIVE = 'true';
 
 class FakeAuthError extends Error {
   readonly status = 401;

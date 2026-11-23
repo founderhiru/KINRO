@@ -39,6 +39,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         verifiedAt: p.verifiedAt ? p.verifiedAt.toISOString() : null,
         clinic: p.parent ? { id: p.parent.id, name: p.parent.name } : null,
         vets: p.vets.map(toProviderItem),
+        phone: p.contactPhone,
+        canRequest: !!p.contactEmail,
       }),
     );
   } catch {

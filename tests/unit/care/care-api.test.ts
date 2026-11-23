@@ -2,6 +2,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+const sendEmailMock = vi.fn();
+vi.mock('@/lib/care/appointment-response', () => ({
+  sendProviderRequestEmail: sendEmailMock,
+}));
 
 class FakeAuthError extends Error {
   readonly status = 401;
@@ -28,10 +32,12 @@ const valid = {
   dogId: 'dog_1',
   mode: 'in_person',
   reason: 'check_up',
+  ownerPhone: '+91 98765 43210',
 };
 
 beforeEach(() => {
   requireAuthenticatedUserMock.mockReset().mockResolvedValue(USER);
+  sendEmailMock.mockReset().mockResolvedValue(undefined);
   for (const group of Object.values(db)) for (const fn of Object.values(group)) fn.mockReset();
 });
 
@@ -75,6 +81,7 @@ describe('POST /api/care/appointments', () => {
       listingStatus: 'published',
       verificationStatus: 'verified',
       offersOnline: false,
+      contactEmail: 'vet@example.com',
     });
     const { POST } = await import('@/app/api/care/appointments/route');
     const res = await POST(post({ ...valid, mode: 'online' }));
@@ -88,17 +95,67 @@ describe('POST /api/care/appointments', () => {
       listingStatus: 'published',
       verificationStatus: 'verified',
       offersOnline: true,
+      contactEmail: 'vet@example.com',
+      name: 'Paws',
+    });
+    db.dogProfile.findUnique.mockResolvedValue({
+      id: 'dog_1',
+      ownerId: USER.id,
+      name: 'Bodhi',
+      breed: 'Lab',
+      ageYears: 3,
     });
     db.careRelationship.upsert.mockResolvedValue({ id: 'rel_1' });
     db.careAppointment.create.mockResolvedValue({ id: 'appt_1', status: 'requested' });
     const { POST } = await import('@/app/api/care/appointments/route');
     const res = await POST(post({ ...valid, mode: 'online' }));
     expect(res.status).toBe(201);
+    expect(sendEmailMock).toHaveBeenCalledWith(
+      expect.objectContaining({ to: 'vet@example.com', ownerPhone: '+91 98765 43210' }),
+    );
     expect(db.careRelationship.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
         create: { ownerId: USER.id, dogId: 'dog_1', providerId: 'prov_1' },
       }),
     );
+  });
+});
+
+describe('POST /api/care/appointments: delivery', () => {
+  const post = (b: unknown) => new Request('http://x', { method: 'POST', body: JSON.stringify(b) });
+  const setup = (contactEmail: string | null) => {
+    db.dogProfile.findUnique.mockResolvedValue({
+      id: 'dog_1',
+      ownerId: USER.id,
+      name: 'B',
+      breed: 'L',
+      ageYears: 2,
+    });
+    db.careProvider.findUnique.mockResolvedValue({
+      listingStatus: 'published',
+      verificationStatus: 'verified',
+      offersOnline: false,
+      contactEmail,
+      name: 'Paws',
+    });
+    db.careRelationship.upsert.mockResolvedValue({ id: 'rel_1' });
+    db.careAppointment.create.mockResolvedValue({ id: 'appt_1', status: 'requested' });
+  };
+
+  it('refuses a provider that cannot receive requests', async () => {
+    setup(null);
+    const { POST } = await import('@/app/api/care/appointments/route');
+    expect((await POST(post(valid))).status).toBe(400);
+    expect(db.careAppointment.create).not.toHaveBeenCalled();
+  });
+
+  it('removes the request and returns 502 when the email cannot be sent', async () => {
+    setup('vet@example.com');
+    sendEmailMock.mockRejectedValue(new Error('down'));
+    (db.careAppointment as Record<string, ReturnType<typeof vi.fn>>).delete = vi.fn();
+    const { POST } = await import('@/app/api/care/appointments/route');
+    expect((await POST(post(valid))).status).toBe(502);
+    expect(db.careAppointment.delete).toHaveBeenCalled();
   });
 });
 

@@ -29,6 +29,11 @@ model CareProvider {
   // are accepted only when true. No video is built into KINRO in this release:
   // an online appointment is a request the provider confirms and runs.
   offersOnline          Boolean  @default(false)
+  // Where visit requests are emailed (private, never returned by the API) and
+  // the phone number shown to owners. A provider with no contactEmail cannot
+  // receive requests, so the app offers no request button for it.
+  contactEmail          String?
+  contactPhone          String?
   listingStatus         String   @default("draft") // draft | published | hidden
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
@@ -70,6 +75,7 @@ model CareAppointment {
   preferredDay    String? // today | tomorrow | this_week | ISO date
   preferredTime   String?
   note            String?
+  ownerPhone      String? // shared with the provider so they can reach the owner
   status          String           @default("requested") // requested | confirmed | declined | cancelled | completed
   scheduledAt     DateTime?
   createdAt       DateTime         @default(now())

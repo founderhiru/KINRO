@@ -43,6 +43,8 @@ export const CareProviderDetail = CareProviderItem.extend({
   verifiedAt: z.string().nullable(),
   clinic: z.object({ id: z.string(), name: z.string() }).nullable(),
   vets: z.array(CareProviderItem),
+  phone: z.string().nullable(),
+  canRequest: z.boolean(),
 });
 export type CareProviderDetail = z.infer<typeof CareProviderDetail>;
 
@@ -53,6 +55,13 @@ export const AppointmentWrite = z.object({
   reason: z.enum(CARE_REASONS),
   preferredDay: z.enum(CARE_DAYS).optional(),
   note: z.string().trim().max(500).optional(),
+  ownerPhone: z
+    .string()
+    .trim()
+    .regex(
+      /^\+?[\d\s-]{8,16}$/,
+      "Enter a phone number the vet can reach you on",
+    ),
 });
 export type AppointmentWrite = z.infer<typeof AppointmentWrite>;
 
@@ -98,3 +107,24 @@ export const CareConnections = z.object({
   relationships: z.array(CareRelationshipItem),
 });
 export type CareConnections = z.infer<typeof CareConnections>;
+
+// "Nearby on Google": live, read-only results. Nothing but placeId is ever
+// stored by KINRO (Google Maps Platform terms), so these are never persisted.
+export const NearbyPlace = z.object({
+  placeId: z.string(),
+  name: z.string(),
+  address: z.string().nullable(),
+  phone: z.string().nullable(),
+  rating: z.number().nullable(),
+  ratingCount: z.number().nullable(),
+  openNow: z.boolean().nullable(),
+  mapsUrl: z.string().nullable(),
+});
+export type NearbyPlace = z.infer<typeof NearbyPlace>;
+
+export const NearbyPlaces = z.object({
+  configured: z.boolean(),
+  area: z.string(),
+  items: z.array(NearbyPlace),
+});
+export type NearbyPlaces = z.infer<typeof NearbyPlaces>;

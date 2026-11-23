@@ -1,6 +1,6 @@
 // Download landing page. KINRO is mobile-first: this page is where the website
 // sends people to get the app. Store links live in src/lib/app-links.ts and are
-// null until the app is published — this page never invents a store URL.
+// null until the app is published. Unpublished platforms are not shown at all.
 // Each platform card also shows a QR code (desktop only) that opens the same
 // download link on a phone, via the stable /get/ios and /get/android routes.
 
@@ -25,7 +25,8 @@ export default function DownloadPage() {
     ...platform,
     url: safeStoreUrl(appLinks[platform.key]),
   }));
-  const anyAvailable = platforms.some((platform) => platform.url);
+  const available = platforms.filter((platform) => platform.url);
+  const anyAvailable = available.length > 0;
 
   return (
     <main className="overflow-hidden">
@@ -51,49 +52,44 @@ export default function DownloadPage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="container-page">
-          <div className="grid gap-6 md:grid-cols-2">
-            {platforms.map((platform) => (
-              <Card key={platform.key} className="border-border">
-                <CardContent className="flex h-full flex-col gap-6 p-6 md:p-8">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-11 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                      <Smartphone className="size-5" aria-hidden="true" />
-                    </span>
-                    <div>
-                      <h2 className="font-display text-xl font-semibold">{platform.label}</h2>
-                      <p className="text-sm text-muted-foreground">{platform.store}</p>
+      {anyAvailable ? (
+        <section className="section">
+          <div className="container-page">
+            <div className="grid gap-6 md:grid-cols-2">
+              {available.map((platform) => (
+                <Card key={platform.key} className="border-border">
+                  <CardContent className="flex h-full flex-col gap-6 p-6 md:p-8">
+                    <div className="flex items-center gap-3">
+                      <span className="flex size-11 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                        <Smartphone className="size-5" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <h2 className="font-display text-xl font-semibold">{platform.label}</h2>
+                        <p className="text-sm text-muted-foreground">{platform.store}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Scan with a phone. Hidden on phones, where you can just tap the button. */}
-                  <div className="hidden justify-center rounded-2xl bg-muted/50 py-6 md:flex">
-                    <StoreQr platform={platform} origin={siteUrl} size="lg" />
-                  </div>
+                    {/* Scan with a phone. Hidden on phones, where you can just tap the button. */}
+                    <div className="hidden justify-center rounded-2xl bg-muted/50 py-6 md:flex">
+                      <StoreQr platform={platform} origin={siteUrl} size="lg" />
+                    </div>
 
-                  {platform.url ? (
                     <Button asChild size="lg" className="mt-auto h-12 rounded-full px-6">
                       <a href={`/get/${platform.key}`}>
                         <Download className="size-4" aria-hidden="true" />
                         Get KINRO on {platform.store}
                       </a>
                     </Button>
-                  ) : (
-                    <p className="mt-auto rounded-lg bg-muted/70 px-4 py-3 text-sm text-muted-foreground">
-                      Not published yet. The {platform.store} link will appear here as soon as the
-                      app is available.
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <p className="mt-6 hidden text-center text-sm text-muted-foreground md:block">
+              On a computer? Point your phone camera at the code for your phone.
+            </p>
           </div>
-          <p className="mt-6 hidden text-center text-sm text-muted-foreground md:block">
-            On a computer? Point your phone camera at the code for your phone.
-          </p>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="section border-t border-border bg-muted/40">
         <div className="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
@@ -115,17 +111,6 @@ export default function DownloadPage() {
           </div>
         </div>
       </section>
-
-      {!anyAvailable ? (
-        <section className="section border-t border-border">
-          <div className="container-page">
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              KINRO is being prepared for iOS and Android. A store link appears here only once it is
-              live.
-            </p>
-          </div>
-        </section>
-      ) : null}
     </main>
   );
 }

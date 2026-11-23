@@ -1,6 +1,6 @@
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { VerificationBadge } from "@/components/care/ProviderRow";
@@ -108,51 +108,51 @@ export default function ProviderScreen() {
 
         <Card style={styles.card}>
           <Text style={styles.label}>CONTACT</Text>
-          <Text style={styles.optTitle}>Visit in person</Text>
           {p.addressLine ? (
             <Text style={typography.bodyMuted}>{p.addressLine}</Text>
           ) : null}
-          <View style={styles.gapSm}>
-            <Button
-              label="Request appointment"
-              onPress={() => request("in_person")}
-            />
-          </View>
-          <View style={styles.divider} />
-          <Text style={styles.optTitle}>Online consultation</Text>
-          {p.offersOnline ? (
+          {p.phone ? (
+            <View style={styles.gapSm}>
+              <Button
+                label={`Call ${p.phone}`}
+                variant={p.canRequest ? "secondary" : "primary"}
+                onPress={() =>
+                  Linking.openURL(`tel:${p.phone?.replace(/[^\d+]/g, "")}`)
+                }
+              />
+            </View>
+          ) : null}
+          {p.canRequest ? (
             <>
-              <Text style={typography.bodyMuted}>
-                Consult from home. The vet confirms the time and shares how the
-                consultation will be held.
-              </Text>
               <View style={styles.gapSm}>
                 <Button
-                  label="Request online consultation"
-                  variant="secondary"
-                  onPress={() => request("online")}
+                  label="Request appointment"
+                  onPress={() => request("in_person")}
                 />
               </View>
+              {p.offersOnline ? (
+                <>
+                  <View style={styles.divider} />
+                  <Text style={styles.optTitle}>Online consultation</Text>
+                  <Text style={typography.bodyMuted}>
+                    Consult from home. The vet confirms the time and phones you
+                    to arrange it.
+                  </Text>
+                  <View style={styles.gapSm}>
+                    <Button
+                      label="Request online consultation"
+                      variant="secondary"
+                      onPress={() => request("online")}
+                    />
+                  </View>
+                </>
+              ) : null}
             </>
-          ) : (
-            <>
-              <Text style={typography.bodyMuted}>
-                Not offered by this provider yet.
-              </Text>
-              <View style={styles.gapSm}>
-                <Button
-                  label="Notify me when available"
-                  variant="secondary"
-                  onPress={() =>
-                    Alert.alert(
-                      "Noted",
-                      "We'll let you know when online consultation is available here.",
-                    )
-                  }
-                />
-              </View>
-            </>
-          )}
+          ) : !p.phone && !p.addressLine ? (
+            <Text style={typography.bodyMuted}>
+              No contact details are listed for this provider.
+            </Text>
+          ) : null}
         </Card>
 
         {p.vets.length > 0 ? (

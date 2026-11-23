@@ -227,14 +227,6 @@ export default function ProfileScreen() {
           />
         </View>
 
-        <View style={styles.pricingButton}>
-          <Button
-            label="Connection Service"
-            onPress={() => router.push("/(app)/(tabs)/profile/pricing")}
-            variant="secondary"
-          />
-        </View>
-
         <View style={styles.blockedButton}>
           <Button
             label="Blocked users"
@@ -281,7 +273,6 @@ const styles = StyleSheet.create({
   contactRow: { flexDirection: "row", justifyContent: "space-between" },
   myDogsButton: { marginTop: spacing.md },
   notificationsButton: { marginTop: spacing.md },
-  pricingButton: { marginTop: spacing.md },
   blockedButton: { marginTop: spacing.md },
   deleteAccount: {
     alignSelf: "center",

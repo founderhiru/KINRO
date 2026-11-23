@@ -27,7 +27,7 @@ const tabs = [
   { label: 'Profile', icon: User },
 ] as const;
 
-type TabLabel = (typeof tabs)[number]['label'];
+export type TabLabel = (typeof tabs)[number]['label'];
 
 /** Phone body with a status-bar notch, a scrolling-screen area and the 5-tab bar. */
 export function PhoneFrame({
@@ -48,13 +48,13 @@ export function PhoneFrame({
       )}
     >
       <div className="absolute left-1/2 top-2 z-10 h-4 w-20 -translate-x-1/2 rounded-full bg-foreground" />
-      <div className="flex-1 overflow-hidden px-3.5 pt-9">{children}</div>
+      <div className="relative flex-1 overflow-hidden px-3.5 pt-9">{children}</div>
       <div className="flex items-end justify-between border-t border-border bg-card px-2 pb-3 pt-2">
         {tabs.map(({ label, icon: Icon }) => (
           <div
             key={label}
             className={cn(
-              'flex flex-1 flex-col items-center gap-0.5 text-[0.55rem] font-semibold',
+              'flex flex-1 flex-col items-center gap-0.5 text-[0.55rem] font-semibold transition-colors duration-300',
               label === active ? 'text-primary' : 'text-muted-foreground',
             )}
           >
@@ -114,9 +114,9 @@ const dogs = [
   },
 ] as const;
 
-export function HomeScreen() {
+export function HomeBody({ showCare = false }: { showCare?: boolean }) {
   return (
-    <PhoneFrame active="Home">
+    <>
       <Header title="KINRO" />
       <p className="text-base font-bold leading-tight tracking-tight">Welcome back</p>
       <p className="mt-0.5 text-[0.65rem] text-muted-foreground">Your dogs, in one place.</p>
@@ -132,6 +132,23 @@ export function HomeScreen() {
         <ChevronRight className="size-4 text-input" />
       </div>
 
+      {showCare ? (
+        <div className="app-card mt-3 flex items-center gap-2 p-2.5">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+            <Stethoscope className="size-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1.5 text-xs font-bold">
+              Find Veterinary Care <CareTag />
+            </p>
+            <p className="truncate text-[0.55rem] text-muted-foreground">
+              Vets and clinics near you.
+            </p>
+          </div>
+          <ChevronRight className="size-4 text-input" />
+        </div>
+      ) : null}
+
       <div className="mt-3 rounded-xl bg-[#f8e9c8] p-3">
         <p className="text-xs font-bold">Meet dogs nearby</p>
         <p className="mt-0.5 text-[0.6rem] leading-snug text-foreground/70">
@@ -141,13 +158,13 @@ export function HomeScreen() {
           Discover
         </span>
       </div>
-    </PhoneFrame>
+    </>
   );
 }
 
-export function DiscoverScreen() {
+export function DiscoverBody() {
   return (
-    <PhoneFrame active="Discover">
+    <>
       <Header title="Discover" />
       <div className="mb-2.5 flex gap-1.5">
         {['All breeds', 'Near me'].map((chip, i) => (
@@ -183,7 +200,7 @@ export function DiscoverScreen() {
           </div>
         ))}
       </div>
-    </PhoneFrame>
+    </>
   );
 }
 
@@ -193,9 +210,9 @@ const records = [
   { icon: FileText, title: 'Document', note: 'Private to your account' },
 ] as const;
 
-export function HealthScreen() {
+export function HealthBody() {
   return (
-    <PhoneFrame active="My Dogs">
+    <>
       <Header title="Health" />
       <div className="mb-3 flex items-center gap-2.5">
         <Thumb src="/kinro/samples/dog-labrador.jpg" className="size-11 !rounded-full" />
@@ -220,6 +237,105 @@ export function HealthScreen() {
       <p className="mt-3 text-[0.55rem] leading-snug text-muted-foreground">
         Records are added by owners and are not verified by KINRO.
       </p>
+    </>
+  );
+}
+
+/** The small green "CARE" label that marks the extension in the app. */
+function CareTag() {
+  return (
+    <span className="rounded-full bg-accent px-1.5 py-px text-[0.45rem] font-bold uppercase tracking-wider text-accent-foreground">
+      Care
+    </span>
+  );
+}
+
+/** The Care request flow: no real or invented vets, only the app's own labels. */
+export function CareBody() {
+  const chip = (label: string, on = false) => (
+    <span
+      key={label}
+      className={cn(
+        'whitespace-nowrap rounded-full border px-2 py-1 text-[0.55rem] font-bold',
+        on
+          ? 'border-primary bg-primary text-primary-foreground'
+          : 'border-border bg-card text-muted-foreground',
+      )}
+    >
+      {label}
+    </span>
+  );
+  return (
+    <>
+      <div className="mb-1 flex items-center gap-1.5">
+        <p className="text-base font-bold leading-tight tracking-tight">Request a visit</p>
+        <CareTag />
+      </div>
+      <p className="mb-3 text-[0.6rem] text-muted-foreground">
+        With a vet near you, in a few taps.
+      </p>
+
+      <div className="mb-3 flex items-center gap-2 rounded-xl bg-accent p-2.5">
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-card text-accent-foreground">
+          <Stethoscope className="size-4" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-[0.6rem] font-bold text-accent-foreground">Verified by KINRO</p>
+          <p className="text-[0.5rem] leading-snug text-accent-foreground/80">
+            Credentials checked before they are listed.
+          </p>
+        </div>
+      </div>
+
+      <p className="mb-1 text-[0.6rem] font-bold">Which dog?</p>
+      <div className="mb-2.5 flex gap-1.5">{[chip('Bodhi', true)]}</div>
+      <p className="mb-1 text-[0.6rem] font-bold">Reason</p>
+      <div className="mb-2.5 flex flex-wrap gap-1.5">
+        {[chip('Check-up', true), chip('Vaccination'), chip('Skin or ears')]}
+      </div>
+      <p className="mb-1 text-[0.6rem] font-bold">Preferred time</p>
+      <div className="mb-3 flex gap-1.5">
+        {[chip('Today'), chip('Tomorrow', true), chip('This week')]}
+      </div>
+
+      <div className="mb-3 rounded-xl bg-secondary p-2.5 text-[0.52rem] leading-snug text-foreground/80">
+        Your health records stay private.
+      </div>
+      <span className="flex w-full items-center justify-center rounded-xl bg-primary py-2 text-[0.65rem] font-bold text-primary-foreground">
+        Send request
+      </span>
+    </>
+  );
+}
+
+export function HomeScreen({ showCare = false }: { showCare?: boolean }) {
+  return (
+    <PhoneFrame active="Home">
+      <HomeBody showCare={showCare} />
+    </PhoneFrame>
+  );
+}
+
+export function DiscoverScreen() {
+  return (
+    <PhoneFrame active="Discover">
+      <DiscoverBody />
+    </PhoneFrame>
+  );
+}
+
+export function HealthScreen() {
+  return (
+    <PhoneFrame active="My Dogs">
+      <HealthBody />
+    </PhoneFrame>
+  );
+}
+
+export function CareScreen() {
+  return (
+    <PhoneFrame active="Home">
+      <CareBody />
     </PhoneFrame>
   );
 }
