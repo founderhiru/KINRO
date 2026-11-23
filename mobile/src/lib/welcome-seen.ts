@@ -9,6 +9,9 @@ import * as SecureStore from "expo-secure-store";
 const KEY = "kinro_welcome_seen_v1";
 
 export async function hasSeenWelcome(): Promise<boolean> {
+  // Development builds only: replay the welcome on every launch so the design
+  // can be reviewed without erasing the simulator. Release builds are unaffected.
+  if (typeof __DEV__ !== "undefined" && __DEV__) return false;
   try {
     return (await SecureStore.getItemAsync(KEY)) === "1";
   } catch {
