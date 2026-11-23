@@ -75,7 +75,7 @@ export default function DownloadPage() {
                     </div>
 
                     <Button asChild size="lg" className="mt-auto h-12 rounded-full px-6">
-                      <a href={`/get/${platform.key}`}>
+                      <a href={`/get/${platform.key}?src=web`}>
                         <Download className="size-4" aria-hidden="true" />
                         Get KINRO on {platform.store}
                       </a>

@@ -32,7 +32,8 @@ export function StoreQr({
   origin: string;
   size?: keyof typeof qrSize;
 }) {
-  const path = `/get/${platform.key}`;
+  // ?src=qr tags scans of this code so the Growth Dashboard can tell them from button clicks.
+  const path = `/get/${platform.key}?src=qr`;
   return (
     <figure className="flex flex-col items-center text-center">
       <a
@@ -77,7 +78,7 @@ export function StoreButtons({ className }: { className?: string }) {
           size="sm"
           className="h-10 rounded-full bg-card px-4"
         >
-          <a href={`/get/${platform.key}`}>
+          <a href={`/get/${platform.key}?src=web`}>
             <Smartphone className="size-4" aria-hidden="true" />
             {platform.store}
           </a>
