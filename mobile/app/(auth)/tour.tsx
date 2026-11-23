@@ -27,7 +27,7 @@ import { useReduceMotion } from "@/lib/use-reduce-motion";
 import { brandField, colors, radius, spacing } from "@/theme/tokens";
 
 /**
- * A short, auto-playing preview of KINRO shown before sign-in: four "stories"
+ * A short, auto-playing preview of KINRO shown before sign-in: five "stories"
  * (progress bars on top, tap right/left to move). The photos are licensed
  * breed samples and the cards are static illustrations of the app, nothing
  * here reads real data, and it says so on screen. Under Reduce Motion the
@@ -228,11 +228,11 @@ function Glimpse({ id }: { id: TourStoryId }) {
     return (
       <View style={styles.row}>
         <View style={[styles.badge, { backgroundColor: colors.promoWarm }]}>
-          <Ionicons name="time-outline" size={18} color={colors.text} />
+          <Ionicons name="paw-outline" size={18} color={colors.text} />
         </View>
         <View style={styles.flex}>
-          <Text style={styles.gTitle}>Vaccination due soon</Text>
-          <Text style={styles.gMeta}>Reminders for every dog</Text>
+          <Text style={styles.gTitle}>One profile per dog</Text>
+          <Text style={styles.gMeta}>Photos, breed, age and records</Text>
         </View>
       </View>
     );
@@ -268,6 +268,19 @@ function Glimpse({ id }: { id: TourStoryId }) {
             <Text style={styles.gTitle}>{label}</Text>
           </View>
         ))}
+      </View>
+    );
+  }
+  if (id === "care") {
+    return (
+      <View style={styles.row}>
+        <View style={[styles.badge, { backgroundColor: colors.accentTint }]}>
+          <Ionicons name="medkit-outline" size={18} color={colors.accentDark} />
+        </View>
+        <View style={styles.flex}>
+          <Text style={styles.gTitle}>Request a visit</Text>
+          <Text style={styles.gMeta}>Vets and clinics near you</Text>
+        </View>
       </View>
     );
   }

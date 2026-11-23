@@ -43,8 +43,11 @@ export function GuestHome() {
   const [dogs, setDogs] = useState<DogProfileItem[] | null>(null);
   const [error, setError] = useState(false);
 
-  const cardWidth = Math.round(
-    Math.min(210, Math.max(150, (width - spacing.screenPadding * 2) * 0.5)),
+  // Same size for every card: two share the row evenly, three or more show a
+  // peek of the next one.
+  const railWidth = width - spacing.screenPadding * 2;
+  const cardWidth = Math.floor(
+    (dogs?.length ?? 0) >= 3 ? railWidth * 0.46 : (railWidth - spacing.md) / 2,
   );
 
   const load = useCallback(async () => {
@@ -157,13 +160,13 @@ export function GuestHome() {
                     style={[typography.bodyMuted, styles.miniMeta]}
                     numberOfLines={1}
                   >
-                    {dog.breed} · {dog.ageYears}{" "}
-                    {dog.ageYears === 1 ? "yr" : "yrs"}
+                    {dog.breed}
                   </Text>
                   <Text
                     style={[typography.bodyMuted, styles.miniMeta]}
                     numberOfLines={1}
                   >
+                    {dog.ageYears} {dog.ageYears === 1 ? "yr" : "yrs"} ·{" "}
                     {dog.city}
                   </Text>
                   <View style={styles.miniBadgeRow}>
@@ -298,8 +301,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   pressed: { opacity: 0.85 },
-  miniPhoto: { width: "100%", height: 130 },
-  miniInfo: { padding: spacing.sm + 2 },
+  miniPhoto: { width: "100%", aspectRatio: 4 / 3 },
+  miniInfo: { padding: spacing.sm + 2, minHeight: 118 },
   miniMeta: { marginTop: 1 },
   miniBadgeRow: {
     flexDirection: "row",

@@ -3,10 +3,10 @@
 import 'server-only';
 
 import { NextResponse } from 'next/server';
-import { env } from '@/lib/env';
+import { nearbyEnabled } from '@/lib/care/nearby-flag';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  return NextResponse.json({ nearby: !!env.GOOGLE_PLACES_API_KEY });
+  return NextResponse.json({ nearby: nearbyEnabled() });
 }

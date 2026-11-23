@@ -22,11 +22,13 @@ import { ErrorText } from "@/components/ErrorText";
 import { FirstDogCard } from "@/components/FirstDogCard";
 import { FirstInCityCard } from "@/components/FirstInCityCard";
 import { GuestHome } from "@/components/GuestHome";
+import { PassportProgress } from "@/components/PassportProgress";
 import { Screen } from "@/components/Screen";
 import { DogCardSkeleton } from "@/components/Skeleton";
 import { useSession } from "@/lib/auth-client";
 import type { OwnedDogProfileItem } from "@/lib/contracts";
 import { fetchDiscoverDogs } from "@/lib/discover-api";
+import { firstNameOf, realName } from "@/lib/display-name";
 import { listMyDogs } from "@/lib/dog-api";
 import { countNearbyDogs, shouldShowFirstInCity } from "@/lib/nearby";
 import { listNotifications } from "@/lib/notification-api";
@@ -51,8 +53,11 @@ export default function HomeScreen() {
   const [error, setError] = useState<string | null>(null);
   const isAuthenticated = !!session;
 
-  const cardWidth = Math.round(
-    Math.min(210, Math.max(150, (width - spacing.screenPadding * 2) * 0.5)),
+  // Every dog card is the same size. One or two dogs share the row evenly so
+  // nothing is cut off; three or more show a peek of the next card.
+  const railWidth = width - spacing.screenPadding * 2;
+  const cardWidth = Math.floor(
+    (dogs?.length ?? 0) >= 3 ? railWidth * 0.46 : (railWidth - spacing.md) / 2,
   );
 
   // "Dogs near you": counts real public dogs in the owner's city so Home can
@@ -104,7 +109,7 @@ export default function HomeScreen() {
     }, [load]),
   );
 
-  const firstName = session?.user.name?.split(" ")[0];
+  const firstName = firstNameOf(session?.user.name);
   const greeting = greetingForNow();
 
   // Guest-first: a signed-out visitor gets the public Home (dog listings,
@@ -157,7 +162,10 @@ export default function HomeScreen() {
             accessibilityLabel="Open your profile"
             hitSlop={8}
           >
-            <Avatar name={session?.user.name} size={44} />
+            <Avatar
+              name={realName(session?.user.name) ?? undefined}
+              size={44}
+            />
           </Pressable>
           <Pressable
             onPress={() => router.push("/(app)/(tabs)/profile/notifications")}
@@ -182,6 +190,16 @@ export default function HomeScreen() {
             {hasDogs ? greeting : "Welcome"}
             {firstName ? `, ${firstName}` : ""}!
           </Text>
+          {!firstName ? (
+            <Pressable
+              onPress={() => router.push("/(app)/(tabs)/profile/edit")}
+              accessibilityRole="button"
+              accessibilityLabel="Add your first name"
+              hitSlop={8}
+            >
+              <Text style={styles.addName}>Add your first name</Text>
+            </Pressable>
+          ) : null}
           <Text style={typography.bodyMuted}>
             {hasDogs
               ? "Happy dogs. Happier people."
@@ -260,18 +278,19 @@ export default function HomeScreen() {
                       style={[typography.bodyMuted, styles.miniMeta]}
                       numberOfLines={1}
                     >
-                      {dog.breed} · {dog.ageYears}{" "}
-                      {dog.ageYears === 1 ? "yr" : "yrs"}
+                      {dog.breed}
                     </Text>
                     <Text
                       style={[typography.bodyMuted, styles.miniMeta]}
                       numberOfLines={1}
                     >
+                      {dog.ageYears} {dog.ageYears === 1 ? "yr" : "yrs"} ·{" "}
                       {dog.city}
                     </Text>
                     <View style={styles.miniBadgeRow}>
                       <HealthBadge hasRecords={dog.healthRecords.length > 0} />
                     </View>
+                    <PassportProgress records={dog.healthRecords} />
                   </View>
                 </Pressable>
               ))}
@@ -401,6 +420,12 @@ const styles = StyleSheet.create({
   headerCopy: { marginBottom: spacing.lg },
   breedHeading: { marginTop: spacing.lg, marginBottom: spacing.md },
   nearby: { marginTop: spacing.lg },
+  addName: {
+    ...typography.bodyMuted,
+    color: colors.accent,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
   greeting: { ...typography.title, marginBottom: 2 },
   sectionHeaderRow: {
     flexDirection: "row",
@@ -422,7 +447,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   pressed: { opacity: 0.85 },
-  miniPhoto: { width: "100%", height: 130 },
+  miniPhoto: { width: "100%", aspectRatio: 4 / 3 },
   primaryBadge: {
     position: "absolute",
     top: spacing.sm,
@@ -437,7 +462,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
   },
-  miniInfo: { padding: spacing.sm + 2 },
+  miniInfo: { padding: spacing.sm + 2, minHeight: 132 },
   miniMeta: { marginTop: 1 },
   miniBadgeRow: {
     flexDirection: "row",

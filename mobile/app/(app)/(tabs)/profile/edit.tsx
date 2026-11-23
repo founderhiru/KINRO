@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/Skeleton";
 import { TextArea } from "@/components/TextArea";
 import { TextField } from "@/components/TextField";
 import { authClient, useSession } from "@/lib/auth-client";
+import { realName } from "@/lib/display-name";
 import {
   createOwnerProfile,
   getOwnerProfile,
@@ -48,7 +49,7 @@ function EditProfileScreenContent() {
       .then((profile) => {
         setHasExistingProfile(!!profile);
         setValues({
-          name: session?.user.name ?? "",
+          name: realName(session?.user.name) ?? "",
           city: profile?.city ?? "",
           bio: profile?.bio ?? "",
         });
@@ -70,7 +71,7 @@ function EditProfileScreenContent() {
     // each outcome separately so a failure in one doesn't hide success in
     // the other, and so the user can tell exactly what to retry.
     let nameOk = true;
-    if (values.name.trim() !== (session?.user.name ?? "")) {
+    if (values.name.trim() !== (realName(session?.user.name) ?? "")) {
       const { error } = await authClient.updateUser({
         name: values.name.trim(),
       });

@@ -1,10 +1,15 @@
+import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import type { PickedImage } from "@/lib/dog-api";
+import { PHOTO_JPEG_QUALITY, resizeTarget } from "@/lib/photo-resize";
 
 /**
  * Opens the native photo library picker (camera roll) and returns a
  * PickedImage ready for uploadDogPhoto(), or null if the user cancelled or
- * permission was denied. Kept as one small function so screens don't each
+ * permission was denied. Ordinary dog photos are downscaled to about 1280 px
+ * on the longest side and re-encoded as JPEG before upload, so storage and
+ * loading stay small. If resizing fails for any reason the original is used.
+ * Health documents never go through here. Kept as one small function so screens don't each
  * re-derive the {uri, name, type} shape multipart upload needs.
  */
 export async function pickDogPhoto(): Promise<PickedImage | null> {
@@ -25,6 +30,22 @@ export async function pickDogPhoto(): Promise<PickedImage | null> {
   }
 
   const asset = result.assets[0];
+
+  try {
+    const target = resizeTarget(asset.width, asset.height);
+    const resized = await ImageManipulator.manipulateAsync(
+      asset.uri,
+      target ? [{ resize: target }] : [],
+      {
+        compress: PHOTO_JPEG_QUALITY,
+        format: ImageManipulator.SaveFormat.JPEG,
+      },
+    );
+    return { uri: resized.uri, name: "photo.jpg", type: "image/jpeg" };
+  } catch {
+    // Fall back to the original rather than blocking the upload.
+  }
+
   const extension = asset.uri.split(".").pop()?.toLowerCase() ?? "jpg";
   const mimeType =
     extension === "png"
