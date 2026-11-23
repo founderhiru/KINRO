@@ -1,7 +1,7 @@
 // Pure data and stepping logic for the pre-login tour (app/(auth)/tour.tsx),
 // kept free of React Native imports so it can be unit-tested directly.
 
-export type TourStoryId = "dogs" | "nearby" | "health" | "chat";
+export type TourStoryId = "dogs" | "nearby" | "health" | "care" | "chat";
 
 export interface TourStory {
   id: TourStoryId;
@@ -20,7 +20,7 @@ export const TOUR_STORIES: readonly TourStory[] = [
   {
     id: "dogs",
     title: "Every dog, one home",
-    subtitle: "Profiles, reminders and records together.",
+    subtitle: "Profiles and health records together.",
     breed: "German Shepherd",
   },
   {
@@ -34,6 +34,12 @@ export const TOUR_STORIES: readonly TourStory[] = [
     title: "Health records, ready",
     subtitle: "Keep everything your vet asks for in one place.",
     breed: "Labrador Retriever",
+  },
+  {
+    id: "care",
+    title: "Find a vet",
+    subtitle: "Request a visit with a vet or clinic near you.",
+    breed: "Pug",
   },
   {
     id: "chat",

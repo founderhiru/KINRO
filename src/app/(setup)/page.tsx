@@ -84,7 +84,7 @@ const problems = [
   {
     icon: Building2,
     title: 'Every clinic has its own file',
-    text: 'Switch vets, move cities or share care, and the history stays behind.',
+    text: 'Switch vets or move cities, and the history stays behind.',
   },
 ];
 
@@ -187,8 +187,7 @@ if (careLive) {
   pillars.push({
     number: '04',
     title: 'Veterinary Care',
-    description:
-      'Find vets and clinics, request appointments, and share records only when you choose.',
+    description: 'Find vets and clinics, request appointments, and keep your records private.',
     slot: 'pillar-vet',
     visual: 'care',
     visualLabel: 'App screen for requesting a vet appointment, with records kept private.',
@@ -196,7 +195,7 @@ if (careLive) {
       { text: 'Find a vet or clinic near you' },
       { text: '“Verified by KINRO” only after credentials are checked' },
       { text: 'Request appointments in the app' },
-      { text: 'Your health records stay private unless you share them' },
+      { text: 'Your health records stay private to you' },
     ],
   });
 }
@@ -209,6 +208,9 @@ const workflow = [
     'Log vaccinations and vet visits. Attach documents. Only you see them.',
   ],
   ['03', 'Meet owners nearby', 'Browse nearby dogs. Chat when interest is mutual.'],
+  ...(careLive
+    ? [['04', 'Find a vet', 'Browse vets and clinics, then request a visit in a few taps.']]
+    : []),
 ];
 
 const trustPoints = [
@@ -218,7 +220,7 @@ const trustPoints = [
   careLive
     ? '“Verified by KINRO” appears only on vets whose credentials KINRO has checked.'
     : 'No badge says “verified” until real verification exists.',
-  'KINRO is not a veterinary service or authority, and is not government-certified. No medical advice.',
+  'KINRO is not a veterinary service and gives no medical advice.',
 ];
 
 const signals = [
@@ -454,7 +456,9 @@ export default function KinroHome() {
             <p className="text-eyebrow">How it works</p>
             <h2 className="mt-4 font-display text-h2 text-foreground">Simple by design.</h2>
           </div>
-          <ol className="mt-12 grid gap-4 md:grid-cols-3">
+          <ol
+            className={`mt-12 grid gap-4 ${workflow.length > 3 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}
+          >
             {workflow.map(([number, title, description]) => (
               <li key={number} className="app-card lift p-6">
                 <span className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">

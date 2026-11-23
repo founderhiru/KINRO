@@ -450,7 +450,7 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {siteName}. All rights reserved.
           </p>
-          <p>KINRO is not a veterinary service and is not government-certified.</p>
+          <p>KINRO is not a veterinary service.</p>
         </div>
       </div>
     </footer>

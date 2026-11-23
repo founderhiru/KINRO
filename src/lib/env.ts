@@ -50,6 +50,9 @@ export const env = createEnv({
     // Optional; when unset the nearby list is simply empty. Restrict the key
     // to the Places API (New) and to the server's IPs in Google Cloud.
     GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
+    // Master switch for Nearby. Even with a key present, Google Places is
+    // never contacted unless this is exactly "true". Unset = off (launch).
+    CARE_NEARBY_ENABLED: z.string().optional(),
     // Object storage (Phase 4 — photos + health passport documents).
     // Cloudflare R2, via the S3-compatible API (@aws-sdk/client-s3) — the
     // shape this repo already reserved for it (see .env.example). The R2
@@ -95,6 +98,7 @@ export const env = createEnv({
     EMAIL_FROM: process.env.EMAIL_FROM,
     SMS_PROVIDER: process.env.SMS_PROVIDER,
     GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY,
+    CARE_NEARBY_ENABLED: process.env.CARE_NEARBY_ENABLED,
     R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
     R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
     R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,

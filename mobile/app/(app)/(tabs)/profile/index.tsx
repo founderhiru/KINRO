@@ -19,6 +19,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Skeleton } from "@/components/Skeleton";
 import { authClient, useSession } from "@/lib/auth-client";
 import type { OwnerProfileItem } from "@/lib/contracts";
+import { realName } from "@/lib/display-name";
 import { getOwnerProfile } from "@/lib/owner-profile-api";
 import { DELETE_ACCOUNT_WARNING, safetyErrorMessage } from "@/lib/safety";
 import { deleteMyAccount } from "@/lib/safety-api";
@@ -109,7 +110,7 @@ export default function ProfileScreen() {
     router.replace("/");
   }
 
-  const name = session?.user.name ?? null;
+  const name = realName(session?.user.name);
   const contact = session?.user.email ?? session?.user.phoneNumber ?? "";
 
   // Always-visible Log out in the header so it never depends on scrolling. It is

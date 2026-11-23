@@ -64,7 +64,7 @@ const SECTIONS: Section[] = [
     heading: "KINRO Care",
     paragraphs: [
       "When you request a visit, KINRO emails the vet or clinic your dog's name, breed and age, the reason and time you choose, your message and your phone number. Your dog's health records are not shared.",
-      "If you use Nearby, the area you type is sent to Google Maps Platform to find vets, and Google's privacy policy applies to that search.",
+      "When you tap Get directions, your phone opens Google Maps or your browser with the clinic's name and address. KINRO does not send your location to Google, and Google's privacy policy applies once Maps opens.",
     ],
   },
   {

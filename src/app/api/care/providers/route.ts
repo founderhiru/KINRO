@@ -23,7 +23,18 @@ export async function GET(request: Request) {
         verificationStatus: { notIn: ['suspended', 'rejected'] },
         ...(kind === 'vet' || kind === 'clinic' ? { kind } : {}),
         ...(city ? { city: { equals: city, mode: 'insensitive' } } : {}),
-        ...(q ? { name: { contains: q, mode: 'insensitive' } } : {}),
+        // Free-text search covers the name AND where the clinic is, so owners
+        // can type a city or area ("Hyderabad", "Madhapur") as well as a name.
+        ...(q
+          ? {
+              OR: [
+                { name: { contains: q, mode: 'insensitive' } },
+                { city: { contains: q, mode: 'insensitive' } },
+                { locality: { contains: q, mode: 'insensitive' } },
+                { addressLine: { contains: q, mode: 'insensitive' } },
+              ],
+            }
+          : {}),
       },
       orderBy: [{ verificationStatus: 'asc' }, { name: 'asc' }],
       take: 50,
