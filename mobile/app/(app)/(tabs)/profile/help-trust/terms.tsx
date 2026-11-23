@@ -58,7 +58,7 @@ const SECTIONS: Section[] = [
     paragraphs: [
       "KINRO Care lists veterinarians and clinics and lets you send them a visit request. KINRO is not a veterinary service and does not provide, supervise or guarantee any veterinary care. Any care, advice, treatment and fees are between you and the vet or clinic.",
       "“Verified by KINRO” means KINRO checked a vet's registration at the time shown. It is not an endorsement. Listings without that label have not been checked by KINRO.",
-      "A visit request is not a booking until the vet or clinic confirms it.",
+      "A visit request is not a booking until the vet or clinic confirms it. Online consultations take place on a third-party video service chosen by the vet. KINRO does not host or record them, and they are not for emergencies: in an emergency, go to the nearest clinic.",
     ],
   },
   {

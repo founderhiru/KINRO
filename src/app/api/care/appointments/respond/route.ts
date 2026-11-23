@@ -5,6 +5,7 @@ import 'server-only';
 
 import { NextResponse } from 'next/server';
 import { verifyResponseToken } from '@/lib/care/appointment-response';
+import { MEETING_LINK_HELP, parseMeetingUrl } from '@/lib/care/meeting-link';
 import { prisma } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -38,14 +39,33 @@ export async function GET(request: Request) {
   if (appt.status !== 'requested') {
     return page(`<h1>Already ${esc(appt.status)}</h1><p>This request has been answered.</p>`);
   }
+  return page(requestForm(token, appt));
+}
+
+function requestForm(
+  token: string,
+  appt: { mode: string; relationship: { dog: { name: string; breed: string; ageYears: number } } },
+  error?: string,
+) {
   const dog = appt.relationship.dog;
-  return page(`<h1 style="font-size:20px">Visit request for ${esc(dog.name)}</h1>
-<p>${esc(dog.breed)}, ${dog.ageYears} yr</p>
-<form method="post" style="display:flex;gap:12px;margin-top:20px">
-<input type="hidden" name="token" value="${esc(token)}">
+  const online = appt.mode === 'online';
+  return `<h1 style="font-size:20px">${online ? 'Online consultation' : 'Visit'} request for ${esc(dog.name)}</h1>
+<p>${esc(dog.breed)}, ${dog.ageYears} yr</p>${
+    error ? `<p style="color:#9B2C2C;font-weight:600">${esc(error)}</p>` : ''
+  }
+<form method="post" style="margin-top:20px">
+<input type="hidden" name="token" value="${esc(token)}">${
+    online
+      ? `<label style="display:block;font-weight:600;margin-bottom:6px" for="meetingUrl">Video-call link (needed to confirm)</label>
+<input id="meetingUrl" name="meetingUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://meet.google.com/..." style="width:100%;box-sizing:border-box;min-height:48px;border:1px solid #ccc;border-radius:12px;padding:0 12px;font-size:16px">
+<p style="font-size:13px;color:#555;margin:6px 0 16px">${esc(MEETING_LINK_HELP)} KINRO does not host or record the call.</p>`
+      : ''
+  }
+<div style="display:flex;gap:12px">
 <button name="action" value="confirm" style="flex:1;min-height:52px;border:0;border-radius:12px;background:#2F6B4F;color:#fff;font-weight:700;font-size:16px">Confirm</button>
-<button name="action" value="decline" style="flex:1;min-height:52px;border:1px solid #ddd;border-radius:12px;background:#fff;font-weight:700;font-size:16px">Decline</button>
-</form>`);
+<button name="action" value="decline" formnovalidate style="flex:1;min-height:52px;border:1px solid #ddd;border-radius:12px;background:#fff;font-weight:700;font-size:16px">Decline</button>
+</div>
+</form>`;
 }
 
 export async function POST(request: Request) {
@@ -55,15 +75,30 @@ export async function POST(request: Request) {
   const appt = await load(token);
   if (!appt) return page('<h1>This link has expired</h1>', 410);
   if (action !== 'confirm' && action !== 'decline') return page('<h1>Unknown action</h1>', 400);
+  let meetingUrl: string | null = null;
+  if (action === 'confirm' && appt.mode === 'online' && appt.status === 'requested') {
+    meetingUrl = parseMeetingUrl(form.get('meetingUrl'));
+    if (!meetingUrl) {
+      return page(
+        requestForm(token, appt, `Please paste a valid video-call link. ${MEETING_LINK_HELP}`),
+        400,
+      );
+    }
+  }
   if (appt.status === 'requested') {
     await prisma.careAppointment.update({
       where: { id: appt.id },
-      data: { status: action === 'confirm' ? 'confirmed' : 'declined' },
+      data: {
+        status: action === 'confirm' ? 'confirmed' : 'declined',
+        ...(meetingUrl ? { meetingUrl } : {}),
+      },
     });
   }
   return page(
     action === 'confirm'
-      ? '<h1>Confirmed</h1><p>Thank you. Please contact the owner on the number in the email to agree the time.</p>'
+      ? meetingUrl
+        ? '<h1>Confirmed</h1><p>Thank you. The owner will see a Join video call button with your link. Please also contact them on the number in the email to agree the time.</p>'
+        : '<h1>Confirmed</h1><p>Thank you. Please contact the owner on the number in the email to agree the time.</p>'
       : '<h1>Declined</h1><p>The owner will see that this request was declined.</p>',
   );
 }

@@ -44,6 +44,7 @@ export async function GET() {
         preferredDay: a.preferredDay,
         status: a.status,
         scheduledAt: a.scheduledAt ? a.scheduledAt.toISOString() : null,
+        meetingUrl: a.mode === 'online' && a.status === 'confirmed' ? a.meetingUrl : null,
         createdAt: a.createdAt.toISOString(),
       })),
     );

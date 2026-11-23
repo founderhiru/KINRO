@@ -83,7 +83,9 @@ export async function sendProviderRequestEmail(params: {
     'Confirm or decline here (the link works for 14 days):',
     link,
     '',
-    'After you confirm, please contact the owner on the number above to agree the time.',
+    params.mode === 'online'
+      ? 'To confirm an online consultation, paste a video-call link (Google Meet, Zoom, WhatsApp or similar) on the page above. The owner will see a Join button. KINRO does not host or record the call.'
+      : 'After you confirm, please contact the owner on the number above to agree the time.',
     'No health records are shared with this request.',
   ];
   await sendAuthEmail(params.to, `KINRO visit request for ${params.dog.name}`, lines.join('\n'));

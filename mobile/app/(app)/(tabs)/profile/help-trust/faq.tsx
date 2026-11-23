@@ -165,7 +165,7 @@ const SECTIONS: FaqSection[] = [
       },
       {
         q: "Can I consult a vet online?",
-        a: "Some vets offer online consultation. When they do, you can choose Online when you request a visit. The vet confirms the time and phones you to arrange it. KINRO does not provide the video call itself.",
+        a: "Some vets offer online consultation. When they do, you can choose Online when you request a visit. When the vet confirms, they share a video-call link (Google Meet, Zoom, WhatsApp or similar) and you tap Join video call in Messages. The call happens on that service. KINRO does not host or record it. Online consultation is not for emergencies.",
       },
     ],
   },
