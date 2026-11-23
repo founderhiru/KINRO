@@ -5,8 +5,8 @@ import 'server-only';
 import { NextResponse } from 'next/server';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { searchNearbyVets } from '@/lib/care/google-places';
+import { nearbyKey } from '@/lib/care/nearby-flag';
 import { NearbyPlaces } from '@/lib/contracts/care';
-import { env } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     const raw = new URL(request.url).searchParams.get('area')?.trim().slice(0, 80);
     const area = raw && /^[\p{L}\p{N} ,.'-]+$/u.test(raw) ? raw : 'Hyderabad';
 
-    const key = env.GOOGLE_PLACES_API_KEY;
+    const key = nearbyKey();
     if (!key) {
       return NextResponse.json(NearbyPlaces.parse({ configured: false, area, items: [] }));
     }

@@ -69,10 +69,12 @@ export default function CareDirectoryScreen() {
       </Text>
       <TextInput
         accessibilityLabel={
-          kind === "nearby" ? "Area to search" : "Search vets or clinics"
+          kind === "nearby"
+            ? "Area to search"
+            : "Search vets or clinics by name or area"
         }
         placeholder={
-          kind === "nearby" ? "Area, e.g. Madhapur" : "Search vets or clinics"
+          kind === "nearby" ? "Area, e.g. Madhapur" : "Search by name or area"
         }
         placeholderTextColor={colors.textMuted}
         value={q}

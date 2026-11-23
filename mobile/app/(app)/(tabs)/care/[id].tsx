@@ -9,6 +9,7 @@ import { Screen } from "@/components/Screen";
 import { Skeleton } from "@/components/Skeleton";
 import { getCareProvider } from "@/lib/care-api";
 import type { CareProviderDetail } from "@/lib/care-contracts";
+import { mapsDirectionsUrl } from "@/lib/maps-link";
 import { colors, elevation, radius, spacing, typography } from "@/theme/tokens";
 
 function fmt(iso: string | null) {
@@ -57,6 +58,7 @@ export default function ProviderScreen() {
   }
 
   const place = [p.locality, p.city].filter(Boolean).join(", ");
+  const directionsUrl = mapsDirectionsUrl(p);
   const request = (mode: "in_person" | "online") =>
     router.push({
       pathname: "/(app)/(tabs)/care/request",
@@ -110,6 +112,15 @@ export default function ProviderScreen() {
           <Text style={styles.label}>CONTACT</Text>
           {p.addressLine ? (
             <Text style={typography.bodyMuted}>{p.addressLine}</Text>
+          ) : null}
+          {directionsUrl ? (
+            <View style={styles.gapSm}>
+              <Button
+                label="Get directions"
+                variant="secondary"
+                onPress={() => Linking.openURL(directionsUrl)}
+              />
+            </View>
           ) : null}
           {p.phone ? (
             <View style={styles.gapSm}>
