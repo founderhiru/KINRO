@@ -166,7 +166,7 @@ export function SplashView({
             KINRO
           </Text>
           <Text style={styles.tagline}>
-            The Digital Life Record for Every Dog
+            Every pawprint. Every milestone.{"\n"}One life story.
           </Text>
         </Animated.View>
 
@@ -250,11 +250,17 @@ const styles = StyleSheet.create({
     color: colors.textOnDark,
   },
   tagline: {
-    marginTop: 2,
+    marginTop: 4,
     fontSize: 16,
+    lineHeight: 22,
+    fontWeight: "600",
+    textAlign: "center",
     color: colors.textOnDark,
-    textShadowColor: "rgba(0,0,0,0.35)",
-    textShadowRadius: 6,
+    // A soft dark halo keeps the line readable over bright foliage without
+    // dimming the photo.
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 8,
   },
   footer: { gap: spacing.lg },
   headline: {
