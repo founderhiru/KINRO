@@ -8,9 +8,9 @@ import {
 } from "@/lib/tour-stories";
 
 describe("tour stories", () => {
-  it("has four stories with unique ids and copy on each", () => {
-    expect(TOUR_STORIES).toHaveLength(4);
-    expect(new Set(TOUR_STORIES.map((s) => s.id)).size).toBe(4);
+  it("has five stories with unique ids and copy on each", () => {
+    expect(TOUR_STORIES).toHaveLength(5);
+    expect(new Set(TOUR_STORIES.map((s) => s.id)).size).toBe(5);
     for (const story of TOUR_STORIES) {
       expect(story.title.length).toBeGreaterThan(0);
       expect(story.subtitle.length).toBeGreaterThan(0);
