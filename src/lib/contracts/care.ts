@@ -88,3 +88,24 @@ export const CareConnections = z.object({
   relationships: z.array(CareRelationshipItem),
 });
 export type CareConnections = z.infer<typeof CareConnections>;
+
+// "Nearby on Google": live, read-only results. Nothing but placeId is ever
+// stored by KINRO (Google Maps Platform terms), so these are never persisted.
+export const NearbyPlace = z.object({
+  placeId: z.string(),
+  name: z.string(),
+  address: z.string().nullable(),
+  phone: z.string().nullable(),
+  rating: z.number().nullable(),
+  ratingCount: z.number().nullable(),
+  openNow: z.boolean().nullable(),
+  mapsUrl: z.string().nullable(),
+});
+export type NearbyPlace = z.infer<typeof NearbyPlace>;
+
+export const NearbyPlaces = z.object({
+  configured: z.boolean(),
+  area: z.string(),
+  items: z.array(NearbyPlace),
+});
+export type NearbyPlaces = z.infer<typeof NearbyPlaces>;

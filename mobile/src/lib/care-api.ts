@@ -8,6 +8,7 @@ import {
   CareConnections,
   CareProviderDetail,
   CareProviderList,
+  NearbyPlaces,
 } from "./care-contracts";
 
 export async function getCareConnections(): Promise<CareConnections> {
@@ -48,5 +49,11 @@ export async function cancelAppointment(id: string) {
     method: "PATCH",
     body: JSON.stringify({ status: "cancelled" }),
     schema: Created,
+  });
+}
+
+export async function getNearbyVets(area: string): Promise<NearbyPlaces> {
+  return apiFetch(`/api/care/nearby?area=${encodeURIComponent(area)}`, {
+    schema: NearbyPlaces,
   });
 }
