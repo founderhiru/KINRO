@@ -22,6 +22,7 @@ import { ErrorText } from "@/components/ErrorText";
 import { FirstDogCard } from "@/components/FirstDogCard";
 import { FirstInCityCard } from "@/components/FirstInCityCard";
 import { GuestHome } from "@/components/GuestHome";
+import { PassportProgress } from "@/components/PassportProgress";
 import { Screen } from "@/components/Screen";
 import { DogCardSkeleton } from "@/components/Skeleton";
 import { useSession } from "@/lib/auth-client";
@@ -272,6 +273,7 @@ export default function HomeScreen() {
                     <View style={styles.miniBadgeRow}>
                       <HealthBadge hasRecords={dog.healthRecords.length > 0} />
                     </View>
+                    <PassportProgress records={dog.healthRecords} />
                   </View>
                 </Pressable>
               ))}
