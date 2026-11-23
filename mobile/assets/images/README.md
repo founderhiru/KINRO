@@ -88,9 +88,9 @@ mistaken for their dog.
 ## First-open welcome photo
 
 `photos/splash-dog.jpg` is the full-bleed photo on the animated first-open
-welcome (`src/components/SplashView.tsx`). The current file is small (194 x 299)
-and will look soft on a modern phone. To use the family-and-dog photo, replace
-this file with the same name: portrait, about 1290 x 2796 px, JPEG, **no text,
-phone frame or status bar baked in** (the logo, name and tagline are drawn by
-the app). Keep the main subjects in the lower 60% of the image, since the logo
-sits at the top.
+welcome (`src/components/SplashView.tsx`): the family-and-dog photo, with extra
+blurred-foliage headroom added above it (1290 x 3208) so the logo, name and
+tagline sit on calm leaves and not on faces. To change it, replace this file
+with the same name: portrait JPEG, no text, frame or status bar baked in, with
+roughly the top 25% free of faces. The photo is shown top-aligned in the upper
+80% of the screen and fades into brand green below.
