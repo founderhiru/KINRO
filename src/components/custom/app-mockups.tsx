@@ -27,7 +27,7 @@ const tabs = [
   { label: 'Profile', icon: User },
 ] as const;
 
-type TabLabel = (typeof tabs)[number]['label'];
+export type TabLabel = (typeof tabs)[number]['label'];
 
 /** Phone body with a status-bar notch, a scrolling-screen area and the 5-tab bar. */
 export function PhoneFrame({
@@ -48,13 +48,13 @@ export function PhoneFrame({
       )}
     >
       <div className="absolute left-1/2 top-2 z-10 h-4 w-20 -translate-x-1/2 rounded-full bg-foreground" />
-      <div className="flex-1 overflow-hidden px-3.5 pt-9">{children}</div>
+      <div className="relative flex-1 overflow-hidden px-3.5 pt-9">{children}</div>
       <div className="flex items-end justify-between border-t border-border bg-card px-2 pb-3 pt-2">
         {tabs.map(({ label, icon: Icon }) => (
           <div
             key={label}
             className={cn(
-              'flex flex-1 flex-col items-center gap-0.5 text-[0.55rem] font-semibold',
+              'flex flex-1 flex-col items-center gap-0.5 text-[0.55rem] font-semibold transition-colors duration-300',
               label === active ? 'text-primary' : 'text-muted-foreground',
             )}
           >
@@ -114,9 +114,9 @@ const dogs = [
   },
 ] as const;
 
-export function HomeScreen({ showCare = false }: { showCare?: boolean }) {
+export function HomeBody({ showCare = false }: { showCare?: boolean }) {
   return (
-    <PhoneFrame active="Home">
+    <>
       <Header title="KINRO" />
       <p className="text-base font-bold leading-tight tracking-tight">Welcome back</p>
       <p className="mt-0.5 text-[0.65rem] text-muted-foreground">Your dogs, in one place.</p>
@@ -158,13 +158,13 @@ export function HomeScreen({ showCare = false }: { showCare?: boolean }) {
           Discover
         </span>
       </div>
-    </PhoneFrame>
+    </>
   );
 }
 
-export function DiscoverScreen() {
+export function DiscoverBody() {
   return (
-    <PhoneFrame active="Discover">
+    <>
       <Header title="Discover" />
       <div className="mb-2.5 flex gap-1.5">
         {['All breeds', 'Near me'].map((chip, i) => (
@@ -200,7 +200,7 @@ export function DiscoverScreen() {
           </div>
         ))}
       </div>
-    </PhoneFrame>
+    </>
   );
 }
 
@@ -210,9 +210,9 @@ const records = [
   { icon: FileText, title: 'Document', note: 'Private to your account' },
 ] as const;
 
-export function HealthScreen() {
+export function HealthBody() {
   return (
-    <PhoneFrame active="My Dogs">
+    <>
       <Header title="Health" />
       <div className="mb-3 flex items-center gap-2.5">
         <Thumb src="/kinro/samples/dog-labrador.jpg" className="size-11 !rounded-full" />
@@ -237,7 +237,7 @@ export function HealthScreen() {
       <p className="mt-3 text-[0.55rem] leading-snug text-muted-foreground">
         Records are added by owners and are not verified by KINRO.
       </p>
-    </PhoneFrame>
+    </>
   );
 }
 
@@ -251,11 +251,11 @@ function CareTag() {
 }
 
 /** The Care directory: sample vets only. Real listings appear as vets are verified. */
-export function CareScreen() {
+export function CareBody() {
   // No real or invented people: names, specialities and places are placeholder bars.
   const rows = [true, true, false] as const;
   return (
-    <PhoneFrame active="Home">
+    <>
       <div className="mb-1 flex items-center gap-1.5">
         <p className="text-base font-bold leading-tight tracking-tight">Find care</p>
         <CareTag />
@@ -297,6 +297,38 @@ export function CareScreen() {
           </div>
         ))}
       </div>
+    </>
+  );
+}
+
+export function HomeScreen({ showCare = false }: { showCare?: boolean }) {
+  return (
+    <PhoneFrame active="Home">
+      <HomeBody showCare={showCare} />
+    </PhoneFrame>
+  );
+}
+
+export function DiscoverScreen() {
+  return (
+    <PhoneFrame active="Discover">
+      <DiscoverBody />
+    </PhoneFrame>
+  );
+}
+
+export function HealthScreen() {
+  return (
+    <PhoneFrame active="My Dogs">
+      <HealthBody />
+    </PhoneFrame>
+  );
+}
+
+export function CareScreen() {
+  return (
+    <PhoneFrame active="Home">
+      <CareBody />
     </PhoneFrame>
   );
 }

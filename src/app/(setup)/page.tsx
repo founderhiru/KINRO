@@ -26,10 +26,13 @@ import {
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
+  CareBody,
   CareScreen,
+  DiscoverBody,
   DiscoverScreen,
+  HealthBody,
   HealthScreen,
-  HomeScreen,
+  HomeBody,
 } from '@/components/custom/app-mockups';
 import { HeroShowcase, type ShowcaseScreen } from '@/components/custom/hero-showcase';
 import { IconTile, PhotoFrame, ScreenCrop } from '@/components/custom/photo-frame';
@@ -274,10 +277,12 @@ function pillarFallback(pillar: Pillar) {
 }
 
 const heroScreens: ShowcaseScreen[] = [
-  { label: 'Your dog, in one place', node: <HomeScreen showCare={careLive} /> },
-  { label: 'Health records that stay with you', node: <HealthScreen /> },
-  { label: 'Meet responsible owners nearby', node: <DiscoverScreen /> },
-  ...(careLive ? [{ label: 'Find a vet when you need one', node: <CareScreen /> }] : []),
+  { label: 'Your dog, in one place', active: 'Home', body: <HomeBody showCare={careLive} /> },
+  { label: 'Health records that stay with you', active: 'My Dogs', body: <HealthBody /> },
+  { label: 'Meet responsible owners nearby', active: 'Discover', body: <DiscoverBody /> },
+  ...(careLive
+    ? [{ label: 'Find a vet when you need one', active: 'Home' as const, body: <CareBody /> }]
+    : []),
 ];
 
 export default function KinroHome() {
