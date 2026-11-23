@@ -278,13 +278,13 @@ export default function HomeScreen() {
                       style={[typography.bodyMuted, styles.miniMeta]}
                       numberOfLines={1}
                     >
-                      {dog.breed} · {dog.ageYears}{" "}
-                      {dog.ageYears === 1 ? "yr" : "yrs"}
+                      {dog.breed}
                     </Text>
                     <Text
                       style={[typography.bodyMuted, styles.miniMeta]}
                       numberOfLines={1}
                     >
+                      {dog.ageYears} {dog.ageYears === 1 ? "yr" : "yrs"} ·{" "}
                       {dog.city}
                     </Text>
                     <View style={styles.miniBadgeRow}>
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
   },
-  miniInfo: { padding: spacing.sm + 2 },
+  miniInfo: { padding: spacing.sm + 2, minHeight: 132 },
   miniMeta: { marginTop: 1 },
   miniBadgeRow: {
     flexDirection: "row",
