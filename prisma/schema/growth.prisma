@@ -1,0 +1,35 @@
+// Founder Growth Dashboard (Phase 1). Two new tables, both additive. Neither has a
+// foreign key to `user`, so no existing model changes and account deletion needs no
+// special handling: neither table holds anything about a person.
+
+// One row per visit to /get/ios or /get/android (website to store). Records only the
+// platform, a short sanitised source tag and the time. No IP address, user agent,
+// cookie or user id is stored.
+model DownloadClick {
+  id        String   @id @default(cuid())
+  platform  String // ios | android
+  source    String   @default("direct") // direct | web | qr | any [a-z0-9_-] tag up to 32 chars
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([platform, createdAt])
+  @@map("download_click")
+}
+
+// Store figures the founder copies by hand from App Store Connect / Play Console,
+// one row per platform, metric and week. Saving the same week again corrects it.
+// Kept apart from KINRO's own counts: nothing here is added to registrations or
+// first opens.
+model StoreSnapshot {
+  id         String   @id @default(cuid())
+  weekEnding DateTime @db.Date // last day of the 7-day week the figure covers
+  platform   String // ios | android
+  metric     String // page_views | first_time_downloads | redownloads | installs
+  value      Int
+  enteredAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([weekEnding, platform, metric])
+  @@index([weekEnding])
+  @@map("store_snapshot")
+}
