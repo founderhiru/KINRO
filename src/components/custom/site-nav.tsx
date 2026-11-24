@@ -6,9 +6,18 @@ import { ChevronDown, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
+import { toast } from 'sonner';
 import { GetTheApp } from '@/components/custom/store-qrs';
 import { ThemeToggle } from '@/components/custom/theme-toggle';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +46,8 @@ function AccountControl({ className }: { className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const [signOutFailed, setSignOutFailed] = React.useState(false);
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [signingOut, setSigningOut] = React.useState(false);
 
   if (isPending) return null;
 
@@ -61,22 +72,60 @@ function AccountControl({ className }: { className?: string }) {
         className={cn('rounded-full', className)}
         onClick={() => {
           setSignOutFailed(false);
-          signOut({
-            fetchOptions: {
-              onSuccess: () => router.refresh(),
-              // A refused or failed request must not look like a dead button.
-              onError: () => setSignOutFailed(true),
-            },
-          }).catch(() => setSignOutFailed(true));
+          setConfirmOpen(true);
         }}
       >
         Sign out
       </Button>
-      {signOutFailed ? (
-        <span role="alert" className="text-xs text-destructive">
-          Couldn’t sign out. Please try again.
-        </span>
-      ) : null}
+      <Dialog open={confirmOpen} onOpenChange={(open) => !signingOut && setConfirmOpen(open)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Sign out of KINRO?</DialogTitle>
+            <DialogDescription>
+              You’ll need to sign in again to see your dogs and profile.
+            </DialogDescription>
+          </DialogHeader>
+          {signOutFailed ? (
+            <p role="alert" className="text-sm text-destructive">
+              Couldn’t sign out. Please try again.
+            </p>
+          ) : null}
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" disabled={signingOut} onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              disabled={signingOut}
+              onClick={() => {
+                setSignOutFailed(false);
+                setSigningOut(true);
+                signOut({
+                  fetchOptions: {
+                    onSuccess: () => {
+                      setSigningOut(false);
+                      setConfirmOpen(false);
+                      toast.success('You’ve been signed out', {
+                        description: 'Sign in again any time.',
+                      });
+                      router.refresh();
+                    },
+                    // A refused or failed request must not look like a dead button.
+                    onError: () => {
+                      setSigningOut(false);
+                      setSignOutFailed(true);
+                    },
+                  },
+                }).catch(() => {
+                  setSigningOut(false);
+                  setSignOutFailed(true);
+                });
+              }}
+            >
+              {signingOut ? 'Signing out…' : 'Sign out'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
