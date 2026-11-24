@@ -58,7 +58,7 @@ services:
       - key: RESEND_API_KEY
         sync: false
       - key: EMAIL_FROM
-        sync: false # e.g. "KINRO <onboarding@resend.dev>" until a verified domain exists
+        sync: false # "KINRO <login@kinro.in>" — kinro.in is verified in Resend
       # SMS: phone sign-in refuses to run in production until a provider is
       # configured (src/lib/sms.ts). Deliberately NOT declared yet — add these
       # in the Render dashboard (Environment) once you approve a vendor:
