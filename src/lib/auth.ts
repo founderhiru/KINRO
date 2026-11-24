@@ -42,7 +42,7 @@ import { prisma } from '@/lib/db';
 import { sendAuthEmail } from '@/lib/email';
 import { env } from '@/lib/env';
 import { sendOtpSms } from '@/lib/sms';
-import { webOriginVariants } from '@/lib/trusted-origins';
+import { sharedCookieDomain, webOriginVariants } from '@/lib/trusted-origins';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: 'postgresql' }),
@@ -118,6 +118,18 @@ export const auth = betterAuth({
     // these headers. Without them better-auth sees no client IP and its sign-in
     // rate limiting cannot tell visitors apart.
     ipAddress: { ipAddressHeaders: ['cf-connecting-ip', 'x-forwarded-for'] },
+    // Make the sign-in cookies valid for kinro.in AND www.kinro.in. Without this
+    // Google sign-in fails with state_security_mismatch whenever the cookie is
+    // set on one of the two hosts and the return from Google lands on the other
+    // (the iPhone app hits exactly this). Host-only in dev and on *.onrender.com.
+    ...(sharedCookieDomain(env.NEXT_PUBLIC_APP_URL)
+      ? {
+          crossSubDomainCookies: {
+            enabled: true,
+            domain: sharedCookieDomain(env.NEXT_PUBLIC_APP_URL),
+          },
+        }
+      : {}),
   },
 
   // Custom field for the founder/admin check used by requireAdmin() —

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { webOriginVariants } from '@/lib/trusted-origins';
+import { sharedCookieDomain, webOriginVariants } from '@/lib/trusted-origins';
 
 describe('webOriginVariants', () => {
   it('trusts the bare domain and its www counterpart', () => {
@@ -25,5 +25,25 @@ describe('webOriginVariants', () => {
     expect(webOriginVariants(undefined)).toEqual([]);
     expect(webOriginVariants('www.kinro.in')).toEqual([]);
     expect(webOriginVariants('canidknot://')).toEqual([]);
+  });
+});
+
+describe('sharedCookieDomain', () => {
+  it('scopes cookies to the bare domain so apex and www both receive them', () => {
+    expect(sharedCookieDomain('https://kinro.in')).toBe('.kinro.in');
+    expect(sharedCookieDomain('https://www.kinro.in/')).toBe('.kinro.in');
+  });
+
+  it('keeps cookies host-only for local dev, IPs and shared hosting domains', () => {
+    expect(sharedCookieDomain('http://localhost:3000')).toBeUndefined();
+    expect(sharedCookieDomain('https://127.0.0.1')).toBeUndefined();
+    expect(sharedCookieDomain('https://kinro-web.onrender.com')).toBeUndefined();
+    expect(sharedCookieDomain('http://kinro.in')).toBeUndefined();
+  });
+
+  it('returns undefined for a missing or malformed value', () => {
+    expect(sharedCookieDomain(undefined)).toBeUndefined();
+    expect(sharedCookieDomain('www.kinro.in')).toBeUndefined();
+    expect(sharedCookieDomain('https://intranet')).toBeUndefined();
   });
 });
