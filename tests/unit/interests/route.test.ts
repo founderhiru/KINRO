@@ -21,10 +21,15 @@ vi.mock('@/lib/auth', () => ({
 const dogProfileFindUniqueMock = vi.fn();
 const interestFindUniqueMock = vi.fn();
 const interestCreateMock = vi.fn();
+const interestCountMock = vi.fn();
 vi.mock('@/lib/db', () => ({
   prisma: {
     dogProfile: { findUnique: dogProfileFindUniqueMock },
-    interest: { findUnique: interestFindUniqueMock, create: interestCreateMock },
+    interest: {
+      findUnique: interestFindUniqueMock,
+      create: interestCreateMock,
+      count: interestCountMock,
+    },
   },
 }));
 
@@ -45,6 +50,8 @@ beforeEach(() => {
   dogProfileFindUniqueMock.mockReset();
   interestFindUniqueMock.mockReset();
   interestCreateMock.mockReset();
+  interestCountMock.mockReset();
+  interestCountMock.mockResolvedValue(0);
   emitNotificationMock.mockReset();
 });
 
@@ -187,5 +194,38 @@ describe('POST /api/interests', () => {
     await POST(jsonRequest({ targetDogId: DOG_DEMO.id }));
 
     expect(emitNotificationMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 429 once a person has sent 20 interests in a day, and creates nothing', async () => {
+    requireAuthenticatedUserMock.mockResolvedValue(USER_A);
+    dogProfileFindUniqueMock.mockResolvedValue(DOG_OWNED_BY_B);
+    interestFindUniqueMock.mockResolvedValue(null);
+    interestCountMock.mockResolvedValue(20);
+    const { POST } = await import('@/app/api/interests/route');
+
+    const res = await POST(jsonRequest({ targetDogId: 'dog_1' }));
+
+    expect(res.status).toBe(429);
+    expect(interestCreateMock).not.toHaveBeenCalled();
+  });
+
+  it('still allows the 20th interest (19 already sent)', async () => {
+    requireAuthenticatedUserMock.mockResolvedValue(USER_A);
+    dogProfileFindUniqueMock.mockResolvedValue(DOG_OWNED_BY_B);
+    interestFindUniqueMock.mockResolvedValue(null);
+    interestCountMock.mockResolvedValue(19);
+    interestCreateMock.mockResolvedValue({
+      id: 'int_1',
+      senderId: USER_A.id,
+      targetDogId: 'dog_1',
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    const { POST } = await import('@/app/api/interests/route');
+
+    const res = await POST(jsonRequest({ targetDogId: 'dog_1' }));
+
+    expect(res.status).toBe(201);
   });
 });
