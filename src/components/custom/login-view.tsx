@@ -13,6 +13,11 @@ import { authClient, useSession } from '@/lib/auth-client';
 import { normalizeIndianPhone } from '@/lib/phone';
 import { siteName } from '@/lib/site';
 
+// Mobile-number sign-in is switched off for now: it needs an approved SMS
+// provider before it can work. Set NEXT_PUBLIC_PHONE_LOGIN=true (build-time) to
+// bring the button back; nothing else changes.
+const PHONE_LOGIN_ENABLED = process.env.NEXT_PUBLIC_PHONE_LOGIN === 'true';
+
 type Step = 'choose' | 'mobile-phone' | 'mobile-otp' | 'email-form' | 'email-sent';
 
 // Both flows write plain messages here — better-auth's own error.message
@@ -155,16 +160,18 @@ export function LoginView() {
               <Button variant="outline" disabled={busy} onClick={continueWithGoogle}>
                 Continue with Google
               </Button>
-              <Button
-                variant="outline"
-                disabled={busy}
-                onClick={() => {
-                  setError(null);
-                  setStep('mobile-phone');
-                }}
-              >
-                Continue with Mobile
-              </Button>
+              {PHONE_LOGIN_ENABLED ? (
+                <Button
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => {
+                    setError(null);
+                    setStep('mobile-phone');
+                  }}
+                >
+                  Continue with Mobile
+                </Button>
+              ) : null}
               <Button
                 variant="outline"
                 disabled={busy}
