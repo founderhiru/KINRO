@@ -42,6 +42,7 @@ import { prisma } from '@/lib/db';
 import { sendAuthEmail } from '@/lib/email';
 import { env } from '@/lib/env';
 import { sendOtpSms } from '@/lib/sms';
+import { webOriginVariants } from '@/lib/trusted-origins';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: 'postgresql' }),
@@ -57,6 +58,9 @@ export const auth = betterAuth({
   // this on the request-handling side.
   trustedOrigins: [
     env.MOBILE_APP_SCHEME,
+    // The site with and without "www." — otherwise Sign out / sign-in from the
+    // variant that differs from NEXT_PUBLIC_APP_URL is refused (HTTP 403).
+    ...webOriginVariants(env.NEXT_PUBLIC_APP_URL),
     // Apple's identity-token flow is checked against this origin.
     ...(env.APPLE_APP_BUNDLE_IDENTIFIER ? ['https://appleid.apple.com'] : []),
   ],
