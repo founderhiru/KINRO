@@ -36,6 +36,7 @@ function AccountControl({ className }: { className?: string }) {
   const { data, isPending } = useSession();
   const router = useRouter();
   const pathname = usePathname();
+  const [signOutFailed, setSignOutFailed] = React.useState(false);
 
   if (isPending) return null;
 
@@ -53,18 +54,30 @@ function AccountControl({ className }: { className?: string }) {
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className={cn('rounded-full', className)}
-      onClick={() =>
-        signOut({
-          fetchOptions: { onSuccess: () => router.refresh() },
-        })
-      }
-    >
-      Sign out
-    </Button>
+    <>
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn('rounded-full', className)}
+        onClick={() => {
+          setSignOutFailed(false);
+          signOut({
+            fetchOptions: {
+              onSuccess: () => router.refresh(),
+              // A refused or failed request must not look like a dead button.
+              onError: () => setSignOutFailed(true),
+            },
+          }).catch(() => setSignOutFailed(true));
+        }}
+      >
+        Sign out
+      </Button>
+      {signOutFailed ? (
+        <span role="alert" className="text-xs text-destructive">
+          Couldn’t sign out. Please try again.
+        </span>
+      ) : null}
+    </>
   );
 }
 

@@ -68,6 +68,8 @@ export const AppointmentItem = z.object({
   preferredDay: z.string().nullable(),
   status: z.enum(APPOINTMENT_STATUSES),
   scheduledAt: z.string().nullable(),
+  // Video link shared by the vet; only present once an online request is confirmed.
+  meetingUrl: z.string().nullable().optional(),
   createdAt: z.string(),
 });
 export type AppointmentItem = z.infer<typeof AppointmentItem>;

@@ -84,3 +84,21 @@ photo still gets an illustrated fallback — never a stock photo that could be
 mistaken for their dog.
 
 `splash-hero.jpg` (illustration) is no longer used by the app.
+
+## First-open welcome photo
+
+`photos/splash-dog.jpg` is the full-bleed photo on the animated first-open
+welcome (`src/components/SplashView.tsx`): the family-and-dog photo, with extra
+blurred-foliage headroom added above it (1290 x 3208) so the logo, name and
+tagline sit on calm leaves and not on faces. To change it, replace this file
+with the same name: portrait JPEG, no text, frame or status bar baked in, with
+roughly the top 25% free of faces. The photo is shown top-aligned in the upper
+80% of the screen and fades into brand green below.
+
+## Backups (not used by the app)
+
+`backup/` holds originals for safekeeping. Nothing references these files, so
+they are not bundled into the app.
+
+- `splash-retriever-original.jpg`: the previous welcome-screen photo (golden retriever, 194 x 299).
+- `splash-family-original.jpg`: the unedited family-and-dog photo (941 x 1672), before the foliage headroom was added.

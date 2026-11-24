@@ -2,7 +2,14 @@
 // only /api/care/connections and never touches matches or conversations.
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -127,6 +134,16 @@ export function CareConnections({ onFindCare }: { onFindCare: () => void }) {
                   tone={STATUS[a.status].tone}
                 />
               </View>
+              {a.mode === "online" &&
+              a.status === "confirmed" &&
+              a.meetingUrl?.startsWith("https://") ? (
+                <View style={styles.join}>
+                  <Button
+                    label="Join video call"
+                    onPress={() => Linking.openURL(a.meetingUrl as string)}
+                  />
+                </View>
+              ) : null}
               <Text style={styles.link} onPress={() => handleCancel(a.id)}>
                 Cancel request
               </Text>
@@ -188,6 +205,7 @@ const styles = StyleSheet.create({
   rowTop: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
   flex: { flex: 1 },
   bold: { fontWeight: "700" },
+  join: { marginTop: spacing.sm },
   link: {
     marginTop: spacing.sm,
     color: colors.accent,

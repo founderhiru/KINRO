@@ -1,6 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useRef } from "react";
 import {
+  AccessibilityInfo,
   ActivityIndicator,
+  Animated,
   Image,
   Pressable,
   StyleSheet,
@@ -12,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AnimatedLogo } from "@/components/AnimatedLogo";
 import { IntroDots } from "@/components/IntroDots";
 import { BottomFade, ScrimGradient } from "@/components/ScrimGradient";
+import { WELCOME_TIMINGS as T } from "@/lib/welcome-motion";
 import { colors, elevation, spacing } from "@/theme/tokens";
 
 /**
@@ -38,23 +42,106 @@ export const SPLASH_PHOTO_HEIGHT_RATIO = 0.8;
 const PHOTO_FADE_START = 0.55;
 const BRAND_GREEN_RGB = "35,79,59"; // colors.accentDark (#234F3B)
 
-export function SplashView({ onContinue }: { onContinue?: () => void }) {
+export function SplashView({
+  onContinue,
+  startDelayMs = 0,
+  autoContinueMs,
+}: {
+  onContinue?: () => void;
+  /** Waits this long before the entrance animation (the launch splash plays on top first). */
+  startDelayMs?: number;
+  /** When set, calls onContinue by itself this long after the entrance begins. */
+  autoContinueMs?: number;
+}) {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const headlineSize = Math.max(26, Math.min(36, Math.round(width * 0.085)));
   const photoHeight = Math.round(height * SPLASH_PHOTO_HEIGHT_RATIO);
 
+  const mountedAt = useRef(Date.now()).current;
+  const zoom = useRef(new Animated.Value(1)).current;
+  const brand = useRef(new Animated.Value(0)).current;
+  const footer = useRef(new Animated.Value(0)).current;
+
+  // Plays once per mount. Reduce-Motion: everything is simply shown.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Animated.Value refs are stable and this runs once.
+  useEffect(() => {
+    let cancelled = false;
+    const showAll = () => {
+      brand.setValue(1);
+      footer.setValue(1);
+    };
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((reduce) => {
+        if (cancelled) return;
+        if (reduce) return showAll();
+        Animated.timing(zoom, {
+          toValue: T.zoomTo,
+          duration: T.zoomMs,
+          useNativeDriver: true,
+        }).start();
+        Animated.sequence([
+          Animated.delay(startDelayMs),
+          Animated.parallel([
+            Animated.timing(brand, {
+              toValue: 1,
+              delay: T.brandDelayMs,
+              duration: T.brandMs,
+              useNativeDriver: true,
+            }),
+            Animated.timing(footer, {
+              toValue: 1,
+              delay: T.footerDelayMs,
+              duration: T.footerMs,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]).start();
+      })
+      .catch(showAll);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Optional automatic hand-off; a tap on the arrow does the same sooner.
+  useEffect(() => {
+    if (!onContinue || autoContinueMs === undefined) return;
+    const remainingDelay = Math.max(0, startDelayMs - (Date.now() - mountedAt));
+    const timer = setTimeout(onContinue, remainingDelay + autoContinueMs);
+    return () => clearTimeout(timer);
+  }, [onContinue, autoContinueMs, startDelayMs, mountedAt]);
+
+  const rise = (value: Animated.Value) => ({
+    opacity: value,
+    transform: [
+      {
+        translateY: value.interpolate({
+          inputRange: [0, 1],
+          outputRange: [14, 0],
+        }),
+      },
+    ],
+  });
+
   return (
     <View style={styles.fill}>
       {/* An absolutely-positioned Image with explicit 100% size (rather
           than ImageBackground) so the photo fills the screen on every
-          platform, including react-native-web previews. */}
-      <Image
-        source={require("../../assets/images/photos/splash-dog.jpg")}
-        style={[styles.photo, { height: photoHeight }]}
-        resizeMode="cover"
-        accessibilityIgnoresInvertColors
-      />
+          platform, including react-native-web previews. Slowly zooms. */}
+      <Animated.View
+        style={[
+          styles.photo,
+          { height: photoHeight, transform: [{ scale: zoom }] },
+        ]}
+      >
+        <Image
+          source={require("../../assets/images/photos/splash-dog.jpg")}
+          style={styles.photoFill}
+          resizeMode="cover"
+          accessibilityIgnoresInvertColors
+        />
+      </Animated.View>
       <BottomFade
         top={Math.round(photoHeight * PHOTO_FADE_START)}
         height={photoHeight - Math.round(photoHeight * PHOTO_FADE_START)}
@@ -70,7 +157,7 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
           },
         ]}
       >
-        <View style={styles.brand}>
+        <Animated.View style={[styles.brand, rise(brand)]}>
           <View style={styles.logoTile}>
             {/* Plays once when the splash opens, and again on tap. */}
             <AnimatedLogo width={LOGO_WIDTH} playOnMount />
@@ -79,11 +166,11 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
             KINRO
           </Text>
           <Text style={styles.tagline}>
-            The Digital Life Record for Every Dog
+            Every pawprint. Every milestone.{"\n"}One life story.
           </Text>
-        </View>
+        </Animated.View>
 
-        <View style={styles.footer}>
+        <Animated.View style={[styles.footer, rise(footer)]}>
           <Text
             style={[
               styles.headline,
@@ -121,7 +208,7 @@ export function SplashView({ onContinue }: { onContinue?: () => void }) {
               </View>
             )}
           </View>
-        </View>
+        </Animated.View>
       </View>
     </View>
   );
@@ -137,7 +224,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: "100%",
+    overflow: "hidden",
   },
+  photoFill: { width: "100%", height: "100%" },
   content: {
     flex: 1,
     justifyContent: "space-between",
@@ -161,11 +250,17 @@ const styles = StyleSheet.create({
     color: colors.textOnDark,
   },
   tagline: {
-    marginTop: 2,
+    marginTop: 4,
     fontSize: 16,
+    lineHeight: 22,
+    fontWeight: "600",
+    textAlign: "center",
     color: colors.textOnDark,
-    textShadowColor: "rgba(0,0,0,0.35)",
-    textShadowRadius: 6,
+    // A soft dark halo keeps the line readable over bright foliage without
+    // dimming the photo.
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 8,
   },
   footer: { gap: spacing.lg },
   headline: {

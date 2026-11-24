@@ -76,6 +76,7 @@ model CareAppointment {
   preferredTime   String?
   note            String?
   ownerPhone      String? // shared with the provider so they can reach the owner
+  meetingUrl      String? // video link the vet shares when confirming an online consultation
   status          String           @default("requested") // requested | confirmed | declined | cancelled | completed
   scheduledAt     DateTime?
   createdAt       DateTime         @default(now())

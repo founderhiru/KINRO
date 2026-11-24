@@ -1,9 +1,12 @@
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { LAUNCH_SPLASH_TOTAL_MS } from "@/components/AppLaunchSplash";
 import { SplashView } from "@/components/SplashView";
 import { completeMagicLinkSignIn, useSession } from "@/lib/auth-client";
 import { firstParam } from "@/lib/magic-link-callback";
 import { resolveInitialRoute, type SessionStatus } from "@/lib/session-guard";
+import { WELCOME_TIMINGS } from "@/lib/welcome-motion";
+import { hasSeenWelcome, markWelcomeSeen } from "@/lib/welcome-seen";
 
 /**
  * The KINRO launch screen (photo, logo, headline). While the session is
@@ -31,6 +34,19 @@ function SessionRedirect() {
       : "unauthenticated";
   const target = resolveInitialRoute(status);
 
+  // The full animated welcome plays on the very first open only; returning
+  // signed-out visitors go straight on. null = still checking.
+  const [welcomeSeen, setWelcomeSeen] = useState<boolean | null>(null);
+  useEffect(() => {
+    let active = true;
+    hasSeenWelcome().then((seen) => {
+      if (active) setWelcomeSeen(seen);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   if (!target) {
     // Rendered as <SplashView /> directly (not via LoadingSplash) so React keeps
     // the same instance when the signed-out state arrives and the logo
@@ -43,7 +59,18 @@ function SessionRedirect() {
   // users skip straight to Home.
   // The animated launch splash in app/_layout.tsx plays on top first.
   if (status === "unauthenticated") {
-    return <SplashView onContinue={() => router.replace(target)} />;
+    if (welcomeSeen === null) return <SplashView />;
+    if (welcomeSeen) return <Redirect href={target} />;
+    return (
+      <SplashView
+        startDelayMs={LAUNCH_SPLASH_TOTAL_MS}
+        autoContinueMs={WELCOME_TIMINGS.autoContinueMs}
+        onContinue={() => {
+          void markWelcomeSeen();
+          router.replace(target);
+        }}
+      />
+    );
   }
 
   return <Redirect href={target} />;

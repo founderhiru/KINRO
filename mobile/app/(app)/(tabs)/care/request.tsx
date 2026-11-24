@@ -117,6 +117,12 @@ export default function RequestAppointmentScreen() {
               value={mode}
               onChange={setMode}
             />
+            {mode === "online" ? (
+              <Text style={[typography.bodyMuted, styles.onlineNote]}>
+                The vet shares a video-call link when they confirm. Online
+                consultation is not for emergencies.
+              </Text>
+            ) : null}
           </View>
         ) : null}
         {dogNames.length > 0 ? (
@@ -170,6 +176,7 @@ export default function RequestAppointmentScreen() {
 const styles = StyleSheet.create({
   body: { gap: spacing.md, paddingBottom: spacing.xl },
   label: { ...typography.label },
+  onlineNote: { marginTop: spacing.sm },
   privacy: {
     backgroundColor: colors.accentTint,
     borderRadius: radius.md,

@@ -146,8 +146,8 @@ export default function ProviderScreen() {
                   <View style={styles.divider} />
                   <Text style={styles.optTitle}>Online consultation</Text>
                   <Text style={typography.bodyMuted}>
-                    Consult from home. The vet confirms the time and phones you
-                    to arrange it.
+                    Consult from home by video. The vet confirms and shares a
+                    call link. Not for emergencies.
                   </Text>
                   <View style={styles.gapSm}>
                     <Button

@@ -34,6 +34,14 @@ const TIMINGS = {
 
 export type AppLaunchSplashVariant = keyof typeof TIMINGS;
 
+/** How long the cold-launch splash is on screen, including its fade-out. */
+export const LAUNCH_SPLASH_TOTAL_MS =
+  TIMINGS.launch.logoEntranceMs +
+  TIMINGS.launch.taglineDelayMs +
+  TIMINGS.launch.taglineFadeMs +
+  TIMINGS.launch.holdMs +
+  TIMINGS.launch.fadeOutMs;
+
 /**
  * The short, automatic branded moment between the native iOS launch screen
  * (white background, static logo — see ios/CanidKnot/SplashScreen.storyboard)
