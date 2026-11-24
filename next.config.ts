@@ -26,6 +26,8 @@ import {
   userNextConfig,
   userRemotePatterns,
 } from './next.user-config';
+// Sends old-address app sign-ins to the real site (relative path: @/ won't resolve here).
+import { legacyHostRedirects } from './src/lib/legacy-host-redirects';
 // Builds the Permissions-Policy value from appCapabilities (relative path: @/ won't resolve here).
 import { buildPermissionsPolicy } from './src/lib/permissions-policy';
 
@@ -69,6 +71,11 @@ const nextConfig: NextConfig = {
     localPatterns: [{ pathname: '/assets/**', search: '' }],
     dangerouslyAllowLocalIP: false,
     qualities: [75],
+  },
+
+  // App builds that still call the old Render address start Google sign-in on the real site.
+  async redirects() {
+    return legacyHostRedirects(process.env.NEXT_PUBLIC_APP_URL);
   },
 
   // Security headers — MUST pass on day 1.
