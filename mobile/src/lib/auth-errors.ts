@@ -73,6 +73,21 @@ export function describeOtpVerifyError(
   return describeCommonError(error, fallback) ?? fallback;
 }
 
+/**
+ * Verify errors when a signed-in person is ADDING a number to their existing
+ * account (not signing in). The one extra case: the number already belongs to
+ * another KINRO account, which the server refuses so nobody ends up with two
+ * accounts sharing a number.
+ */
+export function describeOtpLinkError(
+  error: AuthErrorLike | null | undefined,
+): string {
+  if (error?.code === "PHONE_NUMBER_EXIST") {
+    return "This number is already used by another KINRO account. Sign in with that number to use that account, or contact support to combine them.";
+  }
+  return describeOtpVerifyError(error);
+}
+
 export function describeMagicLinkSendError(
   error: AuthErrorLike | null | undefined,
 ): string {

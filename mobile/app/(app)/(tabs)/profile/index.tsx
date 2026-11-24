@@ -21,8 +21,10 @@ import { authClient, useSession } from "@/lib/auth-client";
 import type { OwnerProfileItem } from "@/lib/contracts";
 import { realName } from "@/lib/display-name";
 import { getOwnerProfile } from "@/lib/owner-profile-api";
+import { maskPhoneForDisplay } from "@/lib/phone";
 import { DELETE_ACCOUNT_WARNING, safetyErrorMessage } from "@/lib/safety";
 import { deleteMyAccount } from "@/lib/safety-api";
+import { PHONE_LOGIN_READY } from "@/lib/sign-in-methods";
 import { useRequireAuth } from "@/lib/use-require-auth";
 import { colors, spacing, typography } from "@/theme/tokens";
 import { HelpTrustCard } from "./help-trust";
@@ -210,6 +212,26 @@ export default function ProfileScreen() {
             <Text style={typography.bodyMuted}>Contact</Text>
             <Text style={typography.body}>{contact}</Text>
           </View>
+          {PHONE_LOGIN_READY && session?.user ? (
+            session.user.phoneNumber && session.user.phoneNumberVerified ? (
+              <View style={styles.contactRow}>
+                <Text style={typography.bodyMuted}>Mobile</Text>
+                <Text style={typography.body}>
+                  {maskPhoneForDisplay(
+                    session.user.phoneNumber.replace(/^\+91/, ""),
+                  )}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.addPhone}>
+                <Button
+                  label="Add mobile number"
+                  onPress={() => router.push("/(app)/(tabs)/profile/add-phone")}
+                  variant="secondary"
+                />
+              </View>
+            )
+          ) : null}
         </Card>
 
         <View style={styles.myDogsButton}>
@@ -272,6 +294,7 @@ const styles = StyleSheet.create({
   aboutCard: { marginTop: spacing.lg },
   contactCard: { marginTop: spacing.md },
   contactRow: { flexDirection: "row", justifyContent: "space-between" },
+  addPhone: { marginTop: spacing.md },
   myDogsButton: { marginTop: spacing.md },
   notificationsButton: { marginTop: spacing.md },
   blockedButton: { marginTop: spacing.md },

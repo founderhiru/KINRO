@@ -9,6 +9,7 @@
 import {
   type AuthErrorLike,
   describeMagicLinkSendError,
+  describeOtpLinkError,
   describeOtpSendError,
   describeOtpVerifyError,
   isNetworkFailure,
@@ -41,7 +42,12 @@ interface AuthResponse {
 export interface AuthFlowClient {
   phoneNumber: {
     sendOtp(input: { phoneNumber: string }): Promise<AuthResponse>;
-    verify(input: { phoneNumber: string; code: string }): Promise<AuthResponse>;
+    verify(input: {
+      phoneNumber: string;
+      code: string;
+      /** Attach the number to the signed-in account instead of signing in. */
+      updatePhoneNumber?: boolean;
+    }): Promise<AuthResponse>;
   };
   signIn: {
     magicLink(input: {
@@ -91,6 +97,28 @@ export function verifyOtp(
   return guarded(
     () => client.phoneNumber.verify({ phoneNumber: toE164(digits), code }),
     describeOtpVerifyError,
+  );
+}
+
+/**
+ * Add a verified mobile number to the CURRENT (signed-in) account. The code is
+ * checked first, then the number is attached to this account, so signing in by
+ * phone later opens the same account and its data instead of creating a second
+ * one. Refused (PHONE_NUMBER_EXIST) if another account already has the number.
+ */
+export function verifyOtpToLinkPhone(
+  client: AuthFlowClient,
+  digits: string,
+  code: string,
+): Promise<FlowResult> {
+  return guarded(
+    () =>
+      client.phoneNumber.verify({
+        phoneNumber: toE164(digits),
+        code,
+        updatePhoneNumber: true,
+      }),
+    describeOtpLinkError,
   );
 }
 

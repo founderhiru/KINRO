@@ -21,6 +21,7 @@ export default function ProfileLayout() {
         }}
       />
       <Stack.Screen name="blocked" options={{ title: "Blocked users" }} />
+      <Stack.Screen name="add-phone" options={{ title: "Mobile number" }} />
       {/* Help & Trust is its own nested stack (FAQ / Privacy / Security /
           Terms / Contact Support) with its own headers, so the outer
           header is hidden here — see help-trust/_layout.tsx. */}
