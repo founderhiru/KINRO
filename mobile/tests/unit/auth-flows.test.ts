@@ -8,6 +8,7 @@ import {
   requestMagicLink,
   requestOtp,
   verifyOtp,
+  verifyOtpToLinkPhone,
 } from "@/lib/auth-flows";
 
 function makeClient(overrides?: {
@@ -209,5 +210,45 @@ describe("magic link request", () => {
     expect((result as { message: string }).message).toMatch(
       /Can't reach KINRO/,
     );
+  });
+});
+
+describe("adding a mobile number to the signed-in account", () => {
+  it("verifies the code and asks the server to attach the number to this account", async () => {
+    const client = makeClient();
+    const result = await verifyOtpToLinkPhone(client, "9876543210", "123456");
+    expect(result).toEqual({ ok: true });
+    expect(client.phoneNumber.verify).toHaveBeenCalledWith({
+      phoneNumber: "+919876543210",
+      code: "123456",
+      updatePhoneNumber: true,
+    });
+  });
+
+  it("explains that the number already belongs to another account", async () => {
+    const client = makeClient({
+      verify: async () => ({
+        error: { code: "PHONE_NUMBER_EXIST", status: 400 },
+      }),
+    });
+    const result = await verifyOtpToLinkPhone(client, "9876543210", "123456");
+    expect(result).toMatchObject({
+      ok: false,
+      code: "PHONE_NUMBER_EXIST",
+    });
+    if (!result.ok) {
+      expect(result.message).toMatch(/already used by another KINRO account/);
+    }
+  });
+
+  it("still reports a wrong code the usual way", async () => {
+    const client = makeClient({
+      verify: async () => ({ error: { code: "INVALID_OTP", status: 400 } }),
+    });
+    const result = await verifyOtpToLinkPhone(client, "9876543210", "000000");
+    expect(result).toMatchObject({
+      ok: false,
+      message: "That code is incorrect. Check it and try again.",
+    });
   });
 });

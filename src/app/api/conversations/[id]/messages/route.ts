@@ -12,6 +12,7 @@
 import 'server-only';
 
 import { NextResponse } from 'next/server';
+import { MESSAGE_LIMIT_MESSAGE, messageLimitReached } from '@/lib/abuse-limits';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { MessageWrite, toMessageItem } from '@/lib/contracts/conversations';
 import { ConversationAccessError, loadOwnedConversation } from '@/lib/conversation-ownership';
@@ -51,6 +52,10 @@ export async function POST(request: Request, { params }: RouteParams) {
         }
       }
       return NextResponse.json({ errors }, { status: 400 });
+    }
+
+    if (await messageLimitReached(user.id)) {
+      return NextResponse.json({ error: MESSAGE_LIMIT_MESSAGE }, { status: 429 });
     }
 
     // Phase C: the MVP's only paywall. The conversation gets a short

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { APPLE_SIGN_IN_READY, getSignInMethods } from "@/lib/sign-in-methods";
+import {
+  APPLE_SIGN_IN_READY,
+  getSignInMethods,
+  PHONE_LOGIN_READY,
+} from "@/lib/sign-in-methods";
 
 describe("getSignInMethods", () => {
   it("does not offer Apple until Sign in with Apple is ready", () => {
@@ -11,5 +15,11 @@ describe("getSignInMethods", () => {
   it("offers Apple on iOS only, once it is ready", () => {
     expect(getSignInMethods("ios", true)).toEqual(["google", "apple", "email"]);
     expect(getSignInMethods("android", true)).toEqual(["google", "email"]);
+  });
+});
+
+describe("phone login", () => {
+  it("is switched off until EXPO_PUBLIC_PHONE_LOGIN=true is set in the build", () => {
+    expect(PHONE_LOGIN_READY).toBe(false);
   });
 });

@@ -290,4 +290,32 @@ describe('POST /api/conversations/[id]/messages — Phase C free-message limit',
       'conv_1',
     );
   });
+
+  it('returns 429 when a person sends 30 messages within a minute, and stores nothing', async () => {
+    requireAuthenticatedUserMock.mockResolvedValue(USER_A);
+    loadOwnedConversationMock.mockResolvedValue(ownedConversation());
+    messageCountMock.mockResolvedValue(30);
+    const { POST } = await import('@/app/api/conversations/[id]/messages/route');
+
+    const res = await POST(jsonRequest({ body: 'hi' }), params('conv_1'));
+
+    expect(res.status).toBe(429);
+    expect(messageCreateMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 429 at 300 messages in a day even when the last minute is quiet', async () => {
+    requireAuthenticatedUserMock.mockResolvedValue(USER_A);
+    loadOwnedConversationMock.mockResolvedValue(ownedConversation());
+    const now = Date.now();
+    messageCountMock.mockImplementation(
+      async ({ where }: { where: { createdAt: { gte: Date } } }) =>
+        now - where.createdAt.gte.getTime() > 60 * 1000 ? 300 : 0,
+    );
+    const { POST } = await import('@/app/api/conversations/[id]/messages/route');
+
+    const res = await POST(jsonRequest({ body: 'hi' }), params('conv_1'));
+
+    expect(res.status).toBe(429);
+    expect(messageCreateMock).not.toHaveBeenCalled();
+  });
 });

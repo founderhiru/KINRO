@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DeleteAccountCard } from '@/components/custom/delete-account';
+import { MobileNumberCard } from '@/components/custom/mobile-number-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -192,6 +193,7 @@ export function OwnerProfileView() {
           )}
         </CardContent>
       </Card>
+      <MobileNumberCard />
       <DeleteAccountCard />
     </main>
   );

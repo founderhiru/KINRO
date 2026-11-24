@@ -6,6 +6,7 @@
 import 'server-only';
 
 import { NextResponse } from 'next/server';
+import { INTEREST_LIMIT_MESSAGE, interestLimitReached } from '@/lib/abuse-limits';
 import { AuthError, requireAuthenticatedUser } from '@/lib/auth';
 import { InterestWrite, toInterestItem } from '@/lib/contracts/interests';
 import { prisma } from '@/lib/db';
@@ -61,6 +62,10 @@ export async function POST(request: Request) {
         { error: "You've already expressed interest in this dog" },
         { status: 409 },
       );
+    }
+
+    if (await interestLimitReached(user.id)) {
+      return NextResponse.json({ error: INTEREST_LIMIT_MESSAGE }, { status: 429 });
     }
 
     const created = await prisma.interest.create({

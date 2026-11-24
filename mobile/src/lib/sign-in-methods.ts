@@ -10,6 +10,12 @@
 // so the button appears only when EXPO_PUBLIC_APPLE_SIGN_IN=true is set in the
 // app build (eas.json) — flip it once the server side is live.
 
+// Sign in with a mobile number (SMS code) is switched off for now. It needs an
+// approved SMS provider before it can work, so showing it would only offer a
+// way in that fails. Set EXPO_PUBLIC_PHONE_LOGIN=true in the app build
+// (eas.json) to bring the phone field back; nothing else needs to change.
+export const PHONE_LOGIN_READY = process.env.EXPO_PUBLIC_PHONE_LOGIN === "true";
+
 export type SignInMethod = "google" | "apple" | "email";
 
 export const APPLE_SIGN_IN_READY =

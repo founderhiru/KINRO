@@ -22,7 +22,11 @@ import { authClient } from "@/lib/auth-client";
 import { requestOtp } from "@/lib/auth-flows";
 import { isValidIndianMobileNumber } from "@/lib/phone";
 import { ROUTES } from "@/lib/session-guard";
-import { getSignInMethods, type SignInMethod } from "@/lib/sign-in-methods";
+import {
+  getSignInMethods,
+  PHONE_LOGIN_READY,
+  type SignInMethod,
+} from "@/lib/sign-in-methods";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import {
   brandField,
@@ -235,39 +239,49 @@ export default function MobileNumberScreen() {
           Log in or sign up
         </Text>
 
-        <View style={[styles.phoneRow, error ? styles.phoneRowError : null]}>
-          <Text style={styles.prefix}>+91</Text>
-          <TextInput
-            style={styles.phoneInput}
-            value={digits}
-            onChangeText={(text) => {
-              setDigits(text.replace(/[^0-9]/g, "").slice(0, 10));
-              if (error) setError(null);
-            }}
-            keyboardType="number-pad"
-            autoComplete="tel"
-            maxLength={10}
-            editable={!loading}
-            placeholder="Enter mobile number"
-            placeholderTextColor={colors.textMuted}
-            accessibilityLabel="Mobile number"
-            onSubmitEditing={canContinue ? handleContinue : undefined}
-          />
-        </View>
-        {error ? <ErrorText>{error}</ErrorText> : null}
+        {PHONE_LOGIN_READY ? (
+          <>
+            <View
+              style={[styles.phoneRow, error ? styles.phoneRowError : null]}
+            >
+              <Text style={styles.prefix}>+91</Text>
+              <TextInput
+                style={styles.phoneInput}
+                value={digits}
+                onChangeText={(text) => {
+                  setDigits(text.replace(/[^0-9]/g, "").slice(0, 10));
+                  if (error) setError(null);
+                }}
+                keyboardType="number-pad"
+                autoComplete="tel"
+                maxLength={10}
+                editable={!loading}
+                placeholder="Enter mobile number"
+                placeholderTextColor={colors.textMuted}
+                accessibilityLabel="Mobile number"
+                onSubmitEditing={canContinue ? handleContinue : undefined}
+              />
+            </View>
+            {error ? <ErrorText>{error}</ErrorText> : null}
 
-        <Button
-          label="Continue"
-          onPress={handleContinue}
-          disabled={!canContinue}
-          loading={loading}
-        />
+            <Button
+              label="Continue"
+              onPress={handleContinue}
+              disabled={!canContinue}
+              loading={loading}
+            />
 
-        <View style={styles.dividerRow} accessibilityElementsHidden>
-          <View style={styles.rule} />
-          <Text style={styles.dividerLabel}>or continue with</Text>
-          <View style={styles.rule} />
-        </View>
+            <View style={styles.dividerRow} accessibilityElementsHidden>
+              <View style={styles.rule} />
+              <Text style={styles.dividerLabel}>or continue with</Text>
+              <View style={styles.rule} />
+            </View>
+          </>
+        ) : (
+          <Text style={styles.sheetSubtitle}>
+            Choose how you would like to continue.
+          </Text>
+        )}
 
         <SocialSignInRow
           methods={methods}
@@ -395,6 +409,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm + 4,
   },
   sheetTitle: { fontSize: 15, fontWeight: "700", color: colors.text },
+  sheetSubtitle: {
+    ...typography.caption,
+    fontSize: 13,
+    color: colors.textMuted,
+  },
   phoneRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -35,6 +35,9 @@
       "android": {
         "distribution": "internal",
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_APPLE_SIGN_IN": "true"
       }
     },
     "production": {
@@ -44,6 +47,9 @@
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_APPLE_SIGN_IN": "true"
       }
     }
   },

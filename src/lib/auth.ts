@@ -114,6 +114,10 @@ export const auth = betterAuth({
     // defaults; kept explicit here so the security posture is visible
     // in-repo rather than implied.
     useSecureCookies: process.env.NODE_ENV === 'production',
+    // Behind Render (and Cloudflare) the visitor's real address arrives in
+    // these headers. Without them better-auth sees no client IP and its sign-in
+    // rate limiting cannot tell visitors apart.
+    ipAddress: { ipAddressHeaders: ['cf-connecting-ip', 'x-forwarded-for'] },
   },
 
   // Custom field for the founder/admin check used by requireAdmin() —
