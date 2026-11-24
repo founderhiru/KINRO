@@ -6,7 +6,8 @@
   "build": {
     "base": {
       "env": {
-        "EXPO_PUBLIC_APP_SCHEME": "canidknot"
+        "EXPO_PUBLIC_APP_SCHEME": "canidknot",
+        "EXPO_PUBLIC_API_URL": "https://kinro.in"
       },
       "ios": {
         "image": "macos-sequoia-15.6-xcode-26.2"
