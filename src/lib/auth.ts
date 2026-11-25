@@ -37,6 +37,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { magicLink, phoneNumber } from 'better-auth/plugins';
 import { headers } from 'next/headers';
+import { describeRequest, describeResponse } from '@/lib/auth-diagnostics';
 import { assertPublicMagicLinkUrl, buildMagicLinkEmail } from '@/lib/auth-email-templates';
 import { prisma } from '@/lib/db';
 import { sendAuthEmail } from '@/lib/email';
@@ -146,6 +147,21 @@ export const auth = betterAuth({
   },
 
   plugins: [
+    // Temporary: logs the shape of sign-in requests/responses (never values) so
+    // a failing app sign-in can be read from Render's logs. See auth-diagnostics.ts.
+    {
+      id: 'auth-diag',
+      onRequest: async (request: Request) => {
+        const line = describeRequest(request);
+        // biome-ignore lint/suspicious/noConsole: intentional temporary diagnostic.
+        if (line) console.log(line);
+      },
+      onResponse: async (response: Response) => {
+        const line = describeResponse(response);
+        // biome-ignore lint/suspicious/noConsole: intentional temporary diagnostic.
+        if (line) console.log(line);
+      },
+    },
     // Mobile (Phase mobile-M1): rewrites the Origin header on requests coming
     // from the Expo client so trustedOrigins (above) is checked correctly,
     // and proxies the OAuth authorization redirect back through the app's
