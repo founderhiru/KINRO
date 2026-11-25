@@ -29,6 +29,7 @@ import { createAuthClient } from "better-auth/react";
 import * as SecureStore from "expo-secure-store";
 import { env } from "./env";
 import { persistSessionCookie } from "./magic-link-callback";
+import { type SessionAtomLike, waitForSignedInSession } from "./session-wait";
 
 // Single source of truth for the SecureStore key @better-auth/expo's
 // expoClient plugin derives internally as `${storagePrefix}_cookie` — see
@@ -77,4 +78,16 @@ export async function completeMagicLinkSignIn(cookie: string): Promise<void> {
     mergeCookie: getSetCookie,
     notifySessionChanged: () => authClient.$store.notify("$sessionSignal"),
   });
+}
+
+/**
+ * Call after a successful Google/Apple sign-in, before navigating: waits for
+ * the session store to pick up the new session so the redirect at "/" sees
+ * "signed in" instead of the stale signed-out value (see session-wait.ts).
+ */
+export function waitForSession(): Promise<boolean> {
+  return waitForSignedInSession(
+    authClient.$store.atoms.session as unknown as SessionAtomLike,
+    () => authClient.$store.notify("$sessionSignal"),
+  );
 }
