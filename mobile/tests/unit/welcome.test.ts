@@ -1,43 +1,30 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-const store = vi.hoisted(() => ({
-  data: new Map<string, string>(),
-  fail: false,
-}));
-
-vi.mock("expo-secure-store", () => ({
-  getItemAsync: async (key: string) => {
-    if (store.fail) throw new Error("keychain unavailable");
-    return store.data.get(key) ?? null;
-  },
-  setItemAsync: async (key: string, value: string) => {
-    if (store.fail) throw new Error("keychain unavailable");
-    store.data.set(key, value);
-  },
-}));
+import { describe, expect, it, vi } from "vitest";
 
 import { WELCOME_TIMINGS as T } from "@/lib/welcome-motion";
-import { hasSeenWelcome, markWelcomeSeen } from "@/lib/welcome-seen";
 
 describe("welcome seen flag", () => {
-  beforeEach(() => {
-    store.data.clear();
-    store.fail = false;
-  });
-
-  it("is not seen on first open", async () => {
+  it("plays on a fresh launch", async () => {
+    vi.resetModules();
+    const { hasSeenWelcome } = await import("@/lib/welcome-seen");
     expect(await hasSeenWelcome()).toBe(false);
   });
 
-  it("is remembered once marked", async () => {
+  it("is not replayed again within the same launch", async () => {
+    vi.resetModules();
+    const { hasSeenWelcome, markWelcomeSeen } = await import(
+      "@/lib/welcome-seen"
+    );
     await markWelcomeSeen();
     expect(await hasSeenWelcome()).toBe(true);
   });
 
-  it("treats a storage failure as not seen, without throwing", async () => {
-    store.fail = true;
-    await expect(markWelcomeSeen()).resolves.toBeUndefined();
-    expect(await hasSeenWelcome()).toBe(false);
+  it("plays again after the app is closed and reopened", async () => {
+    vi.resetModules();
+    const first = await import("@/lib/welcome-seen");
+    await first.markWelcomeSeen();
+    vi.resetModules();
+    const second = await import("@/lib/welcome-seen");
+    expect(await second.hasSeenWelcome()).toBe(false);
   });
 });
 
