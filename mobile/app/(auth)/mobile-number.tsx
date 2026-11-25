@@ -18,7 +18,7 @@ import { Button } from "@/components/Button";
 import { ErrorText } from "@/components/ErrorText";
 import { Floaty } from "@/components/Floaty";
 import { SocialSignInRow } from "@/components/SocialSignInRow";
-import { authClient } from "@/lib/auth-client";
+import { authClient, waitForSession } from "@/lib/auth-client";
 import { requestOtp } from "@/lib/auth-flows";
 import { isValidIndianMobileNumber } from "@/lib/phone";
 import { ROUTES } from "@/lib/session-guard";
@@ -102,7 +102,9 @@ export default function MobileNumberScreen() {
       // else ever navigates us away from this screen. By the time we get
       // here the session cookie is already stored; app/index.tsx's
       // useSession()-driven redirect only runs while mounted at "/", so
-      // it needs to be explicitly remounted.
+      // it needs to be explicitly remounted — but only once the session store
+      // has refreshed, or it would redirect back here on the stale value.
+      await waitForSession();
       router.replace("/");
     } catch {
       setError("Google sign-in failed, try again");
@@ -137,6 +139,7 @@ export default function MobileNumberScreen() {
         setError(signInError.message ?? "Apple sign-in failed, try again");
         return;
       }
+      await waitForSession();
       router.replace("/");
     } catch (e) {
       // Closing the Apple sheet is a choice, not an error worth showing.
