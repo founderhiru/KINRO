@@ -1,28 +1,20 @@
-import * as SecureStore from "expo-secure-store";
-
 /**
- * Remembers that the full animated welcome has been shown once, so returning
- * visitors go straight on instead of waiting through it again. If storage is
- * unavailable we treat the welcome as not yet seen, which is the safe side:
- * the person sees it, and it can be skipped with a tap.
+ * The animated welcome plays on every cold launch while signed out, and not
+ * again until the app is closed and reopened.
+ *
+ * It used to be remembered in the iOS Keychain (expo-secure-store). The Keychain
+ * survives deleting and reinstalling the app, so after the first ever open the
+ * welcome never played again, even on a fresh install. This keeps the
+ * "once per launch" memory in the app's own memory instead: it resets on every
+ * cold start and on reinstall. Signed-in people skip the welcome entirely (see
+ * app/index.tsx), so it only ever appears to signed-out visitors.
  */
-const KEY = "kinro_welcome_seen_v1";
+let shownThisLaunch = false;
 
 export async function hasSeenWelcome(): Promise<boolean> {
-  // Development builds only: replay the welcome on every launch so the design
-  // can be reviewed without erasing the simulator. Release builds are unaffected.
-  if (typeof __DEV__ !== "undefined" && __DEV__) return false;
-  try {
-    return (await SecureStore.getItemAsync(KEY)) === "1";
-  } catch {
-    return false;
-  }
+  return shownThisLaunch;
 }
 
 export async function markWelcomeSeen(): Promise<void> {
-  try {
-    await SecureStore.setItemAsync(KEY, "1");
-  } catch {
-    // Not being able to remember it is harmless.
-  }
+  shownThisLaunch = true;
 }
