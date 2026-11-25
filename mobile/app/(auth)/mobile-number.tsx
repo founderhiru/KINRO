@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   Platform,
@@ -18,7 +18,7 @@ import { Button } from "@/components/Button";
 import { ErrorText } from "@/components/ErrorText";
 import { Floaty } from "@/components/Floaty";
 import { SocialSignInRow } from "@/components/SocialSignInRow";
-import { authClient } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { requestOtp } from "@/lib/auth-flows";
 import { isValidIndianMobileNumber } from "@/lib/phone";
 import { ROUTES } from "@/lib/session-guard";
@@ -61,6 +61,15 @@ export default function MobileNumberScreen() {
   const [loading, setLoading] = useState(false);
   const [busyMethod, setBusyMethod] = useState<SignInMethod | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Google, Apple and the email link all finish with the session arriving a
+  // moment AFTER this screen has already asked to go "/" — so "/" can briefly
+  // see "signed out" and bounce back here (you had to tap Google twice). Once a
+  // session exists, leave this screen for Home, whichever way it arrived.
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session) router.replace(ROUTES.home);
+  }, [session]);
 
   const methods = getSignInMethods(Platform.OS);
   const canContinue = isValidIndianMobileNumber(digits) && !loading;
