@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as AppleAuthentication from "expo-apple-authentication";
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, usePathname } from "expo-router";
+import { useRef, useState } from "react";
 import {
   Image,
   Platform,
@@ -27,6 +27,7 @@ import {
   PHONE_LOGIN_READY,
   type SignInMethod,
 } from "@/lib/sign-in-methods";
+import { stillOnSignIn } from "@/lib/sign-in-navigation";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import {
   brandField,
@@ -55,6 +56,11 @@ const PHOTO_CENTER = require("../../assets/images/photos/dog-golden-retriever.jp
  */
 export default function MobileNumberScreen() {
   const insets = useSafeAreaInsets();
+  // Tracks where the app is now, so a finished sign-in does not navigate a
+  // second time after Android's return link already moved us on.
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const { width, height } = useWindowDimensions();
   const keyboardVisible = useKeyboardVisible();
   const [digits, setDigits] = useState("");
@@ -105,7 +111,7 @@ export default function MobileNumberScreen() {
       // it needs to be explicitly remounted — but only once the session store
       // has refreshed, or it would redirect back here on the stale value.
       await waitForSession();
-      router.replace("/");
+      if (stillOnSignIn(pathnameRef.current)) router.replace("/");
     } catch {
       setError("Google sign-in failed, try again");
     } finally {
@@ -140,7 +146,7 @@ export default function MobileNumberScreen() {
         return;
       }
       await waitForSession();
-      router.replace("/");
+      if (stillOnSignIn(pathnameRef.current)) router.replace("/");
     } catch (e) {
       // Closing the Apple sheet is a choice, not an error worth showing.
       if ((e as { code?: string }).code !== "ERR_REQUEST_CANCELED") {
