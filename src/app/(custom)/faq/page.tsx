@@ -112,6 +112,18 @@ const SECTIONS: FaqSection[] = [
         q: 'What happens when I send a connection request?',
         a: "The dog's owner is notified and can accept or decline. If they accept, you're matched and can start messaging. If they decline or don't respond, no further information is shared.",
       },
+      {
+        q: 'Does sending or accepting a connection request create a legal obligation?',
+        a: 'No. Sending a request, accepting one, matching and chatting on KINRO do not create a contract, promise or commitment of any kind — with KINRO or with the other person. A match is only an introduction. If you and another owner ever agree on something, that is a separate arrangement between the two of you, and KINRO is not part of it. You can decline a request, stop replying or step away at any time.',
+      },
+      {
+        q: "I'm connected with someone. How do I disconnect later?",
+        a: 'You are never bound to stay connected, and it costs nothing to leave. Tap Report or block on their dog profile, or the ⋯ in your conversation, then choose Block. Messaging stops and you no longer see each other in Discover or Messages. They are not told. You can unblock any time from Profile → Blocked users. You can also simply stop replying.',
+      },
+      {
+        q: 'Can I stop using KINRO after I register?',
+        a: 'Yes, at any time, with no fee and no notice period. To close your account, go to Profile → Delete account in the app, or sign in on the website, open Profile and choose Delete account. This permanently deletes your profile, your dogs with their photos and health records, and your conversations, and it cannot be undone. Safety reports are kept, as they may involve other people. If you only want a break, you can sign out and stop using the app; nothing renews or is charged.',
+      },
     ],
   },
   {

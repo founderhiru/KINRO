@@ -52,6 +52,12 @@ const SECTIONS: Section[] = [
     ],
   },
   {
+    heading: 'No obligation from connecting',
+    paragraphs: [
+      'Sending or accepting a connection request, matching, and chatting on KINRO do not create a contract, promise or commitment of any kind with KINRO or with another user. Any arrangement between users is separate, and KINRO is not a party to it. You can decline a request, block a user, or stop using KINRO at any time.',
+    ],
+  },
+  {
     heading: 'Not veterinary advice',
     paragraphs: [
       "KINRO is not a veterinary service. Nothing in the app is medical or veterinary advice. Always consult a qualified veterinarian about your dog's health.",
@@ -68,7 +74,7 @@ const SECTIONS: Section[] = [
   {
     heading: 'Termination',
     paragraphs: [
-      'You may stop using KINRO at any time; contact support to close your account. We may suspend or terminate accounts that violate these terms or that we believe pose a risk to other users or to KINRO.',
+      'You may stop using KINRO at any time, at no cost. To close your account, go to Profile → Delete account in the app or on the website (or contact support). Deleting your account permanently removes your profile, dogs, photos, health records and conversations. We may suspend or terminate accounts that violate these terms or that we believe pose a risk to other users or to KINRO.',
     ],
   },
   {
