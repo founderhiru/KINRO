@@ -2,7 +2,11 @@ import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { LAUNCH_SPLASH_TOTAL_MS } from "@/components/AppLaunchSplash";
 import { SplashView } from "@/components/SplashView";
-import { completeMagicLinkSignIn, useSession } from "@/lib/auth-client";
+import {
+  completeMagicLinkSignIn,
+  useSession,
+  waitForSession,
+} from "@/lib/auth-client";
 import { firstParam } from "@/lib/magic-link-callback";
 import { resolveInitialRoute, type SessionStatus } from "@/lib/session-guard";
 import { WELCOME_TIMINGS } from "@/lib/welcome-motion";
@@ -118,6 +122,9 @@ export default function Index() {
     (async () => {
       try {
         await completeMagicLinkSignIn(cookie);
+        // The refetch it started is asynchronous; deciding where to go before
+        // it lands would read the old signed-out value and bounce to sign-in.
+        await waitForSession({ notify: false });
       } catch {
         // Storage failure: fall through to the normal signed-out path rather
         // than trapping the user on the splash screen.
