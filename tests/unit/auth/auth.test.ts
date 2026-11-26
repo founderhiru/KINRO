@@ -69,6 +69,17 @@ describe('mobile auth bridge (Phase mobile-M1)', () => {
   });
 });
 
+describe('Google sign-in config', () => {
+  it('always asks Google to show the account chooser', async () => {
+    const { betterAuth } = await import('better-auth');
+    await import('@/lib/auth');
+    const config = vi.mocked(betterAuth).mock.calls[0]?.[0] as {
+      socialProviders?: { google?: { prompt?: string } };
+    };
+    expect(config.socialProviders?.google?.prompt).toBe('select_account');
+  });
+});
+
 describe('magic link delivery config', () => {
   it('refuses to email a localhost link in production (NEXT_PUBLIC_APP_URL left at its dev default)', async () => {
     const { magicLink } = await import('better-auth/plugins');

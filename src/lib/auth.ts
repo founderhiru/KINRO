@@ -74,6 +74,10 @@ export const auth = betterAuth({
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      // Always show Google's account chooser. Without it Google silently reuses
+      // the account the browser or phone is already signed into, so people with
+      // several Google accounts cannot pick one (web and app).
+      prompt: 'select_account' as const,
     },
     // Sign in with Apple, native iOS flow only: the app sends the identity token
     // Apple signed and better-auth verifies it against Apple's public keys, with
