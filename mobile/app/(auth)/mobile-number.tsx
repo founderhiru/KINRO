@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { router, usePathname } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   Platform,
@@ -18,7 +18,7 @@ import { Button } from "@/components/Button";
 import { ErrorText } from "@/components/ErrorText";
 import { Floaty } from "@/components/Floaty";
 import { SocialSignInRow } from "@/components/SocialSignInRow";
-import { authClient, waitForSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { requestOtp } from "@/lib/auth-flows";
 import { isValidIndianMobileNumber } from "@/lib/phone";
 import { ROUTES } from "@/lib/session-guard";
@@ -27,7 +27,7 @@ import {
   PHONE_LOGIN_READY,
   type SignInMethod,
 } from "@/lib/sign-in-methods";
-import { stillOnSignIn } from "@/lib/sign-in-navigation";
+import { shouldLeaveSignIn } from "@/lib/sign-in-navigation";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import {
   brandField,
@@ -56,11 +56,16 @@ const PHOTO_CENTER = require("../../assets/images/photos/dog-golden-retriever.jp
  */
 export default function MobileNumberScreen() {
   const insets = useSafeAreaInsets();
-  // Tracks where the app is now, so a finished sign-in does not navigate a
-  // second time after Android's return link already moved us on.
+  // Signing in never navigates from the button handlers: the Google/Apple call
+  // cannot tell "signed in" from "closed the browser", and on Android the
+  // return link also moves the app on by itself. The screen reacts to the
+  // session instead, so it leaves for Home exactly once, as soon as a session
+  // exists, whatever order things arrive in.
   const pathname = usePathname();
-  const pathnameRef = useRef(pathname);
-  pathnameRef.current = pathname;
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (shouldLeaveSignIn(!!session, pathname)) router.replace(ROUTES.home);
+  }, [session, pathname]);
   const { width, height } = useWindowDimensions();
   const keyboardVisible = useKeyboardVisible();
   const [digits, setDigits] = useState("");
@@ -91,6 +96,7 @@ export default function MobileNumberScreen() {
   }
 
   async function handleGoogle() {
+    if (busyMethod) return;
     setError(null);
     setBusyMethod("google");
     try {
@@ -102,16 +108,9 @@ export default function MobileNumberScreen() {
         setError(signInError.message ?? "Google sign-in failed, try again");
         return;
       }
-      // The Google OAuth roundtrip runs entirely inside the awaited call
-      // above (an in-app browser session — see @better-auth/expo's
-      // expoClient plugin), so unlike a deep-link-based return, nothing
-      // else ever navigates us away from this screen. By the time we get
-      // here the session cookie is already stored; app/index.tsx's
-      // useSession()-driven redirect only runs while mounted at "/", so
-      // it needs to be explicitly remounted — but only once the session store
-      // has refreshed, or it would redirect back here on the stale value.
-      await waitForSession();
-      if (stillOnSignIn(pathnameRef.current)) router.replace("/");
+      // Nothing to do on success: the session store now holds the session and
+      // the effect above moves the screen on. Closing the browser without
+      // choosing an account lands here too, and correctly changes nothing.
     } catch {
       setError("Google sign-in failed, try again");
     } finally {
@@ -120,6 +119,7 @@ export default function MobileNumberScreen() {
   }
 
   async function handleApple() {
+    if (busyMethod) return;
     setError(null);
     setBusyMethod("apple");
     try {
@@ -145,8 +145,8 @@ export default function MobileNumberScreen() {
         setError(signInError.message ?? "Apple sign-in failed, try again");
         return;
       }
-      await waitForSession();
-      if (stillOnSignIn(pathnameRef.current)) router.replace("/");
+      // As with Google, the effect above moves the screen on once the session
+      // store holds the new session.
     } catch (e) {
       // Closing the Apple sheet is a choice, not an error worth showing.
       if ((e as { code?: string }).code !== "ERR_REQUEST_CANCELED") {

@@ -81,13 +81,16 @@ export async function completeMagicLinkSignIn(cookie: string): Promise<void> {
 }
 
 /**
- * Call after a successful Google/Apple sign-in, before navigating: waits for
- * the session store to pick up the new session so the redirect at "/" sees
- * "signed in" instead of the stale signed-out value (see session-wait.ts).
+ * Waits for the session store to hold the new session (see session-wait.ts).
+ * Pass `{ notify: false }` when the caller has already asked it to refetch.
  */
-export function waitForSession(): Promise<boolean> {
+export function waitForSession(
+  options: { notify?: boolean } = {},
+): Promise<boolean> {
+  const { notify = true } = options;
   return waitForSignedInSession(
     authClient.$store.atoms.session as unknown as SessionAtomLike,
-    () => authClient.$store.notify("$sessionSignal"),
+    notify ? () => authClient.$store.notify("$sessionSignal") : null,
+    6000,
   );
 }
